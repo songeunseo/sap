@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import torch
 
 
@@ -119,3 +122,143 @@ def build_channel_delta(
         "mask_difference_fraction": difference / total,
     }
     return delta
+
+
+def select_experiment_channels(
+    hidden_size: int, protected: int, random_count: int, seed: int
+) -> list[int]:
+    if hidden_size <= 0 or not 0 <= protected < hidden_size:
+        raise ValueError("Protected channel must be inside the residual hidden size")
+    if not 0 <= random_count <= hidden_size - 1:
+        raise ValueError("Random channel count exceeds available control channels")
+    candidates = torch.cat((torch.arange(protected), torch.arange(protected + 1, hidden_size)))
+    generator = torch.Generator().manual_seed(seed)
+    random_channels = candidates[torch.randperm(candidates.numel(), generator=generator)[:random_count]]
+    return [protected, *random_channels.tolist()]
+
+
+def new_delta_bundles(channels: list[int]) -> dict[int, dict]:
+    if len(channels) != len(set(channels)):
+        raise ValueError("Experiment channels must be distinct")
+    return {channel: {"channel": channel, "modules": {}} for channel in channels}
+
+
+def record_module_deltas(
+    bundles: dict[int, dict],
+    module_name: str,
+    weight: torch.Tensor,
+    score: torch.Tensor,
+    baseline_mask: torch.Tensor,
+) -> None:
+    for channel, bundle in bundles.items():
+        if module_name in bundle["modules"]:
+            raise ValueError(f"Duplicate module delta: {module_name}")
+        bundle["modules"][module_name] = build_channel_delta(
+            module_name, weight, score, baseline_mask, channel
+        )
+
+
+def _bundle_summary(bundle: dict, metadata: dict) -> dict:
+    module_stats = {
+        name: {"shape": list(delta["shape"]), **delta["stats"]}
+        for name, delta in bundle["modules"].items()
+    }
+    total = sum(stats["total_weights"] for stats in module_stats.values())
+    baseline_pruned = sum(stats["baseline_pruned"] for stats in module_stats.values())
+    constrained_pruned = sum(stats["constrained_pruned"] for stats in module_stats.values())
+    protected_total = sum(stats["protected_total"] for stats in module_stats.values())
+    survived = sum(
+        stats["protected_already_survived_in_baseline"] for stats in module_stats.values()
+    )
+    restored = sum(stats["protected_restored"] for stats in module_stats.values())
+    compensated = sum(stats["compensation_pruned"] for stats in module_stats.values())
+    difference = sum(stats["mask_difference_count"] for stats in module_stats.values())
+    return {
+        **metadata,
+        "channel": bundle["channel"],
+        "total_prunable_weights": total,
+        "total_pruned_weights": constrained_pruned,
+        "baseline_total_pruned_weights": baseline_pruned,
+        "actual_global_sparsity": constrained_pruned / total,
+        "protected_total": protected_total,
+        "protected_weight_fraction": protected_total / total,
+        "protected_already_survived_in_baseline": survived,
+        "protected_already_survived_fraction": survived / protected_total,
+        "protected_restored": restored,
+        "protected_restored_fraction": restored / protected_total,
+        "compensation_pruned": compensated,
+        "mask_difference_count": difference,
+        "mask_difference_fraction": difference / total,
+        "module_wise": module_stats,
+    }
+
+
+def save_delta_bundles(
+    bundles: dict[int, dict], output_dir: Path | str, metadata: dict
+) -> list[Path]:
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    paths = []
+    for channel, bundle in bundles.items():
+        summary = _bundle_summary(bundle, metadata)
+        artifact = {
+            "channel": channel,
+            "metadata": dict(metadata),
+            "modules": bundle["modules"],
+            "summary": summary,
+        }
+        path = output_dir / f"channel-{channel}.pt"
+        torch.save(artifact, path)
+        (output_dir / f"channel-{channel}.json").write_text(
+            json.dumps(summary, indent=2, sort_keys=True) + "\n"
+        )
+        paths.append(path)
+    return paths
+
+
+def apply_channel_delta(model: torch.nn.Module, artifact_path: Path | str) -> dict:
+    artifact = torch.load(artifact_path, map_location="cpu", weights_only=True)
+    named_modules = dict(model.named_modules())
+    prepared = []
+
+    for name, delta in artifact["modules"].items():
+        module = named_modules.get(name)
+        if module is None or not hasattr(module, "weight"):
+            raise ValueError(f"Delta module not found: {name}")
+        weight = module.weight.data
+        if tuple(weight.shape) != tuple(delta["shape"]):
+            raise ValueError(f"Weight shape mismatch for {name}")
+        flat = weight.flatten()
+        restore = delta["restore_indices"].to(flat.device)
+        compensation = delta["compensation_indices"].to(flat.device)
+        if flat[restore].count_nonzero().item():
+            raise ValueError(f"Restore targets are not pruned in baseline module {name}")
+        if compensation.numel() and flat[compensation].eq(0).any():
+            raise ValueError(f"Compensation targets are already pruned in baseline module {name}")
+        prepared.append((name, flat, restore, compensation, delta["restore_values"]))
+
+    module_wise = {}
+    for name, flat, restore, compensation, restore_values in prepared:
+        before = flat.eq(0).sum().item()
+        flat[restore] = restore_values.to(device=flat.device, dtype=flat.dtype)
+        flat[compensation] = 0
+        after = flat.eq(0).sum().item()
+        if before != after:
+            raise AssertionError(f"Actual zero count changed for {name}")
+        module_wise[name] = {
+            "total_weights": flat.numel(),
+            "zeros_before": before,
+            "zeros_after": after,
+            "sparsity_before": before / flat.numel(),
+            "sparsity_after": after / flat.numel(),
+        }
+
+    total = sum(stats["total_weights"] for stats in module_wise.values())
+    pruned = sum(stats["zeros_after"] for stats in module_wise.values())
+    return {
+        **artifact["summary"],
+        "total_prunable_weights": total,
+        "total_pruned_weights": pruned,
+        "actual_global_sparsity": pruned / total,
+        "application_module_wise": module_wise,
+    }
