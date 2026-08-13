@@ -5,6 +5,7 @@ import pytest
 import torch
 from torch import nn
 
+from activation_diagnostic import collect_channel_activations
 from lib.channel_constraint import (
     apply_channel_delta,
     apply_delta_to_mask,
@@ -223,3 +224,31 @@ def test_same_constraint_logic_uses_each_methods_unchanged_scores():
     sink_delta = sink[0]["modules"]["q_proj"]
     assert torch.equal(wanda_delta["restore_indices"], sink_delta["restore_indices"])
     assert not torch.equal(wanda_delta["compensation_indices"], sink_delta["compensation_indices"])
+
+
+class _AddOneBlock(nn.Module):
+    def forward(self, hidden):
+        return hidden + 1, None
+
+
+class _ToyActivationModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = nn.Module()
+        self.model.transformer = nn.Module()
+        self.model.transformer.blocks = nn.ModuleList([_AddOneBlock() for _ in range(32)])
+
+    def forward(self, hidden):
+        for block in self.model.transformer.blocks:
+            hidden = block(hidden)[0]
+        return hidden
+
+
+def test_activation_diagnostic_measures_post_block_channel_and_removes_hooks():
+    model = _ToyActivationModel()
+    batches = [torch.zeros(1, 2, 3), torch.full((1, 2, 3), 2.0)]
+
+    stats = collect_channel_activations(model, batches, channel=1, block_indices=(0, 15, 31))
+
+    assert stats == {0: 2.0, 15: 17.0, 31: 33.0}
+    assert all(not block._forward_hooks for block in model.model.transformer.blocks)
