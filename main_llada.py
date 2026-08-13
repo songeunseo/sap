@@ -1,4 +1,5 @@
 import argparse
+import json
 import os 
 import sys
 import shutil
@@ -13,6 +14,14 @@ from tqdm import tqdm
 from model import LLaDAModelLM
 
 from lib.prune_llada import prune_wanda, prune_magnitude, prune_sparsegpt, prune_ablate, prune_sink, prune_sink_sparsegpt, check_sparsity, find_layers
+from lib.channel_constraint import (
+    apply_channel_delta,
+    new_delta_bundles,
+    save_delta_bundles,
+    select_experiment_channels,
+    validate_delta_request,
+    validate_llada_8b_module_shape,
+)
 from lib.eval import eval_ppl, eval_zero_shot
 
 
@@ -237,6 +246,11 @@ def main():
     parser.add_argument('--noise_eps', type=float, default=1e-3)
     parser.add_argument('--sink_std', type=float, default=2.0)
     parser.add_argument('--sink_alpha', type=float, default=5.0)
+    parser.add_argument('--delta_dir', type=str, default=None)
+    parser.add_argument('--protect_channel', type=int, default=3848)
+    parser.add_argument('--random_channel_count', type=int, default=0)
+    parser.add_argument('--apply_channel_delta', type=str, default=None)
+    parser.add_argument('--skip_ppl', action='store_true')
 
     parser.add_argument("--eval_zero_shot", action="store_true")
     args = parser.parse_args()
@@ -247,7 +261,9 @@ def main():
 
     # Handling n:m sparsity
     prune_n, prune_m = 0, 0
-    if args.sparsity_type != "unstructured":
+    if args.sparsity_ratio != 0 and args.sparsity_type is None:
+        raise ValueError("sparsity_type is required when pruning")
+    if args.sparsity_ratio != 0 and args.sparsity_type != "unstructured":
         assert args.sparsity_ratio == 0.5, "sparsity ratio must be 0.5 for structured N:M sparsity"
         prune_n, prune_m = map(int, args.sparsity_type.split(":"))
 
@@ -262,16 +278,63 @@ def main():
         device = model.hf_device_map["lm_head"]
     print("use device ", device)
 
-    if args.sparsity_ratio != 0:
+    delta_bundles = None
+    if args.delta_dir:
+        validate_delta_request(
+            args.sparsity_ratio,
+            args.sparsity_type,
+            args.use_variant,
+            args.prune_method,
+            args.protect_channel,
+            model.config.hidden_size,
+        )
+        if len(model.model.transformer.blocks) != 32:
+            raise ValueError("Channel experiment requires 32 LLaDA-8B transformer blocks")
+        channels = select_experiment_channels(
+            model.config.hidden_size,
+            args.protect_channel,
+            args.random_channel_count,
+            args.seed,
+        )
+        delta_bundles = new_delta_bundles(channels)
+        for block_index, block in enumerate(model.model.transformer.blocks):
+            for name, layer in find_layers(block).items():
+                validate_llada_8b_module_shape(
+                    f"model.transformer.blocks.{block_index}.{name}", layer.weight.shape
+                )
+
+    application_report = None
+    if args.apply_channel_delta:
+        if args.delta_dir or args.sparsity_ratio != 0:
+            raise ValueError("Apply one channel delta to an unmodified baseline load")
+        application_report = apply_channel_delta(model, args.apply_channel_delta)
+        print(json.dumps(application_report, indent=2, sort_keys=True))
+    elif args.sparsity_ratio != 0:
         print("pruning starts")
         if args.prune_method == "wanda":
-            prune_wanda(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
+            prune_wanda(
+                args,
+                model,
+                tokenizer,
+                device,
+                prune_n=prune_n,
+                prune_m=prune_m,
+                delta_bundles=delta_bundles,
+            )
         elif args.prune_method == "magnitude":
             prune_magnitude(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
         elif args.prune_method == "sparsegpt":
             prune_sparsegpt(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
         elif args.prune_method == "sink":
-            prune_sink(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
+            prune_sink(
+                args,
+                model,
+                tokenizer,
+                device,
+                prune_n=prune_n,
+                prune_m=prune_m,
+                delta_bundles=delta_bundles,
+            )
         elif args.prune_method == "sink_sgpt":
             prune_sink_sparsegpt(args, model, tokenizer, device, prune_n=prune_n, prune_m=prune_m)
         elif "ablate" in args.prune_method:
@@ -283,14 +346,35 @@ def main():
     print(f"sparsity sanity check {sparsity_ratio:.4f}")
     print("*"*30)
     ################################################################
-    print("Evaluating perplexity on wikitext-2...")
-    ppl = eval_ppl_llada(model, tokenizer, device)
-    print("-" * 50)
+    if delta_bundles is not None:
+        if sparsity_ratio != 0.75:
+            raise AssertionError(f"Expected exact 0.75 sparsity, got {sparsity_ratio}")
+        paths = save_delta_bundles(
+            delta_bundles,
+            args.delta_dir,
+            {
+                "model": args.model,
+                "method": args.prune_method,
+                "sparsity_ratio": args.sparsity_ratio,
+                "seed": args.seed,
+                "random_channel_count": args.random_channel_count,
+            },
+        )
+        print("Saved channel deltas: " + ", ".join(map(str, paths)))
+
+    if not args.skip_ppl:
+        print("Evaluating perplexity on wikitext-2...")
+        eval_ppl_llada(model, tokenizer, device)
+        print("-" * 50)
 
     if args.save_model:
         model.save_pretrained(args.save_model)
         tokenizer.save_pretrained(args.save_model)
         copy_llada_support_files(args.model, args.save_model, cache_dir=args.cache_dir)
+        if application_report is not None:
+            with open(os.path.join(args.save_model, "channel_delta_application.json"), "w") as handle:
+                json.dump(application_report, handle, indent=2, sort_keys=True)
+                handle.write("\n")
 
 if __name__ == '__main__':
     main()

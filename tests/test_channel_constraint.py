@@ -14,6 +14,8 @@ from lib.channel_constraint import (
     record_module_deltas,
     save_delta_bundles,
     select_experiment_channels,
+    validate_delta_request,
+    validate_llada_8b_module_shape,
 )
 
 
@@ -172,3 +174,52 @@ def test_delta_artifact_round_trip_applies_to_fresh_baseline(tmp_path):
     other_weight = other_variant.model.transformer.blocks[0].q_proj.weight.data
     assert not other_weight[:, 4].eq(0).any()
     assert torch.equal(other_weight[:, 0].eq(0), apply_delta_to_mask(baseline_mask, bundles[4]["modules"][module_name])[:, 0])
+
+
+def test_delta_request_accepts_only_the_causal_experiment_scope():
+    validate_delta_request(0.75, "unstructured", False, "wanda", 3848, 4096)
+    validate_delta_request(0.75, "unstructured", False, "sink", 3848, 4096)
+
+    invalid = [
+        (0.5, "unstructured", False, "wanda", 3848, 4096),
+        (0.75, "2:4", False, "wanda", 3848, 4096),
+        (0.75, "unstructured", True, "wanda", 3848, 4096),
+        (0.75, "unstructured", False, "magnitude", 3848, 4096),
+        (0.75, "unstructured", False, "wanda", 4096, 4096),
+    ]
+    for request in invalid:
+        with pytest.raises(ValueError):
+            validate_delta_request(*request)
+
+
+@pytest.mark.parametrize(
+    ("module_name", "shape"),
+    [
+        ("q_proj", (4096, 4096)),
+        ("k_proj", (4096, 4096)),
+        ("v_proj", (4096, 4096)),
+        ("attn_out", (4096, 4096)),
+        ("ff_proj", (12288, 4096)),
+        ("up_proj", (12288, 4096)),
+        ("ff_out", (4096, 12288)),
+    ],
+)
+def test_runtime_shapes_match_traced_llada_8b_architecture(module_name, shape):
+    validate_llada_8b_module_shape(module_name, shape)
+    with pytest.raises(ValueError, match="shape"):
+        validate_llada_8b_module_shape(module_name, (shape[0], shape[1] + 1))
+
+
+def test_same_constraint_logic_uses_each_methods_unchanged_scores():
+    weight = torch.arange(24, dtype=torch.float32).reshape(4, 6) + 1
+    baseline = _baseline_mask()
+    wanda = new_delta_bundles([0])
+    sink = new_delta_bundles([0])
+
+    record_module_deltas(wanda, "q_proj", weight, weight, baseline)
+    record_module_deltas(sink, "q_proj", weight, -weight, baseline)
+
+    wanda_delta = wanda[0]["modules"]["q_proj"]
+    sink_delta = sink[0]["modules"]["q_proj"]
+    assert torch.equal(wanda_delta["restore_indices"], sink_delta["restore_indices"])
+    assert not torch.equal(wanda_delta["compensation_indices"], sink_delta["compensation_indices"])

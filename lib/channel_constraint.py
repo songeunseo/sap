@@ -6,6 +6,15 @@ import torch
 
 INPUT_COLUMN_MODULES = {"q_proj", "k_proj", "v_proj", "ff_proj", "up_proj"}
 OUTPUT_ROW_MODULES = {"attn_out", "ff_out"}
+LLADA_8B_MODULE_SHAPES = {
+    "q_proj": (4096, 4096),
+    "k_proj": (4096, 4096),
+    "v_proj": (4096, 4096),
+    "attn_out": (4096, 4096),
+    "ff_proj": (12288, 4096),
+    "up_proj": (12288, 4096),
+    "ff_out": (4096, 12288),
+}
 
 
 def protected_axis(module_name: str) -> str:
@@ -15,6 +24,35 @@ def protected_axis(module_name: str) -> str:
     if leaf in OUTPUT_ROW_MODULES:
         return "row"
     raise ValueError(f"Unsupported prunable module: {module_name}")
+
+
+def validate_llada_8b_module_shape(module_name: str, shape: tuple[int, ...]) -> None:
+    leaf = module_name.rsplit(".", 1)[-1]
+    expected = LLADA_8B_MODULE_SHAPES.get(leaf)
+    if expected is None:
+        raise ValueError(f"Unsupported LLaDA-8B prunable module: {module_name}")
+    if tuple(shape) != expected:
+        raise ValueError(f"Unexpected {module_name} weight shape {tuple(shape)}; expected {expected}")
+
+
+def validate_delta_request(
+    sparsity_ratio: float,
+    sparsity_type: str,
+    use_variant: bool,
+    prune_method: str,
+    channel: int,
+    hidden_size: int,
+) -> None:
+    if sparsity_ratio != 0.75:
+        raise ValueError("Channel delta generation requires exactly 75% sparsity")
+    if sparsity_type != "unstructured":
+        raise ValueError("Channel delta generation supports only unstructured pruning")
+    if use_variant:
+        raise ValueError("Channel delta generation does not support the Wanda variant")
+    if prune_method not in {"wanda", "sink"}:
+        raise ValueError("Channel delta generation supports only Wanda or Sink-Aware")
+    if not 0 <= channel < hidden_size:
+        raise ValueError("Protected channel is outside the residual hidden size")
 
 
 def _lowest_flat_indices(score: torch.Tensor, candidates: torch.Tensor, count: int) -> torch.Tensor:

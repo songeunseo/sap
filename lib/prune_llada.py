@@ -7,6 +7,7 @@ from tqdm import tqdm
 from .sparsegpt import SparseGPT 
 from .layerwrapper import WrappedGPT
 from .data import get_loaders 
+from .channel_constraint import record_module_deltas, validate_llada_8b_module_shape
 
 from .ablate import AblateGPT 
 
@@ -126,7 +127,15 @@ def prune_magnitude(args, model, tokenizer, device=torch.device("cuda:0"), prune
 
             W[W_mask] = 0
 
-def prune_wanda(args, model, tokenizer, device=torch.device("cuda:0"), prune_n=0, prune_m=0):
+def prune_wanda(
+    args,
+    model,
+    tokenizer,
+    device=torch.device("cuda:0"),
+    prune_n=0,
+    prune_m=0,
+    delta_bundles=None,
+):
     use_cache = model.config.use_cache 
     model.config.use_cache = False 
 
@@ -200,6 +209,13 @@ def prune_wanda(args, model, tokenizer, device=torch.device("cuda:0"), prune_n=0
                     # unstructured pruning
                     indices = sort_res[1][:,:int(W_metric.shape[1]*args.sparsity_ratio)]
                     W_mask.scatter_(1, indices, True)
+
+            if delta_bundles is not None:
+                module_name = f"model.transformer.blocks.{i}.{name}"
+                validate_llada_8b_module_shape(module_name, W_metric.shape)
+                record_module_deltas(
+                    delta_bundles, module_name, subset[name].weight.data, W_metric, W_mask
+                )
 
             subset[name].weight.data[W_mask] = 0  ## set weights to zero 
 
@@ -685,7 +701,15 @@ def prune_sink_sparsegpt(args, model, tokenizer, device=torch.device("cuda:0"), 
 
 
 @torch.no_grad()
-def prune_sink(args, model, tokenizer, device=torch.device("cuda:0"), prune_n=0, prune_m=0):
+def prune_sink(
+    args,
+    model,
+    tokenizer,
+    device=torch.device("cuda:0"),
+    prune_n=0,
+    prune_m=0,
+    delta_bundles=None,
+):
 
     use_cache = model.config.use_cache
     model.config.use_cache = False
@@ -774,6 +798,9 @@ def prune_sink(args, model, tokenizer, device=torch.device("cuda:0"), prune_n=0,
             continue
         indices = torch.topk(W_metric, prune_k, dim=1, largest=False).indices
         W_mask.scatter_(1, indices, True)
+        if delta_bundles is not None:
+            validate_llada_8b_module_shape(name, W_metric.shape)
+            record_module_deltas(delta_bundles, name, W, W_metric, W_mask)
         W[W_mask] = 0
 
     torch.cuda.empty_cache()
