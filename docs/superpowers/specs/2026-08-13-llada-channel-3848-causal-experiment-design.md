@@ -166,12 +166,18 @@ Execution order:
 2. Generate one immutable Wanda 75% baseline and its channel deltas.
 3. Evaluate Wanda 75% and Wanda 75% + protect-3848 on the same 64 GSM8K
    examples.
-4. If protect-3848 produces more correct answers than baseline, run full
-   GSM8K for Dense, Wanda 75%, Wanda + protect-3848, and three independent
-   Wanda random-channel controls.
-5. Apply the identical constraint helper to one immutable Sink-Aware 75%
+4. Treat the 64-example result only as an implementation and gross-regression
+   check. Unless it exposes an invalid run or severe constraint failure, run
+   full GSM8K for the primary Wanda 75% versus Wanda + protect-3848 comparison
+   even when the small subset is tied or slightly worse. If full evaluation is
+   temporarily infeasible because of measured compute cost, evaluate the same
+   fixed 256-example subset before a go/no-go decision; the 64-example result
+   alone is never an efficacy gate.
+5. If the primary comparison shows a signal, run full GSM8K for Dense and the
+   three independent Wanda random-channel controls.
+6. Apply the identical constraint helper to one immutable Sink-Aware 75%
    baseline and evaluate Sink-Aware 75% and Sink-Aware + protect-3848.
-6. Extend to no other benchmark unless the GSM8K signal is clear.
+7. Extend to no other benchmark unless the GSM8K signal is clear.
 
 Dense and existing repository results are used as protocol sanity references;
 no 75% result is assumed from the paper where none is reported.
