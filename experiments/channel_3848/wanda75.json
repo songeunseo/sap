@@ -1,0 +1,18 @@
+{
+  "calibration_dataset": "wikitext2",
+  "model": "GSAI-ML/LLaDA-8B-Base",
+  "model_revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "nsamples": 128,
+  "protect_channel": 3848,
+  "prune_method": "wanda",
+  "random_channels": [
+    809,
+    1316,
+    295
+  ],
+  "random_channel_count": 3,
+  "seed": 0,
+  "sparsity_ratio": 0.75,
+  "sparsity_type": "unstructured",
+  "use_variant": false
+}
