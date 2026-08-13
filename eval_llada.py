@@ -244,23 +244,13 @@ class LLaDAEvalHarness(LM):
         raise NotImplementedError
 
     def generate_until(self, requests: list[Instance]):
-        def _tokenize(e):
-            return {
-                "question": self.tokenizer(e["question"])["input_ids"],
-                "question_text": e["question"],
-                "until": e["until"],
-            }
-
-        ds = [{"question": req.args[0], "until": req.args[1]['until']} for req in requests]
-        ds = Dataset.from_list(ds)
-        ds = ds.map(_tokenize)
-        ds = ds.with_format("torch")
-
         out = []
-        for elem in tqdm(ds, desc="Generating..."):
-            prompt = elem["question"].unsqueeze(0).to(self.device)
-            stop_tokens = elem["until"]
- 
+        for request in tqdm(requests, desc="Generating..."):
+            prompt = torch.tensor(
+                self.tokenizer(request.args[0])["input_ids"], device=self.device
+            ).unsqueeze(0)
+            stop_tokens = request.args[1]["until"]
+
             generated_answer = generate(self.model, prompt, steps=self.steps, gen_length=self.gen_length, block_length=self.block_length, 
                                         temperature=0, cfg_scale=self.cfg, remasking=self.remasking, mask_id=self.mask_id)
             
@@ -274,7 +264,8 @@ class LLaDAEvalHarness(LM):
             generated_answer = self.tokenizer.decode(generated_answer_ids, skip_special_tokens=True)
             out.append(generated_answer)
 
-            self.accelerator.wait_for_everyone()
+            if self.accelerator is not None:
+                self.accelerator.wait_for_everyone()
 
         return out
 
@@ -282,4 +273,3 @@ class LLaDAEvalHarness(LM):
 if __name__ == "__main__":
     set_seed(1234)
     cli_evaluate()
-    

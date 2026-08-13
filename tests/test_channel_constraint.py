@@ -5,6 +5,7 @@ import pytest
 import torch
 from torch import nn
 
+import eval_llada
 from activation_diagnostic import collect_channel_activations
 from lib.channel_constraint import (
     apply_channel_delta,
@@ -252,3 +253,42 @@ def test_activation_diagnostic_measures_post_block_channel_and_removes_hooks():
 
     assert stats == {0: 2.0, 15: 17.0, 31: 33.0}
     assert all(not block._forward_hooks for block in model.model.transformer.blocks)
+
+
+class _Request:
+    args = ("question", {"until": ["STOP"]})
+
+
+class _Tokenizer:
+    def __call__(self, text):
+        return {"input_ids": [1, 2] if text == "question" else [3]}
+
+    def decode(self, ids, skip_special_tokens=False):
+        return "answer STOP trailing" if not skip_special_tokens else "answer"
+
+
+def test_gsm8k_generation_does_not_serialize_model_or_require_accelerator(monkeypatch):
+    harness = object.__new__(eval_llada.LLaDAEvalHarness)
+    harness.tokenizer = _Tokenizer()
+    harness.device = torch.device("cpu")
+    harness.model = object()
+    harness.steps = 1024
+    harness.gen_length = 1024
+    harness.block_length = 1024
+    harness.cfg = 0.0
+    harness.remasking = "low_confidence"
+    harness.mask_id = 126336
+    harness.accelerator = None
+
+    monkeypatch.setattr(
+        eval_llada,
+        "generate",
+        lambda _model, prompt, **_: torch.cat((prompt, torch.tensor([[3]])), dim=1),
+    )
+    monkeypatch.setattr(
+        eval_llada.Dataset,
+        "from_list",
+        lambda _: (_ for _ in ()).throw(AssertionError("must not fingerprint the loaded model")),
+    )
+
+    assert harness.generate_until([_Request()]) == ["answer"]
