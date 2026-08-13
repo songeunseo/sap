@@ -216,5 +216,6 @@ __marimo__/
 
 pruned_weights/
 results/
+llm_weights/
 run_llada.sh
 run_dream.sh

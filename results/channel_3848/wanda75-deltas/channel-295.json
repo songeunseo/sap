@@ -1,0 +1,4279 @@
+{
+  "actual_global_sparsity": 0.75,
+  "baseline_total_pruned_weights": 5234491392,
+  "channel": 295,
+  "compensation_pruned": 1241250,
+  "mask_difference_count": 2482500,
+  "mask_difference_fraction": 0.00035569358330506546,
+  "method": "wanda",
+  "model": "GSAI-ML/LLaDA-8B-Base",
+  "module_wise": {
+    "model.transformer.blocks.0.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.0.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.0.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11438,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22876,
+      "mask_difference_fraction": 0.00045450528462727863,
+      "protected_already_survived_fraction": 0.06917317708333333,
+      "protected_already_survived_in_baseline": 850,
+      "protected_restored": 11438,
+      "protected_restored_fraction": 0.9308268229166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.0.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3281,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6562,
+      "mask_difference_fraction": 0.0003911256790161133,
+      "protected_already_survived_fraction": 0.198974609375,
+      "protected_already_survived_in_baseline": 815,
+      "protected_restored": 3281,
+      "protected_restored_fraction": 0.801025390625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.0.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3224,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6448,
+      "mask_difference_fraction": 0.00038433074951171875,
+      "protected_already_survived_fraction": 0.212890625,
+      "protected_already_survived_in_baseline": 872,
+      "protected_restored": 3224,
+      "protected_restored_fraction": 0.787109375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.0.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11468,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22936,
+      "mask_difference_fraction": 0.00045569737752278644,
+      "protected_already_survived_fraction": 0.06673177083333333,
+      "protected_already_survived_in_baseline": 820,
+      "protected_restored": 11468,
+      "protected_restored_fraction": 0.9332682291666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.0.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3186,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6372,
+      "mask_difference_fraction": 0.00037980079650878906,
+      "protected_already_survived_fraction": 0.22216796875,
+      "protected_already_survived_in_baseline": 910,
+      "protected_restored": 3186,
+      "protected_restored_fraction": 0.77783203125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.1.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.1.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.1.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10727,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21454,
+      "mask_difference_fraction": 0.00042625268300374347,
+      "protected_already_survived_fraction": 0.12703450520833334,
+      "protected_already_survived_in_baseline": 1561,
+      "protected_restored": 10727,
+      "protected_restored_fraction": 0.8729654947916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.1.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 898,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1796,
+      "mask_difference_fraction": 0.00010704994201660156,
+      "protected_already_survived_fraction": 0.78076171875,
+      "protected_already_survived_in_baseline": 3198,
+      "protected_restored": 898,
+      "protected_restored_fraction": 0.21923828125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.1.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1013,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2026,
+      "mask_difference_fraction": 0.0001207590103149414,
+      "protected_already_survived_fraction": 0.752685546875,
+      "protected_already_survived_in_baseline": 3083,
+      "protected_restored": 1013,
+      "protected_restored_fraction": 0.247314453125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.1.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10685,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21370,
+      "mask_difference_fraction": 0.00042458375295003253,
+      "protected_already_survived_fraction": 0.13045247395833334,
+      "protected_already_survived_in_baseline": 1603,
+      "protected_restored": 10685,
+      "protected_restored_fraction": 0.8695475260416666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.1.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1133,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2266,
+      "mask_difference_fraction": 0.00013506412506103516,
+      "protected_already_survived_fraction": 0.723388671875,
+      "protected_already_survived_in_baseline": 2963,
+      "protected_restored": 1133,
+      "protected_restored_fraction": 0.276611328125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.10.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.10.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.10.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9775,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19550,
+      "mask_difference_fraction": 0.0003884236017862956,
+      "protected_already_survived_fraction": 0.20450846354166666,
+      "protected_already_survived_in_baseline": 2513,
+      "protected_restored": 9775,
+      "protected_restored_fraction": 0.7954915364583334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.10.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1752,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3504,
+      "mask_difference_fraction": 0.00020885467529296875,
+      "protected_already_survived_fraction": 0.572265625,
+      "protected_already_survived_in_baseline": 2344,
+      "protected_restored": 1752,
+      "protected_restored_fraction": 0.427734375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.10.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1698,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3396,
+      "mask_difference_fraction": 0.00020241737365722656,
+      "protected_already_survived_fraction": 0.58544921875,
+      "protected_already_survived_in_baseline": 2398,
+      "protected_restored": 1698,
+      "protected_restored_fraction": 0.41455078125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.10.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9791,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19582,
+      "mask_difference_fraction": 0.0003890593846638997,
+      "protected_already_survived_fraction": 0.20320638020833334,
+      "protected_already_survived_in_baseline": 2497,
+      "protected_restored": 9791,
+      "protected_restored_fraction": 0.7967936197916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.10.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1746,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3492,
+      "mask_difference_fraction": 0.00020813941955566406,
+      "protected_already_survived_fraction": 0.57373046875,
+      "protected_already_survived_in_baseline": 2350,
+      "protected_restored": 1746,
+      "protected_restored_fraction": 0.42626953125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.11.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.11.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.11.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9885,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19770,
+      "mask_difference_fraction": 0.0003927946090698242,
+      "protected_already_survived_fraction": 0.195556640625,
+      "protected_already_survived_in_baseline": 2403,
+      "protected_restored": 9885,
+      "protected_restored_fraction": 0.804443359375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.11.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1977,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3954,
+      "mask_difference_fraction": 0.00023567676544189453,
+      "protected_already_survived_fraction": 0.517333984375,
+      "protected_already_survived_in_baseline": 2119,
+      "protected_restored": 1977,
+      "protected_restored_fraction": 0.482666015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.11.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1942,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3884,
+      "mask_difference_fraction": 0.0002315044403076172,
+      "protected_already_survived_fraction": 0.52587890625,
+      "protected_already_survived_in_baseline": 2154,
+      "protected_restored": 1942,
+      "protected_restored_fraction": 0.47412109375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.11.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9750,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19500,
+      "mask_difference_fraction": 0.00038743019104003906,
+      "protected_already_survived_fraction": 0.20654296875,
+      "protected_already_survived_in_baseline": 2538,
+      "protected_restored": 9750,
+      "protected_restored_fraction": 0.79345703125,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.11.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2078,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4156,
+      "mask_difference_fraction": 0.00024771690368652344,
+      "protected_already_survived_fraction": 0.49267578125,
+      "protected_already_survived_in_baseline": 2018,
+      "protected_restored": 2078,
+      "protected_restored_fraction": 0.50732421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.12.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.12.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.12.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9916,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19832,
+      "mask_difference_fraction": 0.0003940264383951823,
+      "protected_already_survived_fraction": 0.19303385416666666,
+      "protected_already_survived_in_baseline": 2372,
+      "protected_restored": 9916,
+      "protected_restored_fraction": 0.8069661458333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.12.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2315,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4630,
+      "mask_difference_fraction": 0.0002759695053100586,
+      "protected_already_survived_fraction": 0.434814453125,
+      "protected_already_survived_in_baseline": 1781,
+      "protected_restored": 2315,
+      "protected_restored_fraction": 0.565185546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.12.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2309,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4618,
+      "mask_difference_fraction": 0.0002752542495727539,
+      "protected_already_survived_fraction": 0.436279296875,
+      "protected_already_survived_in_baseline": 1787,
+      "protected_restored": 2309,
+      "protected_restored_fraction": 0.563720703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.12.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9929,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19858,
+      "mask_difference_fraction": 0.00039454301198323566,
+      "protected_already_survived_fraction": 0.19197591145833334,
+      "protected_already_survived_in_baseline": 2359,
+      "protected_restored": 9929,
+      "protected_restored_fraction": 0.8080240885416666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.12.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2409,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4818,
+      "mask_difference_fraction": 0.00028717517852783203,
+      "protected_already_survived_fraction": 0.411865234375,
+      "protected_already_survived_in_baseline": 1687,
+      "protected_restored": 2409,
+      "protected_restored_fraction": 0.588134765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.13.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.13.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.13.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10325,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20650,
+      "mask_difference_fraction": 0.0004102786382039388,
+      "protected_already_survived_fraction": 0.15974934895833334,
+      "protected_already_survived_in_baseline": 1963,
+      "protected_restored": 10325,
+      "protected_restored_fraction": 0.8402506510416666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.13.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2564,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5128,
+      "mask_difference_fraction": 0.0003056526184082031,
+      "protected_already_survived_fraction": 0.3740234375,
+      "protected_already_survived_in_baseline": 1532,
+      "protected_restored": 2564,
+      "protected_restored_fraction": 0.6259765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.13.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2528,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5056,
+      "mask_difference_fraction": 0.000301361083984375,
+      "protected_already_survived_fraction": 0.3828125,
+      "protected_already_survived_in_baseline": 1568,
+      "protected_restored": 2528,
+      "protected_restored_fraction": 0.6171875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.13.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10241,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20482,
+      "mask_difference_fraction": 0.0004069407780965169,
+      "protected_already_survived_fraction": 0.16658528645833334,
+      "protected_already_survived_in_baseline": 2047,
+      "protected_restored": 10241,
+      "protected_restored_fraction": 0.8334147135416666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.13.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2592,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5184,
+      "mask_difference_fraction": 0.000308990478515625,
+      "protected_already_survived_fraction": 0.3671875,
+      "protected_already_survived_in_baseline": 1504,
+      "protected_restored": 2592,
+      "protected_restored_fraction": 0.6328125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.14.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.14.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.14.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9008,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18016,
+      "mask_difference_fraction": 0.0003579457600911458,
+      "protected_already_survived_fraction": 0.2669270833333333,
+      "protected_already_survived_in_baseline": 3280,
+      "protected_restored": 9008,
+      "protected_restored_fraction": 0.7330729166666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.14.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2563,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5126,
+      "mask_difference_fraction": 0.00030553340911865234,
+      "protected_already_survived_fraction": 0.374267578125,
+      "protected_already_survived_in_baseline": 1533,
+      "protected_restored": 2563,
+      "protected_restored_fraction": 0.625732421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.14.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2548,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5096,
+      "mask_difference_fraction": 0.0003037452697753906,
+      "protected_already_survived_fraction": 0.3779296875,
+      "protected_already_survived_in_baseline": 1548,
+      "protected_restored": 2548,
+      "protected_restored_fraction": 0.6220703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.14.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9102,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18204,
+      "mask_difference_fraction": 0.0003616809844970703,
+      "protected_already_survived_fraction": 0.25927734375,
+      "protected_already_survived_in_baseline": 3186,
+      "protected_restored": 9102,
+      "protected_restored_fraction": 0.74072265625,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.14.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2597,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5194,
+      "mask_difference_fraction": 0.0003095865249633789,
+      "protected_already_survived_fraction": 0.365966796875,
+      "protected_already_survived_in_baseline": 1499,
+      "protected_restored": 2597,
+      "protected_restored_fraction": 0.634033203125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.15.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.15.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.15.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9812,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19624,
+      "mask_difference_fraction": 0.0003898938496907552,
+      "protected_already_survived_fraction": 0.20149739583333334,
+      "protected_already_survived_in_baseline": 2476,
+      "protected_restored": 9812,
+      "protected_restored_fraction": 0.7985026041666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.15.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2537,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5074,
+      "mask_difference_fraction": 0.00030243396759033203,
+      "protected_already_survived_fraction": 0.380615234375,
+      "protected_already_survived_in_baseline": 1559,
+      "protected_restored": 2537,
+      "protected_restored_fraction": 0.619384765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.15.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2460,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4920,
+      "mask_difference_fraction": 0.0002932548522949219,
+      "protected_already_survived_fraction": 0.3994140625,
+      "protected_already_survived_in_baseline": 1636,
+      "protected_restored": 2460,
+      "protected_restored_fraction": 0.6005859375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.15.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9851,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19702,
+      "mask_difference_fraction": 0.00039144357045491535,
+      "protected_already_survived_fraction": 0.19832356770833334,
+      "protected_already_survived_in_baseline": 2437,
+      "protected_restored": 9851,
+      "protected_restored_fraction": 0.8016764322916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.15.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2577,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5154,
+      "mask_difference_fraction": 0.0003072023391723633,
+      "protected_already_survived_fraction": 0.370849609375,
+      "protected_already_survived_in_baseline": 1519,
+      "protected_restored": 2577,
+      "protected_restored_fraction": 0.629150390625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.16.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.16.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.16.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9354,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18708,
+      "mask_difference_fraction": 0.00037169456481933594,
+      "protected_already_survived_fraction": 0.23876953125,
+      "protected_already_survived_in_baseline": 2934,
+      "protected_restored": 9354,
+      "protected_restored_fraction": 0.76123046875,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.16.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2606,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5212,
+      "mask_difference_fraction": 0.00031065940856933594,
+      "protected_already_survived_fraction": 0.36376953125,
+      "protected_already_survived_in_baseline": 1490,
+      "protected_restored": 2606,
+      "protected_restored_fraction": 0.63623046875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.16.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2535,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5070,
+      "mask_difference_fraction": 0.00030219554901123047,
+      "protected_already_survived_fraction": 0.381103515625,
+      "protected_already_survived_in_baseline": 1561,
+      "protected_restored": 2535,
+      "protected_restored_fraction": 0.618896484375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.16.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9418,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18836,
+      "mask_difference_fraction": 0.0003742376963297526,
+      "protected_already_survived_fraction": 0.23356119791666666,
+      "protected_already_survived_in_baseline": 2870,
+      "protected_restored": 9418,
+      "protected_restored_fraction": 0.7664388020833334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.16.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2619,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5238,
+      "mask_difference_fraction": 0.0003122091293334961,
+      "protected_already_survived_fraction": 0.360595703125,
+      "protected_already_survived_in_baseline": 1477,
+      "protected_restored": 2619,
+      "protected_restored_fraction": 0.639404296875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.17.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.17.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.17.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9724,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19448,
+      "mask_difference_fraction": 0.0003863970438639323,
+      "protected_already_survived_fraction": 0.20865885416666666,
+      "protected_already_survived_in_baseline": 2564,
+      "protected_restored": 9724,
+      "protected_restored_fraction": 0.7913411458333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.17.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2414,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4828,
+      "mask_difference_fraction": 0.00028777122497558594,
+      "protected_already_survived_fraction": 0.41064453125,
+      "protected_already_survived_in_baseline": 1682,
+      "protected_restored": 2414,
+      "protected_restored_fraction": 0.58935546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.17.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2463,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 4926,
+      "mask_difference_fraction": 0.0002936124801635742,
+      "protected_already_survived_fraction": 0.398681640625,
+      "protected_already_survived_in_baseline": 1633,
+      "protected_restored": 2463,
+      "protected_restored_fraction": 0.601318359375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.17.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9782,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19564,
+      "mask_difference_fraction": 0.0003887017567952474,
+      "protected_already_survived_fraction": 0.20393880208333334,
+      "protected_already_survived_in_baseline": 2506,
+      "protected_restored": 9782,
+      "protected_restored_fraction": 0.7960611979166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.17.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2521,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5042,
+      "mask_difference_fraction": 0.00030052661895751953,
+      "protected_already_survived_fraction": 0.384521484375,
+      "protected_already_survived_in_baseline": 1575,
+      "protected_restored": 2521,
+      "protected_restored_fraction": 0.615478515625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.18.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.18.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.18.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9596,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19192,
+      "mask_difference_fraction": 0.00038131078084309894,
+      "protected_already_survived_fraction": 0.21907552083333334,
+      "protected_already_survived_in_baseline": 2692,
+      "protected_restored": 9596,
+      "protected_restored_fraction": 0.7809244791666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.18.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3077,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6154,
+      "mask_difference_fraction": 0.0003668069839477539,
+      "protected_already_survived_fraction": 0.248779296875,
+      "protected_already_survived_in_baseline": 1019,
+      "protected_restored": 3077,
+      "protected_restored_fraction": 0.751220703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.18.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2970,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5940,
+      "mask_difference_fraction": 0.0003540515899658203,
+      "protected_already_survived_fraction": 0.27490234375,
+      "protected_already_survived_in_baseline": 1126,
+      "protected_restored": 2970,
+      "protected_restored_fraction": 0.72509765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.18.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9683,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19366,
+      "mask_difference_fraction": 0.0003847678502400716,
+      "protected_already_survived_fraction": 0.21199544270833334,
+      "protected_already_survived_in_baseline": 2605,
+      "protected_restored": 9683,
+      "protected_restored_fraction": 0.7880045572916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.18.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3064,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6128,
+      "mask_difference_fraction": 0.00036525726318359375,
+      "protected_already_survived_fraction": 0.251953125,
+      "protected_already_survived_in_baseline": 1032,
+      "protected_restored": 3064,
+      "protected_restored_fraction": 0.748046875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.19.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.19.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.19.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10539,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21078,
+      "mask_difference_fraction": 0.00041878223419189453,
+      "protected_already_survived_fraction": 0.142333984375,
+      "protected_already_survived_in_baseline": 1749,
+      "protected_restored": 10539,
+      "protected_restored_fraction": 0.857666015625,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.19.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3104,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6208,
+      "mask_difference_fraction": 0.000370025634765625,
+      "protected_already_survived_fraction": 0.2421875,
+      "protected_already_survived_in_baseline": 992,
+      "protected_restored": 3104,
+      "protected_restored_fraction": 0.7578125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.19.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3079,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6158,
+      "mask_difference_fraction": 0.00036704540252685547,
+      "protected_already_survived_fraction": 0.248291015625,
+      "protected_already_survived_in_baseline": 1017,
+      "protected_restored": 3079,
+      "protected_restored_fraction": 0.751708984375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.19.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10444,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20888,
+      "mask_difference_fraction": 0.0004150072733561198,
+      "protected_already_survived_fraction": 0.15006510416666666,
+      "protected_already_survived_in_baseline": 1844,
+      "protected_restored": 10444,
+      "protected_restored_fraction": 0.8499348958333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.19.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3185,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6370,
+      "mask_difference_fraction": 0.0003796815872192383,
+      "protected_already_survived_fraction": 0.222412109375,
+      "protected_already_survived_in_baseline": 911,
+      "protected_restored": 3185,
+      "protected_restored_fraction": 0.777587890625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.2.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.2.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.2.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10799,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21598,
+      "mask_difference_fraction": 0.0004291137059529622,
+      "protected_already_survived_fraction": 0.12117513020833333,
+      "protected_already_survived_in_baseline": 1489,
+      "protected_restored": 10799,
+      "protected_restored_fraction": 0.8788248697916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.2.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 552,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1104,
+      "mask_difference_fraction": 6.580352783203125e-05,
+      "protected_already_survived_fraction": 0.865234375,
+      "protected_already_survived_in_baseline": 3544,
+      "protected_restored": 552,
+      "protected_restored_fraction": 0.134765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.2.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 550,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1100,
+      "mask_difference_fraction": 6.556510925292969e-05,
+      "protected_already_survived_fraction": 0.86572265625,
+      "protected_already_survived_in_baseline": 3546,
+      "protected_restored": 550,
+      "protected_restored_fraction": 0.13427734375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.2.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10768,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21536,
+      "mask_difference_fraction": 0.0004278818766276042,
+      "protected_already_survived_fraction": 0.12369791666666667,
+      "protected_already_survived_in_baseline": 1520,
+      "protected_restored": 10768,
+      "protected_restored_fraction": 0.8763020833333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.2.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 867,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1734,
+      "mask_difference_fraction": 0.00010335445404052734,
+      "protected_already_survived_fraction": 0.788330078125,
+      "protected_already_survived_in_baseline": 3229,
+      "protected_restored": 867,
+      "protected_restored_fraction": 0.211669921875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.20.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.20.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.20.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9560,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19120,
+      "mask_difference_fraction": 0.00037988026936848957,
+      "protected_already_survived_fraction": 0.22200520833333334,
+      "protected_already_survived_in_baseline": 2728,
+      "protected_restored": 9560,
+      "protected_restored_fraction": 0.7779947916666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.20.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3205,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6410,
+      "mask_difference_fraction": 0.0003820657730102539,
+      "protected_already_survived_fraction": 0.217529296875,
+      "protected_already_survived_in_baseline": 891,
+      "protected_restored": 3205,
+      "protected_restored_fraction": 0.782470703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.20.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3145,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6290,
+      "mask_difference_fraction": 0.00037491321563720703,
+      "protected_already_survived_fraction": 0.232177734375,
+      "protected_already_survived_in_baseline": 951,
+      "protected_restored": 3145,
+      "protected_restored_fraction": 0.767822265625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.20.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9453,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18906,
+      "mask_difference_fraction": 0.0003756284713745117,
+      "protected_already_survived_fraction": 0.230712890625,
+      "protected_already_survived_in_baseline": 2835,
+      "protected_restored": 9453,
+      "protected_restored_fraction": 0.769287109375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.20.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3240,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6480,
+      "mask_difference_fraction": 0.00038623809814453125,
+      "protected_already_survived_fraction": 0.208984375,
+      "protected_already_survived_in_baseline": 856,
+      "protected_restored": 3240,
+      "protected_restored_fraction": 0.791015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.21.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.21.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.21.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9107,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18214,
+      "mask_difference_fraction": 0.0003618796666463216,
+      "protected_already_survived_fraction": 0.2588704427083333,
+      "protected_already_survived_in_baseline": 3181,
+      "protected_restored": 9107,
+      "protected_restored_fraction": 0.7411295572916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.21.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2695,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5390,
+      "mask_difference_fraction": 0.00032126903533935547,
+      "protected_already_survived_fraction": 0.342041015625,
+      "protected_already_survived_in_baseline": 1401,
+      "protected_restored": 2695,
+      "protected_restored_fraction": 0.657958984375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.21.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2652,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5304,
+      "mask_difference_fraction": 0.0003161430358886719,
+      "protected_already_survived_fraction": 0.3525390625,
+      "protected_already_survived_in_baseline": 1444,
+      "protected_restored": 2652,
+      "protected_restored_fraction": 0.6474609375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.21.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9286,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18572,
+      "mask_difference_fraction": 0.00036899248758951825,
+      "protected_already_survived_fraction": 0.24430338541666666,
+      "protected_already_survived_in_baseline": 3002,
+      "protected_restored": 9286,
+      "protected_restored_fraction": 0.7556966145833334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.21.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2793,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5586,
+      "mask_difference_fraction": 0.00033295154571533203,
+      "protected_already_survived_fraction": 0.318115234375,
+      "protected_already_survived_in_baseline": 1303,
+      "protected_restored": 2793,
+      "protected_restored_fraction": 0.681884765625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.22.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.22.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.22.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8608,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17216,
+      "mask_difference_fraction": 0.0003420511881510417,
+      "protected_already_survived_fraction": 0.2994791666666667,
+      "protected_already_survived_in_baseline": 3680,
+      "protected_restored": 8608,
+      "protected_restored_fraction": 0.7005208333333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.22.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2707,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5414,
+      "mask_difference_fraction": 0.00032269954681396484,
+      "protected_already_survived_fraction": 0.339111328125,
+      "protected_already_survived_in_baseline": 1389,
+      "protected_restored": 2707,
+      "protected_restored_fraction": 0.660888671875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.22.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2736,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5472,
+      "mask_difference_fraction": 0.0003261566162109375,
+      "protected_already_survived_fraction": 0.33203125,
+      "protected_already_survived_in_baseline": 1360,
+      "protected_restored": 2736,
+      "protected_restored_fraction": 0.66796875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.22.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8697,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17394,
+      "mask_difference_fraction": 0.00034558773040771484,
+      "protected_already_survived_fraction": 0.292236328125,
+      "protected_already_survived_in_baseline": 3591,
+      "protected_restored": 8697,
+      "protected_restored_fraction": 0.707763671875,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.22.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2776,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5552,
+      "mask_difference_fraction": 0.00033092498779296875,
+      "protected_already_survived_fraction": 0.322265625,
+      "protected_already_survived_in_baseline": 1320,
+      "protected_restored": 2776,
+      "protected_restored_fraction": 0.677734375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.23.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.23.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.23.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9350,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18700,
+      "mask_difference_fraction": 0.0003715356190999349,
+      "protected_already_survived_fraction": 0.23909505208333334,
+      "protected_already_survived_in_baseline": 2938,
+      "protected_restored": 9350,
+      "protected_restored_fraction": 0.7609049479166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.23.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2752,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5504,
+      "mask_difference_fraction": 0.00032806396484375,
+      "protected_already_survived_fraction": 0.328125,
+      "protected_already_survived_in_baseline": 1344,
+      "protected_restored": 2752,
+      "protected_restored_fraction": 0.671875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.23.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2813,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5626,
+      "mask_difference_fraction": 0.00033533573150634766,
+      "protected_already_survived_fraction": 0.313232421875,
+      "protected_already_survived_in_baseline": 1283,
+      "protected_restored": 2813,
+      "protected_restored_fraction": 0.686767578125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.23.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9383,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18766,
+      "mask_difference_fraction": 0.00037284692128499347,
+      "protected_already_survived_fraction": 0.23640950520833334,
+      "protected_already_survived_in_baseline": 2905,
+      "protected_restored": 9383,
+      "protected_restored_fraction": 0.7635904947916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.23.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2850,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5700,
+      "mask_difference_fraction": 0.00033974647521972656,
+      "protected_already_survived_fraction": 0.30419921875,
+      "protected_already_survived_in_baseline": 1246,
+      "protected_restored": 2850,
+      "protected_restored_fraction": 0.69580078125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.24.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.24.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.24.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8887,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17774,
+      "mask_difference_fraction": 0.00035313765207926434,
+      "protected_already_survived_fraction": 0.2767740885416667,
+      "protected_already_survived_in_baseline": 3401,
+      "protected_restored": 8887,
+      "protected_restored_fraction": 0.7232259114583334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.24.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2838,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5676,
+      "mask_difference_fraction": 0.0003383159637451172,
+      "protected_already_survived_fraction": 0.30712890625,
+      "protected_already_survived_in_baseline": 1258,
+      "protected_restored": 2838,
+      "protected_restored_fraction": 0.69287109375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.24.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2889,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5778,
+      "mask_difference_fraction": 0.00034439563751220703,
+      "protected_already_survived_fraction": 0.294677734375,
+      "protected_already_survived_in_baseline": 1207,
+      "protected_restored": 2889,
+      "protected_restored_fraction": 0.705322265625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.24.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8918,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17836,
+      "mask_difference_fraction": 0.0003543694814046224,
+      "protected_already_survived_fraction": 0.2742513020833333,
+      "protected_already_survived_in_baseline": 3370,
+      "protected_restored": 8918,
+      "protected_restored_fraction": 0.7257486979166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.24.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2957,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5914,
+      "mask_difference_fraction": 0.00035250186920166016,
+      "protected_already_survived_fraction": 0.278076171875,
+      "protected_already_survived_in_baseline": 1139,
+      "protected_restored": 2957,
+      "protected_restored_fraction": 0.721923828125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.25.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.25.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.25.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8167,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 16334,
+      "mask_difference_fraction": 0.00032452742258707684,
+      "protected_already_survived_fraction": 0.3353678385416667,
+      "protected_already_survived_in_baseline": 4121,
+      "protected_restored": 8167,
+      "protected_restored_fraction": 0.6646321614583334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.25.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2524,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5048,
+      "mask_difference_fraction": 0.0003008842468261719,
+      "protected_already_survived_fraction": 0.3837890625,
+      "protected_already_survived_in_baseline": 1572,
+      "protected_restored": 2524,
+      "protected_restored_fraction": 0.6162109375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.25.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2610,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5220,
+      "mask_difference_fraction": 0.00031113624572753906,
+      "protected_already_survived_fraction": 0.36279296875,
+      "protected_already_survived_in_baseline": 1486,
+      "protected_restored": 2610,
+      "protected_restored_fraction": 0.63720703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.25.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8207,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 16414,
+      "mask_difference_fraction": 0.0003261168797810872,
+      "protected_already_survived_fraction": 0.3321126302083333,
+      "protected_already_survived_in_baseline": 4081,
+      "protected_restored": 8207,
+      "protected_restored_fraction": 0.6678873697916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.25.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2575,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5150,
+      "mask_difference_fraction": 0.0003069639205932617,
+      "protected_already_survived_fraction": 0.371337890625,
+      "protected_already_survived_in_baseline": 1521,
+      "protected_restored": 2575,
+      "protected_restored_fraction": 0.628662109375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.26.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.26.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.26.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9382,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18764,
+      "mask_difference_fraction": 0.00037280718485514325,
+      "protected_already_survived_fraction": 0.23649088541666666,
+      "protected_already_survived_in_baseline": 2906,
+      "protected_restored": 9382,
+      "protected_restored_fraction": 0.7635091145833334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.26.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2686,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5372,
+      "mask_difference_fraction": 0.00032019615173339844,
+      "protected_already_survived_fraction": 0.34423828125,
+      "protected_already_survived_in_baseline": 1410,
+      "protected_restored": 2686,
+      "protected_restored_fraction": 0.65576171875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.26.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2701,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5402,
+      "mask_difference_fraction": 0.00032198429107666016,
+      "protected_already_survived_fraction": 0.340576171875,
+      "protected_already_survived_in_baseline": 1395,
+      "protected_restored": 2701,
+      "protected_restored_fraction": 0.659423828125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.26.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9354,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18708,
+      "mask_difference_fraction": 0.00037169456481933594,
+      "protected_already_survived_fraction": 0.23876953125,
+      "protected_already_survived_in_baseline": 2934,
+      "protected_restored": 9354,
+      "protected_restored_fraction": 0.76123046875,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.26.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2667,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5334,
+      "mask_difference_fraction": 0.0003179311752319336,
+      "protected_already_survived_fraction": 0.348876953125,
+      "protected_already_survived_in_baseline": 1429,
+      "protected_restored": 2667,
+      "protected_restored_fraction": 0.651123046875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.27.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.27.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.27.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9938,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19876,
+      "mask_difference_fraction": 0.000394900639851888,
+      "protected_already_survived_fraction": 0.19124348958333334,
+      "protected_already_survived_in_baseline": 2350,
+      "protected_restored": 9938,
+      "protected_restored_fraction": 0.8087565104166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.27.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3082,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6164,
+      "mask_difference_fraction": 0.0003674030303955078,
+      "protected_already_survived_fraction": 0.24755859375,
+      "protected_already_survived_in_baseline": 1014,
+      "protected_restored": 3082,
+      "protected_restored_fraction": 0.75244140625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.27.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3081,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6162,
+      "mask_difference_fraction": 0.00036728382110595703,
+      "protected_already_survived_fraction": 0.247802734375,
+      "protected_already_survived_in_baseline": 1015,
+      "protected_restored": 3081,
+      "protected_restored_fraction": 0.752197265625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.27.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9856,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19712,
+      "mask_difference_fraction": 0.0003916422526041667,
+      "protected_already_survived_fraction": 0.19791666666666666,
+      "protected_already_survived_in_baseline": 2432,
+      "protected_restored": 9856,
+      "protected_restored_fraction": 0.8020833333333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.27.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3056,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6112,
+      "mask_difference_fraction": 0.0003643035888671875,
+      "protected_already_survived_fraction": 0.25390625,
+      "protected_already_survived_in_baseline": 1040,
+      "protected_restored": 3056,
+      "protected_restored_fraction": 0.74609375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.28.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.28.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.28.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8308,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 16616,
+      "mask_difference_fraction": 0.00033013025919596356,
+      "protected_already_survived_fraction": 0.3238932291666667,
+      "protected_already_survived_in_baseline": 3980,
+      "protected_restored": 8308,
+      "protected_restored_fraction": 0.6761067708333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.28.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2960,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5920,
+      "mask_difference_fraction": 0.0003528594970703125,
+      "protected_already_survived_fraction": 0.27734375,
+      "protected_already_survived_in_baseline": 1136,
+      "protected_restored": 2960,
+      "protected_restored_fraction": 0.72265625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.28.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3002,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6004,
+      "mask_difference_fraction": 0.0003578662872314453,
+      "protected_already_survived_fraction": 0.26708984375,
+      "protected_already_survived_in_baseline": 1094,
+      "protected_restored": 3002,
+      "protected_restored_fraction": 0.73291015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.28.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8208,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 16416,
+      "mask_difference_fraction": 0.0003261566162109375,
+      "protected_already_survived_fraction": 0.33203125,
+      "protected_already_survived_in_baseline": 4080,
+      "protected_restored": 8208,
+      "protected_restored_fraction": 0.66796875,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.28.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2937,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5874,
+      "mask_difference_fraction": 0.00035011768341064453,
+      "protected_already_survived_fraction": 0.282958984375,
+      "protected_already_survived_in_baseline": 1159,
+      "protected_restored": 2937,
+      "protected_restored_fraction": 0.717041015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.29.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.29.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.29.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8857,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17714,
+      "mask_difference_fraction": 0.00035194555918375653,
+      "protected_already_survived_fraction": 0.2792154947916667,
+      "protected_already_survived_in_baseline": 3431,
+      "protected_restored": 8857,
+      "protected_restored_fraction": 0.7207845052083334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.29.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2681,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5362,
+      "mask_difference_fraction": 0.00031960010528564453,
+      "protected_already_survived_fraction": 0.345458984375,
+      "protected_already_survived_in_baseline": 1415,
+      "protected_restored": 2681,
+      "protected_restored_fraction": 0.654541015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.29.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2672,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5344,
+      "mask_difference_fraction": 0.0003185272216796875,
+      "protected_already_survived_fraction": 0.34765625,
+      "protected_already_survived_in_baseline": 1424,
+      "protected_restored": 2672,
+      "protected_restored_fraction": 0.65234375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.29.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 8817,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 17634,
+      "mask_difference_fraction": 0.0003503561019897461,
+      "protected_already_survived_fraction": 0.282470703125,
+      "protected_already_survived_in_baseline": 3471,
+      "protected_restored": 8817,
+      "protected_restored_fraction": 0.717529296875,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.29.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2579,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5158,
+      "mask_difference_fraction": 0.00030744075775146484,
+      "protected_already_survived_fraction": 0.370361328125,
+      "protected_already_survived_in_baseline": 1517,
+      "protected_restored": 2579,
+      "protected_restored_fraction": 0.629638671875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.3.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.3.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.3.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11282,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22564,
+      "mask_difference_fraction": 0.000448306401570638,
+      "protected_already_survived_fraction": 0.08186848958333333,
+      "protected_already_survived_in_baseline": 1006,
+      "protected_restored": 11282,
+      "protected_restored_fraction": 0.9181315104166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.3.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1006,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2012,
+      "mask_difference_fraction": 0.00011992454528808594,
+      "protected_already_survived_fraction": 0.75439453125,
+      "protected_already_survived_in_baseline": 3090,
+      "protected_restored": 1006,
+      "protected_restored_fraction": 0.24560546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.3.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 942,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1884,
+      "mask_difference_fraction": 0.00011229515075683594,
+      "protected_already_survived_fraction": 0.77001953125,
+      "protected_already_survived_in_baseline": 3154,
+      "protected_restored": 942,
+      "protected_restored_fraction": 0.22998046875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.3.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11209,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22418,
+      "mask_difference_fraction": 0.00044540564219156903,
+      "protected_already_survived_fraction": 0.08780924479166667,
+      "protected_already_survived_in_baseline": 1079,
+      "protected_restored": 11209,
+      "protected_restored_fraction": 0.9121907552083334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.3.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1125,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2250,
+      "mask_difference_fraction": 0.0001341104507446289,
+      "protected_already_survived_fraction": 0.725341796875,
+      "protected_already_survived_in_baseline": 2971,
+      "protected_restored": 1125,
+      "protected_restored_fraction": 0.274658203125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.30.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.30.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.30.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9178,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18356,
+      "mask_difference_fraction": 0.0003647009531656901,
+      "protected_already_survived_fraction": 0.2530924479166667,
+      "protected_already_survived_in_baseline": 3110,
+      "protected_restored": 9178,
+      "protected_restored_fraction": 0.7469075520833334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.30.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2761,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5522,
+      "mask_difference_fraction": 0.00032913684844970703,
+      "protected_already_survived_fraction": 0.325927734375,
+      "protected_already_survived_in_baseline": 1335,
+      "protected_restored": 2761,
+      "protected_restored_fraction": 0.674072265625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.30.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2835,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5670,
+      "mask_difference_fraction": 0.00033795833587646484,
+      "protected_already_survived_fraction": 0.307861328125,
+      "protected_already_survived_in_baseline": 1261,
+      "protected_restored": 2835,
+      "protected_restored_fraction": 0.692138671875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.30.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9234,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18468,
+      "mask_difference_fraction": 0.0003669261932373047,
+      "protected_already_survived_fraction": 0.24853515625,
+      "protected_already_survived_in_baseline": 3054,
+      "protected_restored": 9234,
+      "protected_restored_fraction": 0.75146484375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.30.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 2670,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 5340,
+      "mask_difference_fraction": 0.00031828880310058594,
+      "protected_already_survived_fraction": 0.34814453125,
+      "protected_already_survived_in_baseline": 1426,
+      "protected_restored": 2670,
+      "protected_restored_fraction": 0.65185546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.31.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.31.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.31.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10610,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21220,
+      "mask_difference_fraction": 0.000421603520711263,
+      "protected_already_survived_fraction": 0.13655598958333334,
+      "protected_already_survived_in_baseline": 1678,
+      "protected_restored": 10610,
+      "protected_restored_fraction": 0.8634440104166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.31.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3111,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6222,
+      "mask_difference_fraction": 0.00037086009979248047,
+      "protected_already_survived_fraction": 0.240478515625,
+      "protected_already_survived_in_baseline": 985,
+      "protected_restored": 3111,
+      "protected_restored_fraction": 0.759521484375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.31.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3104,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6208,
+      "mask_difference_fraction": 0.000370025634765625,
+      "protected_already_survived_fraction": 0.2421875,
+      "protected_already_survived_in_baseline": 992,
+      "protected_restored": 3104,
+      "protected_restored_fraction": 0.7578125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.31.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10568,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21136,
+      "mask_difference_fraction": 0.00041993459065755207,
+      "protected_already_survived_fraction": 0.13997395833333334,
+      "protected_already_survived_in_baseline": 1720,
+      "protected_restored": 10568,
+      "protected_restored_fraction": 0.8600260416666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.31.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3038,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6076,
+      "mask_difference_fraction": 0.00036215782165527344,
+      "protected_already_survived_fraction": 0.25830078125,
+      "protected_already_survived_in_baseline": 1058,
+      "protected_restored": 3038,
+      "protected_restored_fraction": 0.74169921875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.4.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.4.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.4.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9797,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19594,
+      "mask_difference_fraction": 0.0003892978032430013,
+      "protected_already_survived_fraction": 0.20271809895833334,
+      "protected_already_survived_in_baseline": 2491,
+      "protected_restored": 9797,
+      "protected_restored_fraction": 0.7972819010416666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.4.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1081,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2162,
+      "mask_difference_fraction": 0.00012886524200439453,
+      "protected_already_survived_fraction": 0.736083984375,
+      "protected_already_survived_in_baseline": 3015,
+      "protected_restored": 1081,
+      "protected_restored_fraction": 0.263916015625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.4.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 952,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 1904,
+      "mask_difference_fraction": 0.00011348724365234375,
+      "protected_already_survived_fraction": 0.767578125,
+      "protected_already_survived_in_baseline": 3144,
+      "protected_restored": 952,
+      "protected_restored_fraction": 0.232421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.4.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9796,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 19592,
+      "mask_difference_fraction": 0.00038925806681315106,
+      "protected_already_survived_fraction": 0.20279947916666666,
+      "protected_already_survived_in_baseline": 2492,
+      "protected_restored": 9796,
+      "protected_restored_fraction": 0.7972005208333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.4.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1200,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2400,
+      "mask_difference_fraction": 0.0001430511474609375,
+      "protected_already_survived_fraction": 0.70703125,
+      "protected_already_survived_in_baseline": 2896,
+      "protected_restored": 1200,
+      "protected_restored_fraction": 0.29296875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.5.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.5.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.5.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11294,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22588,
+      "mask_difference_fraction": 0.00044878323872884113,
+      "protected_already_survived_fraction": 0.08089192708333333,
+      "protected_already_survived_in_baseline": 994,
+      "protected_restored": 11294,
+      "protected_restored_fraction": 0.9191080729166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.5.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1071,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2142,
+      "mask_difference_fraction": 0.00012767314910888672,
+      "protected_already_survived_fraction": 0.738525390625,
+      "protected_already_survived_in_baseline": 3025,
+      "protected_restored": 1071,
+      "protected_restored_fraction": 0.261474609375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.5.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1054,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2108,
+      "mask_difference_fraction": 0.00012564659118652344,
+      "protected_already_survived_fraction": 0.74267578125,
+      "protected_already_survived_in_baseline": 3042,
+      "protected_restored": 1054,
+      "protected_restored_fraction": 0.25732421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.5.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 11155,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 22310,
+      "mask_difference_fraction": 0.00044325987497965497,
+      "protected_already_survived_fraction": 0.09220377604166667,
+      "protected_already_survived_in_baseline": 1133,
+      "protected_restored": 11155,
+      "protected_restored_fraction": 0.9077962239583334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.5.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1155,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2310,
+      "mask_difference_fraction": 0.00013768672943115234,
+      "protected_already_survived_fraction": 0.718017578125,
+      "protected_already_survived_in_baseline": 2941,
+      "protected_restored": 1155,
+      "protected_restored_fraction": 0.281982421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.6.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.6.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.6.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10252,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20504,
+      "mask_difference_fraction": 0.0004073778788248698,
+      "protected_already_survived_fraction": 0.16569010416666666,
+      "protected_already_survived_in_baseline": 2036,
+      "protected_restored": 10252,
+      "protected_restored_fraction": 0.8343098958333334,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.6.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1186,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2372,
+      "mask_difference_fraction": 0.00014138221740722656,
+      "protected_already_survived_fraction": 0.71044921875,
+      "protected_already_survived_in_baseline": 2910,
+      "protected_restored": 1186,
+      "protected_restored_fraction": 0.28955078125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.6.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1204,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2408,
+      "mask_difference_fraction": 0.00014352798461914062,
+      "protected_already_survived_fraction": 0.7060546875,
+      "protected_already_survived_in_baseline": 2892,
+      "protected_restored": 1204,
+      "protected_restored_fraction": 0.2939453125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.6.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10272,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20544,
+      "mask_difference_fraction": 0.000408172607421875,
+      "protected_already_survived_fraction": 0.1640625,
+      "protected_already_survived_in_baseline": 2016,
+      "protected_restored": 10272,
+      "protected_restored_fraction": 0.8359375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.6.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1299,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2598,
+      "mask_difference_fraction": 0.00015485286712646484,
+      "protected_already_survived_fraction": 0.682861328125,
+      "protected_already_survived_in_baseline": 2797,
+      "protected_restored": 1299,
+      "protected_restored_fraction": 0.317138671875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.7.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.7.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.7.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10704,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21408,
+      "mask_difference_fraction": 0.0004253387451171875,
+      "protected_already_survived_fraction": 0.12890625,
+      "protected_already_survived_in_baseline": 1584,
+      "protected_restored": 10704,
+      "protected_restored_fraction": 0.87109375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.7.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1262,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2524,
+      "mask_difference_fraction": 0.00015044212341308594,
+      "protected_already_survived_fraction": 0.69189453125,
+      "protected_already_survived_in_baseline": 2834,
+      "protected_restored": 1262,
+      "protected_restored_fraction": 0.30810546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.7.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1262,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2524,
+      "mask_difference_fraction": 0.00015044212341308594,
+      "protected_already_survived_fraction": 0.69189453125,
+      "protected_already_survived_in_baseline": 2834,
+      "protected_restored": 1262,
+      "protected_restored_fraction": 0.30810546875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.7.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10538,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21076,
+      "mask_difference_fraction": 0.00041874249776204425,
+      "protected_already_survived_fraction": 0.14241536458333334,
+      "protected_already_survived_in_baseline": 1750,
+      "protected_restored": 10538,
+      "protected_restored_fraction": 0.8575846354166666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.7.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1413,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2826,
+      "mask_difference_fraction": 0.0001684427261352539,
+      "protected_already_survived_fraction": 0.655029296875,
+      "protected_already_survived_in_baseline": 2683,
+      "protected_restored": 1413,
+      "protected_restored_fraction": 0.344970703125,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.8.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.8.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.8.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10895,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21790,
+      "mask_difference_fraction": 0.0004329284032185872,
+      "protected_already_survived_fraction": 0.11336263020833333,
+      "protected_already_survived_in_baseline": 1393,
+      "protected_restored": 10895,
+      "protected_restored_fraction": 0.8866373697916666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.8.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1287,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2574,
+      "mask_difference_fraction": 0.00015342235565185547,
+      "protected_already_survived_fraction": 0.685791015625,
+      "protected_already_survived_in_baseline": 2809,
+      "protected_restored": 1287,
+      "protected_restored_fraction": 0.314208984375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.8.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1324,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2648,
+      "mask_difference_fraction": 0.00015783309936523438,
+      "protected_already_survived_fraction": 0.6767578125,
+      "protected_already_survived_in_baseline": 2772,
+      "protected_restored": 1324,
+      "protected_restored_fraction": 0.3232421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.8.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10772,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 21544,
+      "mask_difference_fraction": 0.0004280408223470052,
+      "protected_already_survived_fraction": 0.12337239583333333,
+      "protected_already_survived_in_baseline": 1516,
+      "protected_restored": 10772,
+      "protected_restored_fraction": 0.8766276041666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.8.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1519,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3038,
+      "mask_difference_fraction": 0.00018107891082763672,
+      "protected_already_survived_fraction": 0.629150390625,
+      "protected_already_survived_in_baseline": 2577,
+      "protected_restored": 1519,
+      "protected_restored_fraction": 0.370849609375,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.9.attn_out": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 3072,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 6144,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 1024,
+      "protected_restored": 3072,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.9.ff_out": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 9216,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 18432,
+      "mask_difference_fraction": 0.0003662109375,
+      "protected_already_survived_fraction": 0.25,
+      "protected_already_survived_in_baseline": 3072,
+      "protected_restored": 9216,
+      "protected_restored_fraction": 0.75,
+      "protected_total": 12288,
+      "shape": [
+        4096,
+        12288
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.9.ff_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10482,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20964,
+      "mask_difference_fraction": 0.0004165172576904297,
+      "protected_already_survived_fraction": 0.14697265625,
+      "protected_already_survived_in_baseline": 1806,
+      "protected_restored": 10482,
+      "protected_restored_fraction": 0.85302734375,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.9.k_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1296,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2592,
+      "mask_difference_fraction": 0.0001544952392578125,
+      "protected_already_survived_fraction": 0.68359375,
+      "protected_already_survived_in_baseline": 2800,
+      "protected_restored": 1296,
+      "protected_restored_fraction": 0.31640625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.9.q_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1305,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 2610,
+      "mask_difference_fraction": 0.00015556812286376953,
+      "protected_already_survived_fraction": 0.681396484375,
+      "protected_already_survived_in_baseline": 2791,
+      "protected_restored": 1305,
+      "protected_restored_fraction": 0.318603515625,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    },
+    "model.transformer.blocks.9.up_proj": {
+      "baseline_pruned": 37748736,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 10448,
+      "constrained_pruned": 37748736,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 20896,
+      "mask_difference_fraction": 0.0004151662190755208,
+      "protected_already_survived_fraction": 0.14973958333333334,
+      "protected_already_survived_in_baseline": 1840,
+      "protected_restored": 10448,
+      "protected_restored_fraction": 0.8502604166666666,
+      "protected_total": 12288,
+      "shape": [
+        12288,
+        4096
+      ],
+      "total_weights": 50331648
+    },
+    "model.transformer.blocks.9.v_proj": {
+      "baseline_pruned": 12582912,
+      "baseline_sparsity": 0.75,
+      "compensation_pruned": 1539,
+      "constrained_pruned": 12582912,
+      "constrained_sparsity": 0.75,
+      "mask_difference_count": 3078,
+      "mask_difference_fraction": 0.00018346309661865234,
+      "protected_already_survived_fraction": 0.624267578125,
+      "protected_already_survived_in_baseline": 2557,
+      "protected_restored": 1539,
+      "protected_restored_fraction": 0.375732421875,
+      "protected_total": 4096,
+      "shape": [
+        4096,
+        4096
+      ],
+      "total_weights": 16777216
+    }
+  },
+  "protected_already_survived_fraction": 0.27153954139122594,
+  "protected_already_survived_in_baseline": 462686,
+  "protected_restored": 1241250,
+  "protected_restored_fraction": 0.7284604586087741,
+  "protected_total": 1703936,
+  "protected_weight_fraction": 0.000244140625,
+  "random_channel_count": 3,
+  "seed": 0,
+  "sparsity_ratio": 0.75,
+  "total_prunable_weights": 6979321856,
+  "total_pruned_weights": 5234491392
+}
