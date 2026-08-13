@@ -1,5 +1,19 @@
 {
   "calibration_dataset": "wikitext2",
+  "evaluation": {
+    "activation_blocks": [
+      0,
+      15,
+      31
+    ],
+    "activation_samples": 8,
+    "block_length": 1024,
+    "gen_length": 1024,
+    "primary_intermediate_limit": 256,
+    "sanity_limit": 64,
+    "steps": 1024,
+    "task": "gsm8k"
+  },
   "model": "GSAI-ML/LLaDA-8B-Base",
   "model_revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
   "nsamples": 128,
