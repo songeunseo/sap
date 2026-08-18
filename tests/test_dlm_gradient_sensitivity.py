@@ -1,11 +1,14 @@
+import copy
 import hashlib
 import json
 import math
+import weakref
 from pathlib import Path
 
 import pytest
 import torch
 import dlm_gradient_sensitivity as sensitivity_cli
+import lib.dlm_gradient_sensitivity as sensitivity_lib
 
 from lib.dlm_gradient_sensitivity import (
     NegativeSuffixCostError,
@@ -688,7 +691,7 @@ def _toy_cached_states(model, config):
 
 
 # Mutation caught: updating Welford per sequence measures sample+timestep dispersion, not timestep dispersion.
-def test_score_block_matches_literal_direct_gradient_loop_and_masks():
+def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch):
     torch.manual_seed(11)
     model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
     config = _toy_score_config()
@@ -731,10 +734,41 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks():
             "sigma_B": torch.stack(timestep_b).std(dim=0, unbiased=False),
         }
 
-    result, next_states = score_block(model, 0, states, config)
+    real_gradients = sensitivity_lib.block_state_gradients
+    returned_outputs = {}
+    call_keys = iter(sorted(states))
+
+    def tracked_gradients(*args, **kwargs):
+        key = next(call_keys)
+        gradients, output = real_gradients(*args, **kwargs)
+        returned_outputs[key] = output.detach().cpu()
+        return gradients, output
+
+    block_forward_calls = []
+    backward_calls = []
+    real_backward = torch.Tensor.backward
+
+    def tracked_backward(tensor, *args, **kwargs):
+        backward_calls.append(1)
+        return real_backward(tensor, *args, **kwargs)
+
+    hook = model.model.transformer.blocks[0].register_forward_hook(
+        lambda *_: block_forward_calls.append(1)
+    )
+    monkeypatch.setattr(sensitivity_lib, "block_state_gradients", tracked_gradients)
+    monkeypatch.setattr(torch.Tensor, "backward", tracked_backward)
+    try:
+        result, next_states = score_block(model, 0, states, config)
+    finally:
+        hook.remove()
 
     assert result["update_count"] == 2
     assert list(next_states) == list(states)
+    assert len(returned_outputs) == len(states) == 16
+    assert len(backward_calls) == len(states)
+    assert len(block_forward_calls) == len(states)
+    for key, output in returned_outputs.items():
+        torch.testing.assert_close(next_states[key]["hidden"], output)
     for name, statistics in expected.items():
         for statistic in ("mu", "sigma", "sigma_A", "sigma_B"):
             torch.testing.assert_close(result["statistics"][name][statistic], statistics[statistic])
@@ -756,6 +790,30 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks():
                 ]
                 assert diagnostic["split_A_sha256"] == pack_mask(split_a_mask)["sha256"]
                 assert diagnostic["split_B_sha256"] == pack_mask(split_b_mask)["sha256"]
+                intersection = torch.logical_and(split_a_mask, split_b_mask).sum().item()
+                union = torch.logical_or(split_a_mask, split_b_mask).sum().item()
+                assert diagnostic["split_jaccard"] == pytest.approx(
+                    1.0 if union == 0 else intersection / union
+                )
+                mean_mask = rowwise_prune_mask(statistics["mu"], sparsity)
+                changed = result["masks"][(name, risk_lambda, sparsity)].ne(mean_mask)
+                assert diagnostic["mean_disagreement_count"] == changed.sum().item()
+                assert diagnostic["mean_disagreement_fraction"] == pytest.approx(
+                    changed.float().mean().item()
+                )
+                assert diagnostic["changed_row_fraction"] == pytest.approx(
+                    changed.any(dim=1).float().mean().item()
+                )
+        ratio = statistics["sigma"] / (
+            statistics["mu"] + torch.finfo(torch.float32).eps
+        )
+        quantiles = torch.quantile(ratio.flatten(), torch.tensor([0.5, 0.9, 0.99]))
+        assert result["diagnostics"][name]["sigma_over_mu_plus_eps"] == pytest.approx({
+            "epsilon": torch.finfo(torch.float32).eps,
+            "median": quantiles[0].item(),
+            "p90": quantiles[1].item(),
+            "p99": quantiles[2].item(),
+        })
 
 
 # Mutation caught: resume that trusts filenames, silently rescores block 0, or rewrites JSON changes output bytes.
@@ -857,6 +915,306 @@ def test_score_resume_rejects_changed_model_digest(tmp_path, monkeypatch):
         sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
 
 
+@pytest.fixture(scope="module")
+def completed_toy_score_artifacts(tmp_path_factory):
+    artifact_dir = tmp_path_factory.mktemp("completed-score")
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    sensitivity_cli._run_loaded_score(
+        model,
+        _toy_score_config(blocks=1, timesteps=(0.5,)),
+        _toy_clean_ids(),
+        artifact_dir,
+    )
+    return {path.name: path.read_bytes() for path in artifact_dir.iterdir()}
+
+
+def _restore_toy_score_artifacts(tmp_path, saved):
+    artifact_dir = tmp_path / "artifacts"
+    artifact_dir.mkdir()
+    for name, contents in saved.items():
+        (artifact_dir / name).write_bytes(contents)
+    return artifact_dir
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    [
+        ("block_index", 1),
+        ("path", "block-999.json"),
+        ("sha256", "0" * 64),
+        ("byte_length", 1),
+        ("module_count", 8),
+        ("update_count", 2),
+        ("welford_updates", {"full": 2, "A": 1, "B": 1}),
+        ("mask_variant_count", 15),
+        ("mask_entry_count", 111),
+    ],
+)
+def test_score_resume_rejects_every_corrupt_manifest_entry_audit_field(
+    tmp_path, completed_toy_score_artifacts, field, bad_value
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    manifest_path = artifact_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["completed_blocks"][0][field] = bad_value
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="block|manifest|audit|checksum|size|path"):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    [
+        ("model", {"id": "other", "revision": "test-revision"}),
+        ("model_revision", "other"),
+        ("model_digest", "0" * 64),
+        ("config_digest", "0" * 64),
+        ("state_digest", "0" * 64),
+        ("state_artifact", {"path": "other.json"}),
+        ("block_count", 2),
+        ("modules_per_block", 8),
+        ("updates_per_module", 2),
+        ("welford_updates_per_module", {"full": 2, "A": 1, "B": 1}),
+        ("lambdas", [0.0, 1.0]),
+        ("sparsities", [0.5]),
+        ("score_definition", "corrupt"),
+        ("calibration", {"seed": 999}),
+        ("mask_variant_count", 15),
+    ],
+)
+def test_score_resume_rejects_every_corrupt_manifest_binding_field(
+    tmp_path, completed_toy_score_artifacts, field, bad_value
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    manifest_path = artifact_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest[field] = bad_value
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match=field):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "model_revision",
+        "model_digest",
+        "config_digest",
+        "state_digest",
+        "block_index",
+        "module_count",
+        "update_count",
+        "welford_updates",
+        "mask_variant_count",
+        "lambdas",
+        "sparsities",
+        "score_definition",
+        "calibration",
+        "module_shapes",
+        "module_diagnostics",
+        "mask_entries",
+    ],
+)
+def test_score_resume_rejects_every_corrupt_block_metadata_field(
+    tmp_path, completed_toy_score_artifacts, field
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    block_path = artifact_dir / "block-000.json"
+    masks, metadata = load_mask_block(block_path)
+    if field == "module_shapes":
+        metadata[field].pop(next(iter(metadata[field])))
+    elif field == "module_diagnostics":
+        metadata[field].pop(next(iter(metadata[field])))
+    elif field == "mask_entries":
+        masks.pop(next(iter(masks)))
+    elif field == "block_index":
+        metadata[field] = 1
+    elif field in ("module_count", "update_count", "mask_variant_count"):
+        metadata[field] += 1
+    elif field == "welford_updates":
+        metadata[field] = {"full": 2, "A": 1, "B": 1}
+    elif field in ("lambdas", "sparsities"):
+        metadata[field] = metadata[field][:-1]
+    elif field == "calibration":
+        metadata[field]["seed"] += 1
+    else:
+        metadata[field] = "corrupt"
+    save_mask_block(block_path, masks, metadata)
+    manifest_path = artifact_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    entry = manifest["completed_blocks"][0]
+    entry["sha256"] = hashlib.sha256(block_path.read_bytes()).hexdigest()
+    entry["byte_length"] = block_path.stat().st_size
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="block|metadata|audit|mask"):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+@pytest.mark.parametrize("fault", ["post_write", "internally_consistent"])
+def test_score_write_validates_before_manifest_or_stat_release(tmp_path, monkeypatch, fault):
+    torch.manual_seed(37)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    config = _toy_score_config(blocks=1, timesteps=(0.5,))
+    artifact_dir = tmp_path / "artifacts"
+    real_score_block = sensitivity_cli.score_block
+    real_save = sensitivity_cli.save_mask_block
+    real_validate = sensitivity_cli._validate_block_artifact
+    statistic = None
+    alive_during_validation = []
+
+    def tracked_score_block(*args, **kwargs):
+        nonlocal statistic
+        result, caches = real_score_block(*args, **kwargs)
+        statistic = weakref.ref(next(iter(result["statistics"].values()))["mu"])
+        return result, caches
+
+    def corrupt_after_write(path, masks, metadata):
+        if fault == "post_write":
+            expected = real_save(path, masks, metadata)
+            contents = path.read_bytes()
+            path.write_bytes(contents[:-1] + (b"{" if contents[-1:] != b"{" else b"}"))
+        else:
+            corrupt_metadata = copy.deepcopy(metadata)
+            corrupt_metadata["block_index"] += 1
+            expected = real_save(path, masks, corrupt_metadata)
+        return expected
+
+    def tracked_validate(*args, **kwargs):
+        alive_during_validation.append(statistic() is not None)
+        return real_validate(*args, **kwargs)
+
+    monkeypatch.setattr(sensitivity_cli, "score_block", tracked_score_block)
+    monkeypatch.setattr(sensitivity_cli, "save_mask_block", corrupt_after_write)
+    monkeypatch.setattr(sensitivity_cli, "_validate_block_artifact", tracked_validate)
+
+    with pytest.raises(ValueError, match="written block|checksum|invalid|metadata"):
+        sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
+    assert alive_during_validation == [True]
+    assert json.loads((artifact_dir / "manifest.json").read_text())["completed_blocks"] == []
+
+
+@pytest.mark.parametrize(
+    ("keys", "bad_value", "message"),
+    [
+        (("model", "id"), "other", "model.id"),
+        (("stage0", "model_block_count"), True, "stage0.model_block_count"),
+        (("calibration", "seed"), False, "calibration.seed"),
+        (("calibration", "sequence_indices"), [False, 1, 2, 3, 4, 5, 6, 7], "calibration.sequence_indices"),
+        (("calibration", "sequence_count"), True, "calibration.sequence_count"),
+        (("calibration", "sequence_length"), 255, "calibration.sequence_length"),
+        (("calibration", "timesteps"), [0.05] * 10, "calibration.timesteps"),
+        (("calibration", "split_a"), [0, 1, 2, True], "calibration.split_a"),
+        (("calibration", "split_b"), [4, 5, 6, True], "calibration.split_b"),
+        (("scoring", "gradient_microbatch_size"), True, "scoring.gradient_microbatch_size"),
+        (("scoring", "lambdas"), [True, 0.5, 1.0], "scoring.lambdas"),
+        (("scoring", "sparsities"), [0.5, 0.6, 0.7, True], "scoring.sparsities"),
+        (("scoring", "decision_sparsities"), [0.5, 0.6, True], "scoring.decision_sparsities"),
+        (("reliability", "spearman_sample_size"), True, "reliability.spearman_sample_size"),
+        (("reliability", "minimum_median_split_sigma_spearman"), True, "reliability.minimum_median_split_sigma_spearman"),
+        (("reliability", "minimum_mean_split_mask_jaccard"), True, "reliability.minimum_mean_split_mask_jaccard"),
+        (("reliability", "top_sigma_fraction"), True, "reliability.top_sigma_fraction"),
+    ],
+)
+def test_score_production_contract_rejects_changes_before_cuda_or_model_work(
+    tmp_path, monkeypatch, keys, bad_value, message
+):
+    config = json.loads(Path("experiments/time_risk/pilot.json").read_text())
+    config[keys[0]][keys[1]] = bad_value
+    monkeypatch.setattr(
+        torch.cuda,
+        "is_available",
+        lambda: (_ for _ in ()).throw(AssertionError("CUDA checked before score contract")),
+    )
+
+    with pytest.raises(ValueError, match=message.replace(".", r"\.")):
+        sensitivity_cli.run_score(config, tmp_path)
+
+
+def test_score_production_contract_accepts_committed_pilot():
+    config = json.loads(Path("experiments/time_risk/pilot.json").read_text())
+    sensitivity_cli._validate_production_score_config(config)
+
+
+def test_repeat_gradient_square_check_real_32_block_tiny_model_covers_all_outcomes(
+    monkeypatch,
+):
+    torch.manual_seed(41)
+    model = _tiny_llada(n_layers=32, d_model=4, vocab_size=11)
+    config = _toy_score_config(blocks=32, timesteps=(0.5,))
+    cached_states = _toy_cached_states(model, config)
+
+    passed = sensitivity_cli._repeat_gradient_square_check(model, config, cached_states)
+    assert passed["status"] == "passed"
+    assert passed["finite"]
+    assert passed["within_tolerance"]
+
+    real_gradients = sensitivity_cli.block_state_gradients
+
+    def checked_with_second_result(transform):
+        calls = 0
+
+        def wrapper(*args, **kwargs):
+            nonlocal calls
+            calls += 1
+            gradients, output = real_gradients(*args, **kwargs)
+            if calls == 2:
+                gradients = {name: value.clone() for name, value in gradients.items()}
+                first_name = next(iter(gradients))
+                transform(gradients[first_name].view(-1))
+            return gradients, output
+
+        return wrapper
+
+    monkeypatch.setattr(
+        sensitivity_cli,
+        "block_state_gradients",
+        checked_with_second_result(lambda values: values.__setitem__(0, values[0] + 1)),
+    )
+    tolerance_failure = sensitivity_cli._repeat_gradient_square_check(
+        model, config, cached_states
+    )
+    assert tolerance_failure["status"] == "failed"
+    assert tolerance_failure["finite"]
+    assert not tolerance_failure["within_tolerance"]
+
+    monkeypatch.setattr(
+        sensitivity_cli,
+        "block_state_gradients",
+        checked_with_second_result(lambda values: values.__setitem__(0, float("inf"))),
+    )
+    nonfinite_failure = sensitivity_cli._repeat_gradient_square_check(
+        model, config, cached_states
+    )
+    assert nonfinite_failure["status"] == "failed"
+    assert not nonfinite_failure["finite"]
+    assert not nonfinite_failure["within_tolerance"]
+
+
 # Mutation caught: pooling weights or sparsities can pass a gate whose predeclared module summaries fail.
 def test_score_block_stage1_gate_uses_unweighted_module_thresholds_and_signal_stop():
     config = _toy_score_config()
@@ -877,6 +1235,14 @@ def test_score_block_stage1_gate_uses_unweighted_module_thresholds_and_signal_st
 
     gate = sensitivity_cli._stage1_gate(diagnostics, config, all_useful_masks_identical=False)
     stopped = sensitivity_cli._stage1_gate(diagnostics, config, all_useful_masks_identical=True)
+    undefined_diagnostics = copy.deepcopy(diagnostics)
+    undefined_diagnostics[0]["rho_sigma_A_sigma_B"] = {
+        "value": None,
+        "reason": "constant vector",
+    }
+    undefined = sensitivity_cli._stage1_gate(
+        undefined_diagnostics, config, all_useful_masks_identical=False
+    )
 
     assert gate["median_module_split_sigma_spearman"] == pytest.approx(0.5)
     assert gate["mean_split_mask_jaccard"] == {"0.5": 0.95, "0.6": 0.95, "0.7": 0.95}
@@ -884,3 +1250,6 @@ def test_score_block_stage1_gate_uses_unweighted_module_thresholds_and_signal_st
     assert gate["passed"]
     assert not stopped["passed"]
     assert stopped["stop_reason"] == "all useful Time-Risk masks are identical to Mean"
+    assert not undefined["reliability_passed"]
+    assert undefined["undefined_split_sigma_spearman_modules"] == 1
+    assert undefined["stop_reason"] == "split-half reliability gate failed"

@@ -377,7 +377,7 @@ def _from_json_mask_artifact(artifact: dict) -> dict:
         raise ValueError("invalid mask artifact") from error
 
 
-def save_mask_block(path: Path, masks: dict, metadata: dict) -> None:
+def save_mask_block(path: Path, masks: dict, metadata: dict) -> dict:
     if not isinstance(masks, dict) or not isinstance(metadata, dict):
         raise ValueError("masks and metadata must be dictionaries")
     document = {
@@ -386,6 +386,7 @@ def save_mask_block(path: Path, masks: dict, metadata: dict) -> None:
         "masks": {name: _json_mask_artifact(pack_mask(mask)) for name, mask in masks.items()},
     }
     encoded = json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+    expected = {"sha256": hashlib.sha256(encoded).hexdigest(), "byte_length": len(encoded)}
     destination = Path(path)
     temporary_name = None
     try:
@@ -399,6 +400,7 @@ def save_mask_block(path: Path, masks: dict, metadata: dict) -> None:
     finally:
         if temporary_name:
             Path(temporary_name).unlink(missing_ok=True)
+    return expected
 
 
 def load_mask_block(path: Path) -> tuple[dict, dict]:

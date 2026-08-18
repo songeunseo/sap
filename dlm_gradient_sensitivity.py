@@ -18,6 +18,7 @@ from lib.dlm_gradient_sensitivity import (
     feasibility_gate,
     load_mask_block,
     make_masked_state,
+    midpoint_timesteps,
     project_scoring_seconds,
     save_mask_block,
     score_block,
@@ -513,9 +514,94 @@ def _load_manifest(path: Path) -> dict:
     return manifest
 
 
-def _verify_completed_blocks(artifact_dir: Path, manifest: dict, expected: dict) -> list[dict]:
+def _validate_block_artifact(
+    artifact_dir: Path,
+    entry: dict,
+    manifest: dict,
+    expected_masks: dict | None = None,
+    expected_metadata: dict | None = None,
+) -> dict:
+    block_index = entry.get("block_index")
+    if isinstance(block_index, bool) or not isinstance(block_index, int):
+        raise ValueError("score block index is invalid")
+    expected_name = f"block-{block_index:03d}.json"
+    if entry.get("path") != expected_name:
+        raise ValueError("score block path mismatch")
+    block_path = artifact_dir / expected_name
+    if not block_path.is_file() or block_path.stat().st_size != entry.get("byte_length"):
+        raise ValueError("score block size mismatch")
+    if _file_sha256(block_path) != entry.get("sha256"):
+        raise ValueError("score block checksum mismatch")
+    masks, metadata = load_mask_block(block_path)
+    if expected_metadata is not None and metadata != expected_metadata:
+        raise ValueError("written block metadata mismatch")
+    if expected_masks is not None and (
+        set(masks) != set(expected_masks)
+        or any(not torch.equal(masks[name], expected_masks[name]) for name in masks)
+    ):
+        raise ValueError("written block masks mismatch")
+
+    for key in ("model_revision", "model_digest", "config_digest", "state_digest"):
+        if not _same_typed_value(metadata.get(key), manifest[key]):
+            raise ValueError(f"score block {key} mismatch")
+    expected_modules = manifest["modules_per_block"]
+    expected_updates = manifest["updates_per_module"]
+    expected_welford = manifest["welford_updates_per_module"]
+    expected_variants = manifest["mask_variant_count"]
+    expected_entries = expected_modules * expected_variants
+    module_shapes = metadata.get("module_shapes")
+    module_diagnostics = metadata.get("module_diagnostics")
+    if not isinstance(module_shapes, dict) or not isinstance(module_diagnostics, dict):
+        raise ValueError("score block module metadata is invalid")
+    module_names = set(module_shapes)
+    expected_mask_names = {
+        f"{name}|lambda={risk_lambda:g}|sparsity={sparsity:g}"
+        for name in module_names
+        for risk_lambda in manifest["lambdas"]
+        for sparsity in manifest["sparsities"]
+    }
+    if (
+        not _same_typed_value(metadata.get("block_index"), block_index)
+        or not _same_typed_value(metadata.get("module_count"), expected_modules)
+        or not _same_typed_value(metadata.get("update_count"), expected_updates)
+        or not _same_typed_value(metadata.get("welford_updates"), expected_welford)
+        or not _same_typed_value(metadata.get("mask_variant_count"), expected_variants)
+        or not _same_typed_value(metadata.get("lambdas"), manifest["lambdas"])
+        or not _same_typed_value(metadata.get("sparsities"), manifest["sparsities"])
+        or not _same_typed_value(
+            metadata.get("score_definition"), manifest["score_definition"]
+        )
+        or not _same_typed_value(metadata.get("calibration"), manifest["calibration"])
+        or len(module_names) != expected_modules
+        or set(module_diagnostics) != module_names
+        or set(masks) != expected_mask_names
+        or len(masks) != expected_entries
+        or not _same_typed_value(entry.get("module_count"), metadata.get("module_count"))
+        or not _same_typed_value(entry.get("update_count"), metadata.get("update_count"))
+        or not _same_typed_value(
+            entry.get("welford_updates"), metadata.get("welford_updates")
+        )
+        or not _same_typed_value(
+            entry.get("mask_variant_count"), metadata.get("mask_variant_count")
+        )
+        or not _same_typed_value(entry.get("mask_entry_count"), len(masks))
+    ):
+        raise ValueError("score block audit metadata mismatch")
+    for module_name, shape in module_shapes.items():
+        if not isinstance(shape, list) or any(
+            list(mask.shape) != shape
+            for mask_name, mask in masks.items()
+            if mask_name.startswith(f"{module_name}|lambda=")
+        ):
+            raise ValueError("score block module shape mismatch")
+    return metadata
+
+
+def _validated_completed_blocks(
+    artifact_dir: Path, manifest: dict, expected: dict
+) -> tuple[list[dict], list[tuple[dict, dict]]]:
     for key, value in expected.items():
-        if manifest.get(key) != value:
+        if not _same_typed_value(manifest.get(key), value):
             raise ValueError(f"score manifest {key} mismatch")
     completed = manifest.get("completed_blocks")
     if not isinstance(completed, list):
@@ -524,31 +610,10 @@ def _verify_completed_blocks(artifact_dir: Path, manifest: dict, expected: dict)
         raise ValueError("completed score blocks must be contiguous")
     if len(completed) > manifest["block_count"]:
         raise ValueError("score manifest has too many completed blocks")
+    validated = []
     for entry in completed:
-        block_index = entry["block_index"]
-        expected_name = f"block-{block_index:03d}.json"
-        if entry.get("path") != expected_name:
-            raise ValueError("score block path mismatch")
-        block_path = artifact_dir / expected_name
-        if not block_path.is_file() or block_path.stat().st_size != entry.get("byte_length"):
-            raise ValueError("score block size mismatch")
-        if _file_sha256(block_path) != entry.get("sha256"):
-            raise ValueError("score block checksum mismatch")
-        masks, metadata = load_mask_block(block_path)
-        for key in ("model_revision", "model_digest", "config_digest", "state_digest"):
-            if metadata.get(key) != manifest[key]:
-                raise ValueError(f"score block {key} mismatch")
-        if (
-            metadata.get("block_index") != block_index
-            or metadata.get("module_count") != manifest["modules_per_block"]
-            or metadata.get("update_count") != manifest["updates_per_module"]
-            or metadata.get("welford_updates") != manifest["welford_updates_per_module"]
-            or metadata.get("mask_variant_count") != manifest["mask_variant_count"]
-            or entry.get("welford_updates") != manifest["welford_updates_per_module"]
-            or len(masks) != manifest["modules_per_block"] * manifest["mask_variant_count"]
-        ):
-            raise ValueError("score block audit metadata mismatch")
-    return completed
+        validated.append((entry, _validate_block_artifact(artifact_dir, entry, manifest)))
+    return completed, validated
 
 
 def _stage1_gate(
@@ -607,6 +672,74 @@ def _stage1_gate(
     }
 
 
+def _same_typed_value(actual, expected) -> bool:
+    if type(actual) is not type(expected):
+        return False
+    if isinstance(expected, list):
+        return len(actual) == len(expected) and all(
+            _same_typed_value(left, right) for left, right in zip(actual, expected)
+        )
+    if isinstance(expected, dict):
+        return set(actual) == set(expected) and all(
+            _same_typed_value(actual[key], value) for key, value in expected.items()
+        )
+    return actual == expected
+
+
+def _validate_production_score_config(config: dict) -> None:
+    expected = {
+        "model.id": "GSAI-ML/LLaDA-8B-Base",
+        "model.revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+        "dataset.id": "Salesforce/wikitext",
+        "dataset.configuration": "wikitext-2-raw-v1",
+        "dataset.loader_name": "wikitext2",
+        "dataset.calibration_split": "train",
+        "dataset.validation_split": "validation",
+        "calibration.seed": 0,
+        "calibration.sequence_indices": list(range(8)),
+        "calibration.sequence_count": 8,
+        "calibration.sequence_length": 256,
+        "calibration.mask_id_source": "model.config.mask_token_id",
+        "calibration.epsilon": 0.001,
+        "calibration.timesteps": list(midpoint_timesteps()),
+        "calibration.split_a": [0, 1, 2, 3],
+        "calibration.split_b": [4, 5, 6, 7],
+        "scoring.gradient_microbatch_size": 1,
+        "scoring.lambdas": [0.25, 0.5, 1.0],
+        "scoring.sparsities": [0.5, 0.6, 0.7, 0.75],
+        "scoring.decision_sparsities": [0.5, 0.6, 0.7],
+        "stage0.model_block_count": 32,
+        "stage0.measured_blocks": [31, 0],
+        "stage0.max_gpu_memory_gib": 30,
+        "stage0.max_swap_delta_kib": 0,
+        "stage0.max_projected_gpu_hours": 24,
+        "reliability.spearman_sample_size": 262144,
+        "reliability.minimum_median_split_sigma_spearman": 0.5,
+        "reliability.minimum_mean_split_mask_jaccard": 0.95,
+        "reliability.top_sigma_fraction": 0.01,
+    }
+    for path, value in expected.items():
+        try:
+            actual = config
+            for key in path.split("."):
+                actual = actual[key]
+        except (KeyError, TypeError):
+            raise ValueError(f"{path} is required for production scoring") from None
+        if not _same_typed_value(actual, value):
+            raise ValueError(f"{path} does not match the predeclared production score contract")
+    for section in ("model", "dataset", "calibration", "scoring", "stage0", "reliability"):
+        expected_keys = {
+            path.split(".", 1)[1] for path in expected if path.startswith(f"{section}.")
+        }
+        if set(config[section]) != expected_keys:
+            raise ValueError(f"{section} keys do not match the predeclared production score contract")
+    state_count = config["calibration"]["sequence_count"] * len(
+        config["calibration"]["timesteps"]
+    )
+    if state_count != 80:
+        raise ValueError("calibration.state_count must be exactly 80")
+
+
 def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifact_dir: Path) -> dict:
     artifact_dir = Path(artifact_dir)
     artifact_dir.mkdir(parents=True, exist_ok=True)
@@ -640,6 +773,16 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
             group: len(config["calibration"]["timesteps"])
             for group in ("full", "A", "B")
         },
+        "lambdas": [0.0, *config["scoring"]["lambdas"]],
+        "sparsities": config["scoring"]["sparsities"],
+        "score_definition": "mu + lambda * population_std_timestep_sensitivity",
+        "calibration": {
+            "sequence_indices": config["calibration"]["sequence_indices"],
+            "seed": config["calibration"]["seed"],
+            "timesteps": config["calibration"]["timesteps"],
+            "split_A": config["calibration"]["split_a"],
+            "split_B": config["calibration"]["split_b"],
+        },
         "mask_variant_count": (len(config["scoring"]["lambdas"]) + 1)
         * len(config["scoring"]["sparsities"]),
     }
@@ -649,7 +792,9 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
             raise ValueError("scoring state artifact size mismatch")
         if _file_sha256(states_path) != state_digest or states_path.read_bytes() != state_bytes:
             raise ValueError("scoring state checksum mismatch")
-        completed = _verify_completed_blocks(artifact_dir, manifest, header)
+        completed, validated_blocks = _validated_completed_blocks(
+            artifact_dir, manifest, header
+        )
         repeat_check = manifest.get("repeat_gradient_square")
         if not isinstance(repeat_check, dict) or (
             block_count == 32 and repeat_check.get("status") != "passed"
@@ -668,6 +813,7 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
         if repeat_check["status"] == "failed":
             raise RuntimeError("repeated gradient-square check failed")
         completed = []
+        validated_blocks = []
         cached_states = cached_for_repeat
 
     cached_states = _advance_cached_states(model, cached_states, len(completed))
@@ -692,42 +838,43 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
             "update_count": block_result["update_count"],
             "welford_updates": header["welford_updates_per_module"],
             "mask_variant_count": header["mask_variant_count"],
-            "lambdas": [0.0, *config["scoring"]["lambdas"]],
-            "sparsities": config["scoring"]["sparsities"],
-            "score_definition": "mu + lambda * population_std_timestep_sensitivity",
-            "calibration": {
-                "sequence_indices": config["calibration"]["sequence_indices"],
-                "seed": config["calibration"]["seed"],
-                "timesteps": config["calibration"]["timesteps"],
-                "split_A": config["calibration"]["split_a"],
-                "split_B": config["calibration"]["split_b"],
-            },
+            "lambdas": header["lambdas"],
+            "sparsities": header["sparsities"],
+            "score_definition": header["score_definition"],
+            "calibration": header["calibration"],
             "module_shapes": {
                 name: list(values["mu"].shape)
                 for name, values in block_result["statistics"].items()
             },
             "module_diagnostics": block_result["diagnostics"],
         }
-        save_mask_block(block_path, flat_masks, metadata)
+        serialized = save_mask_block(block_path, flat_masks, metadata)
         entry = {
             "block_index": block_index,
             "path": block_path.name,
-            "sha256": _file_sha256(block_path),
-            "byte_length": block_path.stat().st_size,
+            "sha256": serialized["sha256"],
+            "byte_length": serialized["byte_length"],
             "module_count": metadata["module_count"],
             "update_count": metadata["update_count"],
             "welford_updates": metadata["welford_updates"],
             "mask_variant_count": metadata["mask_variant_count"],
             "mask_entry_count": len(flat_masks),
         }
+        validated_metadata = _validate_block_artifact(
+            artifact_dir,
+            entry,
+            manifest,
+            expected_masks=flat_masks,
+            expected_metadata=metadata,
+        )
         manifest["completed_blocks"].append(entry)
         _atomic_write_json(manifest_path, manifest)
+        validated_blocks.append((entry, validated_metadata))
         del block_result, flat_masks, metadata
 
     module_diagnostics = []
     all_useful_masks_identical = True
-    for entry in manifest["completed_blocks"]:
-        _, metadata = load_mask_block(artifact_dir / entry["path"])
+    for entry, metadata in validated_blocks:
         for module_name, diagnostic in metadata["module_diagnostics"].items():
             module_diagnostics.append(
                 {"block_index": entry["block_index"], "module": module_name, **diagnostic}
@@ -764,6 +911,7 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
 
 
 def run_score(config: dict, artifact_dir: Path) -> dict:
+    _validate_production_score_config(config)
     if not torch.cuda.is_available():
         raise RuntimeError("Stage 1 scoring requires CUDA")
 
