@@ -99,7 +99,9 @@ def _mask_header(artifact: dict) -> dict:
         raise ValueError("invalid mask artifact")
     shape = artifact["shape"]
     if (
-        artifact["version"] != _MASK_ARTIFACT_VERSION
+        isinstance(artifact["version"], bool)
+        or not isinstance(artifact["version"], int)
+        or artifact["version"] != _MASK_ARTIFACT_VERSION
         or artifact["dtype"] != "bool"
         or artifact["bitorder"] != _MASK_BITORDER
         or not isinstance(shape, list)
@@ -210,7 +212,9 @@ def load_mask_block(path: Path) -> tuple[dict, dict]:
         raise ValueError("invalid mask block") from error
     if (
         not isinstance(document, dict)
-        or document.get("version") != _MASK_ARTIFACT_VERSION
+        or isinstance(document.get("version"), bool)
+        or not isinstance(document.get("version"), int)
+        or document["version"] != _MASK_ARTIFACT_VERSION
         or not isinstance(document.get("metadata"), dict)
         or not isinstance(document.get("masks"), dict)
     ):
@@ -271,6 +275,37 @@ def jaccard(left: torch.Tensor, right: torch.Tensor) -> float:
         raise ValueError("masks must be bool tensors")
     union = torch.logical_or(left, right).sum().item()
     return 1.0 if union == 0 else torch.logical_and(left, right).sum().item() / union
+
+
+def row_change_fraction(left: torch.Tensor, right: torch.Tensor) -> float:
+    if not isinstance(left, torch.Tensor) or not isinstance(right, torch.Tensor) or left.shape != right.shape:
+        raise ValueError("masks must have matching shapes")
+    if left.ndim != 2:
+        raise ValueError("masks must be two-dimensional")
+    if not left.numel():
+        raise ValueError("masks must be nonempty")
+    if left.dtype != torch.bool or right.dtype != torch.bool:
+        raise ValueError("masks must be bool tensors")
+    return left.ne(right).any(dim=1).float().mean().item()
+
+
+def top_fraction_overlap(left: torch.Tensor, right: torch.Tensor, fraction: float = 0.01) -> float:
+    if not isinstance(left, torch.Tensor) or not isinstance(right, torch.Tensor) or left.shape != right.shape:
+        raise ValueError("scores must have matching shapes")
+    if not left.numel():
+        raise ValueError("scores must be nonempty")
+    if not torch.isfinite(left).all().item() or not torch.isfinite(right).all().item():
+        raise ValueError("scores must be finite")
+    if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not 0 < fraction <= 1:
+        raise ValueError("fraction must be in (0, 1]")
+    count = max(1, math.ceil(left.numel() * fraction))
+
+    def top_mask(score: torch.Tensor) -> torch.Tensor:
+        mask = torch.zeros(score.numel(), dtype=torch.bool, device=score.device)
+        mask[torch.argsort(score.reshape(-1), descending=True, stable=True)[:count]] = True
+        return mask
+
+    return jaccard(top_mask(left), top_mask(right))
 
 
 class TimestepSensitivityAccumulator:

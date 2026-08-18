@@ -1,10 +1,15 @@
+import hashlib
+import json
 import math
+from pathlib import Path
 
 import pytest
 import torch
 
 from lib.dlm_gradient_sensitivity import (
     TimestepSensitivityAccumulator,
+    row_change_fraction,
+    top_fraction_overlap,
     make_masked_state,
     mask_probability,
     midpoint_timesteps,
@@ -162,16 +167,46 @@ def test_unpack_mask_rejects_corrupt_bits_or_shape():
         unpack_mask(corrupt_shape)
 
 
-# Mutation caught: replacing the destination before serialization loses the last valid artifact.
-def test_save_mask_block_keeps_existing_artifact_when_write_fails(tmp_path):
+# Mutation caught: accepting bool as version 1 permits malformed masks or blocks.
+def test_mask_and_block_artifact_versions_reject_bool(tmp_path):
+    packed = pack_mask(torch.tensor([[True, False, True]]))
+    bool_version = dict(packed, version=True)
+    header = {
+        key: bool_version[key]
+        for key in ("version", "shape", "dtype", "bitorder", "prune_count", "per_row_prune_count", "byte_length")
+    }
+    bool_version["sha256"] = hashlib.sha256(
+        json.dumps(header, sort_keys=True, separators=(",", ":")).encode() + bool_version["bits"]
+    ).hexdigest()
+    with pytest.raises(ValueError, match="header"):
+        unpack_mask(bool_version)
+
+    path = tmp_path / "masks.json"
+    save_mask_block(path, {"module": torch.tensor([[True]])}, {})
+    document = json.loads(path.read_text())
+    document["version"] = True
+    path.write_text(json.dumps(document))
+    with pytest.raises(ValueError, match="block"):
+        load_mask_block(path)
+
+
+# Mutation caught: failing after tempfile creation must not replace or leak beside a valid artifact.
+def test_save_mask_block_keeps_existing_artifact_when_replace_fails(tmp_path, monkeypatch):
     path = tmp_path / "masks.json"
     original = {"module": torch.tensor([[True, False, True]])}
     save_mask_block(path, original, {"run": "old"})
-    with pytest.raises(TypeError):
-        save_mask_block(path, {"module": torch.tensor([[False, True, False]])}, {"bad": {1}})
-    loaded, metadata = load_mask_block(path)
-    assert torch.equal(loaded["module"], original["module"])
-    assert metadata == {"run": "old"}
+    original_bytes = path.read_bytes()
+    temporary_paths = []
+
+    def fail_replace(self, target):
+        temporary_paths.append(self)
+        raise OSError("interrupted before replace")
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+    with pytest.raises(OSError, match="interrupted"):
+        save_mask_block(path, {"module": torch.tensor([[False, True, False]])}, {"run": "new"})
+    assert temporary_paths and not temporary_paths[0].exists()
+    assert path.read_bytes() == original_bytes
 
 
 # Mutation caught: ordinal ranks or nondeterministic sampling change tied-rank correlations.
@@ -195,14 +230,35 @@ def test_sampled_spearman_reports_constant_vectors_as_nan():
 
 
 # Mutation caught: dividing by the left mask count instead of set union misstates overlap diagnostics.
-def test_jaccard_captures_mask_and_row_change_diagnostics():
+def test_jaccard_captures_mask_diagnostics():
     left = torch.tensor([[True, True, False, False], [True, False, True, False]])
     right = torch.tensor([[True, False, True, False], [True, False, True, False]])
     assert jaccard(left, right) == pytest.approx(0.6)
-    assert left.ne(right).any(dim=1).float().mean().item() == pytest.approx(0.5)
 
+
+# Mutation caught: counting changed weights rather than rows misstates selection instability.
+def test_row_change_fraction_counts_rows_and_rejects_invalid_masks():
+    left = torch.tensor([[True, True, False, False], [True, False, True, False]])
+    right = torch.tensor([[True, False, True, False], [True, False, True, False]])
+    assert row_change_fraction(left, right) == pytest.approx(0.5)
+    with pytest.raises(ValueError, match="two-dimensional"):
+        row_change_fraction(torch.tensor([True]), torch.tensor([True]))
+    with pytest.raises(ValueError, match="nonempty"):
+        row_change_fraction(torch.empty(0, 2, dtype=torch.bool), torch.empty(0, 2, dtype=torch.bool))
+    with pytest.raises(ValueError, match="bool"):
+        row_change_fraction(torch.ones(1, 1), torch.ones(1, 1))
+
+
+# Mutation caught: taking a global value threshold instead of the deterministic top fraction changes overlap.
+def test_top_fraction_overlap_uses_top_one_percent_and_rejects_invalid_inputs():
     sigma_a = torch.arange(100)
     sigma_b = torch.arange(99, -1, -1)
-    top_a = sigma_a >= 99
-    top_b = sigma_b >= 99
-    assert jaccard(top_a, top_b) == 0.0
+    assert top_fraction_overlap(sigma_a, sigma_b, 0.01) == 0.0
+    assert top_fraction_overlap(sigma_a, sigma_a, 0.01) == 1.0
+    assert top_fraction_overlap(torch.tensor([1.0, 2.0, 3.0]), torch.tensor([1.0, 2.0, 3.0]), 0.01) == 1.0
+    with pytest.raises(ValueError, match="nonempty"):
+        top_fraction_overlap(torch.tensor([]), torch.tensor([]), 0.01)
+    with pytest.raises(ValueError, match="fraction"):
+        top_fraction_overlap(torch.ones(2), torch.ones(2), 0.0)
+    with pytest.raises(ValueError, match="matching"):
+        top_fraction_overlap(torch.ones(2), torch.ones(3), 0.01)
