@@ -70,3 +70,31 @@ are preserved for debugging. Preflight recorded RTX 5090 with 32,103 MiB free,
 This is not a scientific NO-GO: the split-Spearman, split-Jaccard, and
 all-identical-mask predicates were not evaluated. Stage 1 and Task 8 remain
 unauthorized pending a scorer fix and a fresh checksum-verified resume.
+
+## Stage 1 final result: NO-GO
+
+The runtime fix at `592726a` completed the predeclared scorer command on
+2026-08-18T16:37:07Z–18:49:45Z (2:12:38; exit 2 is the scorer's declared
+NO-GO exit). The block-31 repeat remained finite and exact: absolute and
+relative gradient-square maxima `0.0`, within `1e-6` / `1e-5` tolerances.
+
+Independent audit passed: 32 checksum-valid blocks; 224 module entries; 10
+full/A/B Welford updates each; 16 full variants and 112 entries per block
+(3,584 masks); exact row prune counts and checksums for every packed mask;
+one model/config/state binding; and no persisted split masks. Model/config/state
+digests are `23431f0f`, `ac29cb07`, and `1e44d30e`, respectively.
+
+The split-Spearman predicate passes: median module rho is `0.884158` (range
+`0.747690`–`0.956689`; threshold `>= 0.5`; no undefined modules). The
+split-mask predicate fails independently at every decision sparsity:
+
+| sparsity | mean lambda-1 split Jaccard | threshold |
+| --- | ---: | ---: |
+| 0.50 | 0.792833 | 0.95 |
+| 0.60 | 0.812856 | 0.95 |
+| 0.70 | 0.838614 | 0.95 |
+
+Useful masks are not all identical to Mean, so that separate stop is false.
+Reliability nevertheless fails, therefore Stage 1 is **NO-GO** and Task 8 is
+not authorized. The ignored run/audit logs retain stdout, stderr, resource
+samples, and full audit evidence; packed blocks remain ignored.
