@@ -1,0 +1,170 @@
+{
+  "gate": {
+    "checks": {
+      "gpu_memory": true,
+      "gradients": true,
+      "runtime": true,
+      "swap": true
+    },
+    "limits": {
+      "max_gpu_gib": 30,
+      "max_gpu_hours": 24,
+      "max_swap_delta_kib": 0
+    },
+    "measurement_checks": [
+      {
+        "block": 31,
+        "checks": {
+          "allocated_memory": true,
+          "finite_gradients": true,
+          "nonzero_gradients": true,
+          "reserved_memory": true,
+          "swap": true
+        }
+      },
+      {
+        "block": 0,
+        "checks": {
+          "allocated_memory": true,
+          "finite_gradients": true,
+          "nonzero_gradients": true,
+          "reserved_memory": true,
+          "swap": true
+        }
+      }
+    ],
+    "passed": true
+  },
+  "measurements": [
+    {
+      "block": 31,
+      "cuda_peak_memory": [
+        {
+          "device": "cuda:0",
+          "max_memory_allocated_bytes": 16559907840,
+          "max_memory_reserved_bytes": 16670261248
+        }
+      ],
+      "finish_timestep_seconds": 1.7763941697776318,
+      "finite_gradient_count": 218103808,
+      "gradient_element_count": 218103808,
+      "max_memory_allocated_bytes": 16559907840,
+      "max_memory_reserved_bytes": 16670261248,
+      "next_block_cache_shape": [
+        1,
+        256,
+        4096
+      ],
+      "nonzero_gradient_count": 218103808,
+      "replay": {
+        "observation_count": 1,
+        "purpose": "timing-only working-buffer fill",
+        "replayed_accumulator_slots": 7
+      },
+      "state_seconds": 0.4882800988852978,
+      "vm_rss_after_kib": 11835344,
+      "vm_rss_before_kib": 2222832,
+      "vm_swap_after_kib": 0,
+      "vm_swap_before_kib": 0,
+      "vm_swap_delta_kib": 0
+    },
+    {
+      "block": 0,
+      "cuda_peak_memory": [
+        {
+          "device": "cuda:0",
+          "max_memory_allocated_bytes": 17349186560,
+          "max_memory_reserved_bytes": 17395875840
+        }
+      ],
+      "finish_timestep_seconds": 1.8093953356146812,
+      "finite_gradient_count": 218103808,
+      "gradient_element_count": 218103808,
+      "max_memory_allocated_bytes": 17349186560,
+      "max_memory_reserved_bytes": 17395875840,
+      "next_block_cache_shape": [
+        1,
+        256,
+        4096
+      ],
+      "nonzero_gradient_count": 218103808,
+      "replay": {
+        "observation_count": 1,
+        "purpose": "timing-only working-buffer fill",
+        "replayed_accumulator_slots": 7
+      },
+      "state_seconds": 0.4757222793996334,
+      "vm_rss_after_kib": 11835496,
+      "vm_rss_before_kib": 2463516,
+      "vm_swap_after_kib": 0,
+      "vm_swap_before_kib": 0,
+      "vm_swap_delta_kib": 0
+    }
+  ],
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "projection": {
+    "equation": "80 * sum(block state costs) + 10 * 32 * max(measured finish_timestep)",
+    "finish_timestep_seconds_per_block": 1.8093953356146812,
+    "fit_method": "max_endpoint_constant",
+    "fit_status": "constrained",
+    "fixed_seconds": 0.4882800988852978,
+    "per_block_seconds": [
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978,
+      0.4882800988852978
+    ],
+    "projected_scoring_seconds": 1249.9970531463623,
+    "projected_statistic_finalization_seconds": 579.006507396698,
+    "projected_total_gpu_hours": 0.5080565445952945,
+    "projected_total_seconds": 1829.0035605430603,
+    "raw_endpoint_difference_seconds": -0.012557819485664368,
+    "raw_unconstrained_suffix_seconds": -0.0004050909511504635,
+    "suffix_seconds": 0.0
+  },
+  "stage": 0,
+  "state": {
+    "dataset": {
+      "calibration_split": "train",
+      "configuration": "wikitext-2-raw-v1",
+      "id": "Salesforce/wikitext",
+      "loader_name": "wikitext2",
+      "validation_split": "validation"
+    },
+    "mask_seed": 0,
+    "p_mask": 0.05095,
+    "sequence_index": 0,
+    "timestep": 0.05
+  }
+}

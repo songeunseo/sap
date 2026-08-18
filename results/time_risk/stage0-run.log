@@ -1,0 +1,59 @@
+Stage 0 feasibility execution log (attempt 2)
+git_head=7e7bbd3e9e06f48559ce514dcb97b3c13662c2dd
+start_utc=2026-08-18T15:19:13Z
+start_local=2026-08-19T00:19:13+0900
+
+[nvidia-smi]
+Wed Aug 19 00:19:13 2026
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.211.01             Driver Version: 570.211.01     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 5090        Off |   00000000:01:00.0 Off |                  N/A |
+|  0%   29C    P8             15W /  575W |      17MiB /  32607MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A         3638413      G   /usr/bin/gnome-shell                      6MiB |
++-----------------------------------------------------------------------------------------+
+
+[memory]
+               total        used        free      shared  buff/cache   available
+Mem:            91Gi        42Gi        15Gi        13Gi        48Gi        49Gi
+Swap:          8.0Gi       8.0Gi       8.0Ki
+
+[swap]
+NAME      TYPE SIZE USED PRIO
+/swap.img file   8G   8G   -2
+
+[disk]
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  3.6T  3.4T   35G 100% /
+
+[package_versions]
+python=3.10.19 | packaged by conda-forge | (main, Oct 22 2025, 22:29:10) [GCC 14.3.0]
+platform=Linux-6.14.0-37-generic-x86_64-with-glibc2.39
+torch=2.8.0+cu128
+transformers=4.49.0
+accelerate=0.34.2
+datasets=2.21.0
+tokenizers=0.21.4
+safetensors=0.8.0
+
+[command]
+python dlm_gradient_sensitivity.py feasibility --config experiments/time_risk/pilot.json --output results/time_risk/stage0.json
+command_start_utc=2026-08-18T15:19:13Z
+command_start_local=2026-08-19T00:19:13+0900
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:00<00:02,  2.49it/s]Loading checkpoint shards:  33%|███▎      | 2/6 [00:00<00:01,  2.13it/s]Loading checkpoint shards:  50%|█████     | 3/6 [00:01<00:01,  2.05it/s]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:01<00:00,  2.00it/s]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:02<00:00,  1.97it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:02<00:00,  2.08it/s]Loading checkpoint shards: 100%|██████████| 6/6 [00:02<00:00,  2.07it/s]
+command_end_utc=2026-08-18T15:19:40Z
+command_end_local=2026-08-19T00:19:40+0900
+command_exit_code=0
