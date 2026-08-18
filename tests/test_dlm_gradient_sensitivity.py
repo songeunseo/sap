@@ -8,6 +8,7 @@ import torch
 import dlm_gradient_sensitivity as sensitivity_cli
 
 from lib.dlm_gradient_sensitivity import (
+    NegativeSuffixCostError,
     TimestepSensitivityAccumulator,
     block_state_gradients,
     embed_state,
@@ -394,8 +395,28 @@ def test_project_scoring_seconds_fits_suffix_cost_and_rejects_negative_slope():
     assert projection["fixed_seconds"] == pytest.approx(2.0)
     assert projection["suffix_seconds"] == pytest.approx(1.0)
     assert projection["projected_scoring_seconds"] == pytest.approx(44_800.0)
-    with pytest.raises(ValueError, match="suffix"):
+    with pytest.raises(NegativeSuffixCostError, match="suffix"):
         project_scoring_seconds(2.0, 1.0)
+
+
+@pytest.mark.parametrize(
+    ("last_seconds", "first_seconds", "blocks", "states"),
+    [
+        (1.0, -1.0, 32, 80),
+        (float("inf"), 1.0, 32, 80),
+        (float("nan"), 1.0, 32, 80),
+        (2.0, 1.0, 1, 80),
+        (2.0, 1.0, 32, 0),
+    ],
+)
+def test_stage0_projection_does_not_constrain_invalid_projector_inputs(
+    last_seconds, first_seconds, blocks, states
+):
+    with pytest.raises(ValueError) as error:
+        sensitivity_cli._project_stage0_seconds(
+            last_seconds, first_seconds, blocks, states
+        )
+    assert not isinstance(error.value, NegativeSuffixCostError)
 
 
 # Mutation caught: strict inequalities reject scientifically valid exact-boundary runs.

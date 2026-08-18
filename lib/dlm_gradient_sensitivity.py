@@ -15,6 +15,10 @@ _MASK_ARTIFACT_VERSION = 1
 _MASK_BITORDER = "big"
 
 
+class NegativeSuffixCostError(ValueError):
+    pass
+
+
 class _DiagnosticFloat(float):
     def __new__(cls, value: float, sample_indices: torch.Tensor, reason: str | None = None):
         result = float.__new__(cls, value)
@@ -211,7 +215,7 @@ def project_scoring_seconds(
     fixed = float(block_31_seconds)
     suffix = (float(block_0_seconds) - fixed) / (blocks - 1)
     if suffix < 0:
-        raise ValueError("fitted suffix cost must be nonnegative")
+        raise NegativeSuffixCostError("fitted suffix cost must be nonnegative")
     per_block = [fixed + suffix * (blocks - 1 - block) for block in range(blocks)]
     return {
         "fixed_seconds": fixed,

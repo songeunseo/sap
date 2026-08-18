@@ -7,6 +7,7 @@ from pathlib import Path
 import torch
 
 from lib.dlm_gradient_sensitivity import (
+    NegativeSuffixCostError,
     TimestepSensitivityAccumulator,
     block_state_gradients,
     embed_state,
@@ -159,6 +160,37 @@ def _measure_block(
     }
 
 
+def _project_stage0_seconds(
+    last_seconds: float, first_seconds: float, blocks: int, states: int
+) -> dict:
+    try:
+        projection = project_scoring_seconds(
+            last_seconds, first_seconds, blocks=blocks, states=states
+        )
+        fit_status = "unconstrained"
+        fit_method = "two_point_linear"
+    except NegativeSuffixCostError:
+        constant = max(last_seconds, first_seconds)
+        projection = {
+            "fixed_seconds": constant,
+            "suffix_seconds": 0.0,
+            "per_block_seconds": [constant] * blocks,
+            "projected_scoring_seconds": states * blocks * constant,
+        }
+        fit_status = "constrained"
+        fit_method = "max_endpoint_constant"
+    raw_difference = first_seconds - last_seconds
+    projection.update(
+        {
+            "fit_status": fit_status,
+            "fit_method": fit_method,
+            "raw_endpoint_difference_seconds": raw_difference,
+            "raw_unconstrained_suffix_seconds": raw_difference / (blocks - 1),
+        }
+    )
+    return projection
+
+
 def _run_loaded_feasibility(
     model,
     config: dict,
@@ -203,33 +235,8 @@ def _run_loaded_feasibility(
     states = calibration["sequence_count"] * len(calibration["timesteps"])
     last_seconds = by_block[last_block]["state_seconds"]
     first_seconds = by_block[first_block]["state_seconds"]
-    raw_difference = first_seconds - last_seconds
-    raw_suffix = raw_difference / (blocks - 1)
-    try:
-        projection = project_scoring_seconds(
-            last_seconds, first_seconds, blocks=blocks, states=states
-        )
-        fit_status = "unconstrained"
-        fit_method = "two_point_linear"
-    except ValueError:
-        if not raw_suffix < 0:
-            raise
-        constant = max(last_seconds, first_seconds)
-        projection = {
-            "fixed_seconds": constant,
-            "suffix_seconds": 0.0,
-            "per_block_seconds": [constant] * blocks,
-            "projected_scoring_seconds": states * blocks * constant,
-        }
-        fit_status = "constrained"
-        fit_method = "max_endpoint_constant"
-    projection.update(
-        {
-            "fit_status": fit_status,
-            "fit_method": fit_method,
-            "raw_endpoint_difference_seconds": raw_difference,
-            "raw_unconstrained_suffix_seconds": raw_suffix,
-        }
+    projection = _project_stage0_seconds(
+        last_seconds, first_seconds, blocks, states
     )
     finish_per_block = max(
         measurement["finish_timestep_seconds"] for measurement in measurements
