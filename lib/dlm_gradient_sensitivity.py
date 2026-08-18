@@ -710,9 +710,13 @@ def score_block(model, block_index: int, cached_states: dict, config: dict) -> t
         rho_split = sampled_spearman(sigma_a, sigma_b, sample_size, seed)
         if not torch.equal(rho_mu_sigma.sample_indices, rho_split.sample_indices):
             raise RuntimeError("Spearman diagnostics did not use the same sample")
-        ratio = sigma / (mu + ratio_eps)
+        rho_mu_sigma_diagnostic = _rho_diagnostic(rho_mu_sigma)
+        sample_indices = rho_mu_sigma.sample_indices
+        sampled_ratio = sigma.reshape(-1)[sample_indices] / (
+            mu.reshape(-1)[sample_indices] + ratio_eps
+        )
         quantiles = torch.quantile(
-            ratio.reshape(-1), torch.tensor([0.5, 0.9, 0.99], dtype=ratio.dtype)
+            sampled_ratio, torch.tensor([0.5, 0.9, 0.99], dtype=sampled_ratio.dtype)
         )
         module_masks = {}
         for risk_lambda in lambdas:
@@ -747,8 +751,13 @@ def score_block(model, block_index: int, cached_states: dict, config: dict) -> t
                 "median": quantiles[0].item(),
                 "p90": quantiles[1].item(),
                 "p99": quantiles[2].item(),
+                "sample_size": rho_mu_sigma.sample_indices.numel(),
+                "requested_sample_size": sample_size,
+                "sample_indices_sha256": rho_mu_sigma_diagnostic[
+                    "sample_indices_sha256"
+                ],
             },
-            "rho_mu_sigma": _rho_diagnostic(rho_mu_sigma),
+            "rho_mu_sigma": rho_mu_sigma_diagnostic,
             "rho_sigma_A_sigma_B": _rho_diagnostic(rho_split),
             "top_sigma_overlap": top_fraction_overlap(sigma_a, sigma_b, top_fraction),
             "top_sigma_fraction": top_fraction,

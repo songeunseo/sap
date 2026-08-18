@@ -743,7 +743,13 @@ def _diagnostics_have_exact_types(
             ratio = module["sigma_over_mu_plus_eps"]
             normalized[module_name] = {
                 "sigma_over_mu_plus_eps": {
-                    key: float(ratio[key]) for key in ("epsilon", "median", "p90", "p99")
+                    **{
+                        key: float(ratio[key])
+                        for key in ("epsilon", "median", "p90", "p99")
+                    },
+                    "sample_size": int(ratio["sample_size"]),
+                    "requested_sample_size": int(ratio["requested_sample_size"]),
+                    "sample_indices_sha256": str(ratio["sample_indices_sha256"]),
                 },
                 "rho_mu_sigma": rho("rho_mu_sigma"),
                 "rho_sigma_A_sigma_B": rho("rho_sigma_A_sigma_B"),

@@ -876,13 +876,22 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
             statistics["mu"] + torch.finfo(torch.float32).eps
         )
         quantiles = torch.quantile(ratio.flatten(), torch.tensor([0.5, 0.9, 0.99]))
-        assert result["diagnostics"][name]["sigma_over_mu_plus_eps"] == pytest.approx({
-            "epsilon": torch.finfo(torch.float32).eps,
-            "median": quantiles[0].item(),
-            "p90": quantiles[1].item(),
-            "p99": quantiles[2].item(),
-        })
         module_diagnostic = result["diagnostics"][name]
+        ratio_diagnostic = module_diagnostic["sigma_over_mu_plus_eps"]
+        assert ratio_diagnostic["epsilon"] == torch.finfo(torch.float32).eps
+        assert ratio_diagnostic["median"] == pytest.approx(quantiles[0].item())
+        assert ratio_diagnostic["p90"] == pytest.approx(quantiles[1].item())
+        assert ratio_diagnostic["p99"] == pytest.approx(quantiles[2].item())
+        assert ratio_diagnostic["sample_size"] == ratio.numel()
+        assert ratio_diagnostic["requested_sample_size"] == 10_000
+        expected_sample_digest = hashlib.sha256(
+            torch.arange(ratio.numel()).numpy().tobytes()
+        ).hexdigest()
+        assert ratio_diagnostic["sample_indices_sha256"] == expected_sample_digest
+        assert (
+            ratio_diagnostic["sample_indices_sha256"]
+            == module_diagnostic["rho_mu_sigma"]["sample_indices_sha256"]
+        )
         expected_mu_sigma_rho = literal_spearman(statistics["mu"], statistics["sigma"])
         expected_split_rho = literal_spearman(statistics["sigma_A"], statistics["sigma_B"])
         expected_split_rhos.append(expected_split_rho)
@@ -922,6 +931,45 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
         }
     )
     assert aggregated["all_useful_masks_identical"] is all_useful_masks_identical
+
+
+def test_score_block_ratio_quantiles_reuse_bounded_spearman_sample(monkeypatch):
+    torch.manual_seed(13)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    config = _toy_score_config(timesteps=(0.5,))
+    config["reliability"]["spearman_sample_size"] = 3
+    states = _toy_cached_states(model, config)
+    quantile_inputs = []
+    real_quantile = torch.quantile
+
+    def track_quantile(values, *args, **kwargs):
+        quantile_inputs.append(values.detach().clone())
+        return real_quantile(values, *args, **kwargs)
+
+    monkeypatch.setattr(torch, "quantile", track_quantile)
+    result, _ = score_block(model, 0, states, config)
+
+    assert len(quantile_inputs) == 7
+    for (name, statistics), sampled_ratio in zip(
+        result["statistics"].items(), quantile_inputs
+    ):
+        ratio = statistics["sigma"] / (
+            statistics["mu"] + torch.finfo(torch.float32).eps
+        )
+        assert ratio.numel() > 3
+        expected_indices = torch.randperm(
+            ratio.numel(), generator=torch.Generator().manual_seed(3)
+        )[:3]
+        torch.testing.assert_close(sampled_ratio, ratio.reshape(-1)[expected_indices])
+        expected_digest = hashlib.sha256(expected_indices.numpy().tobytes()).hexdigest()
+        diagnostic = result["diagnostics"][name]
+        assert diagnostic["sigma_over_mu_plus_eps"]["sample_size"] == 3
+        assert diagnostic["sigma_over_mu_plus_eps"]["requested_sample_size"] == 3
+        assert (
+            diagnostic["sigma_over_mu_plus_eps"]["sample_indices_sha256"]
+            == expected_digest
+            == diagnostic["rho_mu_sigma"]["sample_indices_sha256"]
+        )
 
 
 # Mutation caught: resume that trusts filenames, silently rescores block 0, or rewrites JSON changes output bytes.
