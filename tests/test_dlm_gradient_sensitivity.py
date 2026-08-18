@@ -38,6 +38,12 @@ def test_fixed_mask_state_is_reproducible_and_nonempty():
     assert torch.equal(first[0][first[1]], torch.full_like(first[0][first[1]], 999))
 
 
+def test_one_token_mask_retries_until_nonempty():
+    masked, mask, _ = make_masked_state(torch.tensor([[42]]), 0.05, mask_id=999, seed=0)
+    assert mask.tolist() == [[True]]
+    assert masked.item() == 999
+
+
 def test_mask_free_draw_retries_with_incremented_seed(monkeypatch):
     draws = iter((torch.ones(4), torch.tensor([0.0, 1.0, 1.0, 1.0])))
 

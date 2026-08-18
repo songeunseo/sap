@@ -25,7 +25,8 @@ def make_masked_state(
         raise ValueError("clean_ids must have a positive sequence length")
     p_mask = mask_probability(timestep)
     generator = torch.Generator(device=clean_ids.device)
-    for attempt in range(clean_ids.numel() + 1):
+    attempt = 0
+    while True:
         generator.manual_seed(seed + attempt)
         mask = torch.rand(
             clean_ids.shape, device=clean_ids.device, generator=generator
@@ -34,7 +35,7 @@ def make_masked_state(
             masked_ids = clean_ids.clone()
             masked_ids[mask] = mask_id
             return masked_ids, mask, p_mask
-    raise RuntimeError("deterministic mask resampling failed")
+        attempt += 1
 
 
 def official_dlm_loss(
