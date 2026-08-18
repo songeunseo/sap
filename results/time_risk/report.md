@@ -46,3 +46,27 @@ not alter the predeclared 24-hour scientific gate.
 ## Next authorized stage
 
 GO: run Stage 1 without enabling checkpointing or changing the Stage 0 bounds.
+
+## Stage 1 execution: BLOCKED (operational)
+
+The committed scorer (`fcfc68e61fd2140703b90cccf20a6c1adc5c7899`) was run with
+the predeclared pilot command at 2026-08-18T16:25:00Z. The block-31 repeated
+gradient-square check passed (finite, absolute difference `0.0`, relative
+difference `0.0`, within `1e-6` / `1e-5` tolerances), but the first scoring
+block stopped before artifact publication:
+
+```text
+RuntimeError: quantile() input tensor is too large
+  lib/dlm_gradient_sensitivity.py:714 in score_block
+```
+
+No packed block, `stage1.json`, or reliability decision exists: the manifest
+has 0/32 completed blocks and states 224 expected module entries, 10
+full/A/B updates, 16 variants, and 112 packed entries per completed block.
+The ignored `stage1-run.log`, `masks/manifest.json`, and `masks/states.json`
+are preserved for debugging. Preflight recorded RTX 5090 with 32,103 MiB free,
+49 GiB available RAM, 34 GiB disk headroom, and an already-full 8 GiB swap.
+
+This is not a scientific NO-GO: the split-Spearman, split-Jaccard, and
+all-identical-mask predicates were not evaluated. Stage 1 and Task 8 remain
+unauthorized pending a scorer fix and a fresh checksum-verified resume.
