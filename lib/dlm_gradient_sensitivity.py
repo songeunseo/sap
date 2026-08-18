@@ -77,6 +77,199 @@ def official_dlm_loss(
     return token_loss / p_mask / clean_ids.numel()
 
 
+def _llada_core(model):
+    core = getattr(model, "model", model)
+    if not hasattr(core, "transformer"):
+        raise TypeError("model must contain a LLaDA transformer")
+    if core.config.block_group_size != 1:
+        raise ValueError("block suffix scoring requires ungrouped transformer blocks")
+    return core
+
+
+def _module_device_dtype(module) -> tuple[torch.device, torch.dtype]:
+    parameter = next(module.parameters())
+    return parameter.device, parameter.dtype
+
+
+def embed_state(model, noisy_ids: torch.Tensor) -> torch.Tensor:
+    core = _llada_core(model)
+    transformer = core.transformer
+    device = transformer.wte.weight.device
+    noisy_ids = noisy_ids.to(device=device, dtype=torch.long)
+    hidden = transformer.wte(noisy_ids)
+    if core.config.input_emb_norm:
+        hidden = hidden * math.sqrt(core.config.d_model)
+    if not (core.config.alibi or core.config.rope):
+        positions = torch.arange(
+            hidden.shape[1], dtype=torch.long, device=hidden.device
+        ).unsqueeze(0)
+        hidden = hidden + transformer.wpe(positions)
+    return transformer.emb_drop(hidden)
+
+
+def suffix_logits(model, hidden: torch.Tensor, start_block: int) -> torch.Tensor:
+    core = _llada_core(model)
+    blocks = core.transformer.blocks
+    if isinstance(start_block, bool) or not isinstance(start_block, int) or not 0 <= start_block <= len(blocks):
+        raise ValueError("start_block is outside the transformer")
+    for block in blocks[start_block:]:
+        device, dtype = _module_device_dtype(block)
+        hidden = hidden.to(device=device, dtype=dtype)
+        hidden, _ = block(
+            hidden,
+            attention_bias=None,
+            layer_past=None,
+            use_cache=False,
+            replace_position=None,
+            attn_collector=None,
+        )
+    norm_device, norm_dtype = _module_device_dtype(core.transformer.ln_f)
+    hidden = core.transformer.ln_f(hidden.to(device=norm_device, dtype=norm_dtype))
+    if core.config.weight_tying:
+        output_weight = core.transformer.wte.weight
+        hidden = hidden.to(device=output_weight.device, dtype=output_weight.dtype)
+        logits = F.linear(hidden, output_weight, None)
+    else:
+        output_device, output_dtype = _module_device_dtype(core.transformer.ff_out)
+        logits = core.transformer.ff_out(hidden.to(device=output_device, dtype=output_dtype))
+    if core.config.scale_logits:
+        logits.mul_(1 / math.sqrt(core.config.d_model))
+    return logits
+
+
+def block_state_gradients(
+    model,
+    block_index: int,
+    hidden: torch.Tensor,
+    clean_ids: torch.Tensor,
+    mask: torch.Tensor,
+    p_mask: float,
+) -> tuple[dict[str, torch.Tensor], torch.Tensor]:
+    from .prune_llada import find_layers
+
+    core = _llada_core(model)
+    blocks = core.transformer.blocks
+    if isinstance(block_index, bool) or not isinstance(block_index, int) or not 0 <= block_index < len(blocks):
+        raise ValueError("block_index is outside the transformer")
+    target_block = blocks[block_index]
+    layers = find_layers(target_block)
+    if len(layers) != 7:
+        raise ValueError(f"expected seven block linear weights, found {len(layers)}")
+    parameters = list(model.parameters())
+    original_flags = [parameter.requires_grad for parameter in parameters]
+    model.zero_grad(set_to_none=True)
+    try:
+        for parameter in parameters:
+            parameter.requires_grad_(False)
+        for layer in layers.values():
+            layer.weight.requires_grad_(True)
+
+        device, dtype = _module_device_dtype(target_block)
+        target_output, _ = target_block(
+            hidden.detach().to(device=device, dtype=dtype),
+            attention_bias=None,
+            layer_past=None,
+            use_cache=False,
+            replace_position=None,
+            attn_collector=None,
+        )
+        logits = suffix_logits(model, target_output, block_index + 1)
+        loss = official_dlm_loss(
+            logits,
+            clean_ids.to(device=logits.device, dtype=torch.long),
+            mask.to(device=logits.device, dtype=torch.bool),
+            p_mask,
+        )
+        loss.backward()
+        gradients = {}
+        for name, layer in layers.items():
+            if layer.weight.grad is None:
+                raise RuntimeError(f"missing gradient for block weight: {name}")
+            gradients[name] = layer.weight.grad.detach().to(device="cpu", dtype=torch.float32)
+        return gradients, target_output.detach()
+    finally:
+        model.zero_grad(set_to_none=True)
+        for parameter, requires_grad in zip(parameters, original_flags):
+            parameter.requires_grad_(requires_grad)
+
+
+def project_scoring_seconds(
+    block_31_seconds: float,
+    block_0_seconds: float,
+    blocks: int = 32,
+    states: int = 80,
+) -> dict:
+    if isinstance(blocks, bool) or not isinstance(blocks, int) or blocks < 2:
+        raise ValueError("blocks must be at least two")
+    if isinstance(states, bool) or not isinstance(states, int) or states <= 0:
+        raise ValueError("states must be positive")
+    if any(
+        isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0
+        for value in (block_31_seconds, block_0_seconds)
+    ):
+        raise ValueError("block seconds must be finite and nonnegative")
+    fixed = float(block_31_seconds)
+    suffix = (float(block_0_seconds) - fixed) / (blocks - 1)
+    if suffix < 0:
+        raise ValueError("fitted suffix cost must be nonnegative")
+    per_block = [fixed + suffix * (blocks - 1 - block) for block in range(blocks)]
+    return {
+        "fixed_seconds": fixed,
+        "suffix_seconds": suffix,
+        "per_block_seconds": per_block,
+        "projected_scoring_seconds": states * sum(per_block),
+    }
+
+
+def feasibility_gate(
+    measurements: list[dict],
+    projected_seconds: float,
+    max_gpu_gib: float = 30,
+    max_gpu_hours: float = 24,
+) -> dict:
+    if not measurements:
+        raise ValueError("measurements must not be empty")
+    memory_limit = max_gpu_gib * 1024**3
+    measurement_checks = []
+    for measurement in measurements:
+        measurement_checks.append(
+            {
+                "block": measurement.get("block"),
+                "checks": {
+                    "allocated_memory": measurement["max_memory_allocated_bytes"] <= memory_limit,
+                    "reserved_memory": measurement["max_memory_reserved_bytes"] <= memory_limit,
+                    "swap": measurement["vm_swap_delta_kib"] <= 0,
+                    "finite_gradients": measurement["gradient_element_count"] > 0
+                    and measurement["finite_gradient_count"] == measurement["gradient_element_count"],
+                    "nonzero_gradients": measurement["nonzero_gradient_count"] > 0,
+                },
+            }
+        )
+    checks = {
+        "gpu_memory": all(
+            item["checks"]["allocated_memory"] and item["checks"]["reserved_memory"]
+            for item in measurement_checks
+        ),
+        "swap": all(item["checks"]["swap"] for item in measurement_checks),
+        "gradients": all(
+            item["checks"]["finite_gradients"] and item["checks"]["nonzero_gradients"]
+            for item in measurement_checks
+        ),
+        "runtime": math.isfinite(projected_seconds)
+        and projected_seconds <= max_gpu_hours * 60 * 60,
+    }
+    return {
+        "passed": all(checks.values()),
+        "checks": checks,
+        "measurement_checks": measurement_checks,
+        "limits": {
+            "max_gpu_gib": max_gpu_gib,
+            "max_gpu_hours": max_gpu_hours,
+            "max_swap_delta_kib": 0,
+        },
+    }
+
+
 def rowwise_prune_mask(score: torch.Tensor, sparsity: float) -> torch.Tensor:
     if not isinstance(score, torch.Tensor) or score.ndim != 2:
         raise ValueError("score must be a two-dimensional tensor")

@@ -5,10 +5,16 @@ from pathlib import Path
 
 import pytest
 import torch
+import dlm_gradient_sensitivity as sensitivity_cli
 
 from lib.dlm_gradient_sensitivity import (
     TimestepSensitivityAccumulator,
+    block_state_gradients,
+    embed_state,
+    feasibility_gate,
+    project_scoring_seconds,
     row_change_fraction,
+    suffix_logits,
     top_fraction_overlap,
     make_masked_state,
     mask_probability,
@@ -22,6 +28,9 @@ from lib.dlm_gradient_sensitivity import (
     save_mask_block,
     unpack_mask,
 )
+from lib.prune_llada import find_layers
+from model.configuration_llada import LLaDAConfig
+from model.modeling_llada import LLaDAModelLM
 
 
 def test_midpoints_and_mask_probability_are_official_values():
@@ -262,3 +271,172 @@ def test_top_fraction_overlap_uses_top_one_percent_and_rejects_invalid_inputs():
         top_fraction_overlap(torch.ones(2), torch.ones(2), 0.0)
     with pytest.raises(ValueError, match="matching"):
         top_fraction_overlap(torch.ones(2), torch.ones(3), 0.01)
+
+
+def _tiny_llada():
+    config = LLaDAConfig(
+        d_model=8,
+        n_heads=2,
+        n_layers=2,
+        mlp_hidden_size=16,
+        activation_type="silu",
+        block_type="llama",
+        rope=True,
+        rope_full_precision=True,
+        attention_dropout=0.0,
+        residual_dropout=0.0,
+        embedding_dropout=0.0,
+        input_emb_norm=True,
+        max_sequence_length=8,
+        vocab_size=19,
+        embedding_size=None,
+        weight_tying=True,
+        scale_logits=True,
+        use_cache=False,
+    )
+    return LLaDAModelLM(config, init_params=True).eval()
+
+
+# Mutation caught: skipping embedding scaling, final norm, tied head, or logit scaling breaks parity.
+def test_suffix_logits_matches_real_llada_forward_from_embedding_and_block_cache():
+    torch.manual_seed(0)
+    model = _tiny_llada()
+    noisy_ids = torch.tensor([[1, 2, 3, 4]])
+
+    full = model(noisy_ids).logits
+    cached = embed_state(model, noisy_ids)
+    torch.testing.assert_close(suffix_logits(model, cached, start_block=0), full)
+
+    block_zero_output, _ = model.model.transformer.blocks[0](
+        cached, attention_bias=None, layer_past=None, use_cache=False
+    )
+    torch.testing.assert_close(
+        suffix_logits(model, block_zero_output, start_block=1), full
+    )
+
+
+# Mutation caught: detaching the frozen suffix or selecting non-block weights changes/loses gradients.
+def test_block_state_gradients_match_full_forward_and_do_not_mutate_parameters():
+    torch.manual_seed(1)
+    model = _tiny_llada()
+    target = find_layers(model.model.transformer.blocks[0])
+    assert len(target) == 7
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    for layer in target.values():
+        layer.weight.requires_grad_(True)
+
+    clean_ids = torch.tensor([[1, 2, 3, 4]])
+    noisy_ids = torch.tensor([[18, 2, 18, 4]])
+    mask = torch.tensor([[True, False, True, False]])
+    hidden = embed_state(model, noisy_ids)
+    parameter_bytes = {
+        name: parameter.detach().cpu().numpy().tobytes()
+        for name, parameter in model.named_parameters()
+    }
+
+    official_dlm_loss(model(noisy_ids).logits, clean_ids, mask, 0.5).backward()
+    expected = {name: layer.weight.grad.detach().clone() for name, layer in target.items()}
+    assert all(
+        parameter.grad is None
+        for name, parameter in model.named_parameters()
+        if not name.startswith("model.transformer.blocks.0.") or ".weight" not in name
+    )
+    model.zero_grad(set_to_none=True)
+    original_flags = tuple(parameter.requires_grad for parameter in model.parameters())
+
+    actual, next_cache = block_state_gradients(
+        model, 0, hidden, clean_ids, mask, p_mask=0.5
+    )
+
+    assert set(actual) == set(expected)
+    for name in expected:
+        torch.testing.assert_close(actual[name], expected[name].float().cpu())
+        assert torch.isfinite(actual[name]).all()
+    assert not next_cache.requires_grad
+    assert tuple(parameter.requires_grad for parameter in model.parameters()) == original_flags
+    assert all(parameter.grad is None for parameter in model.parameters())
+    assert {
+        name: parameter.detach().cpu().numpy().tobytes()
+        for name, parameter in model.named_parameters()
+    } == parameter_bytes
+
+
+# Mutation caught: restoring flags only on success leaks trainable parameters after a failed state.
+def test_block_state_gradients_restores_flags_and_bytes_on_failure():
+    model = _tiny_llada()
+    parameters = list(model.parameters())
+    for index, parameter in enumerate(parameters):
+        parameter.requires_grad_(index % 3 == 0)
+    flags = tuple(parameter.requires_grad for parameter in parameters)
+    parameter_bytes = [parameter.detach().cpu().numpy().tobytes() for parameter in parameters]
+
+    clean_ids = torch.tensor([[1, 2]])
+    with pytest.raises(ValueError, match="masked token"):
+        block_state_gradients(
+            model,
+            0,
+            embed_state(model, clean_ids),
+            clean_ids,
+            torch.zeros_like(clean_ids, dtype=torch.bool),
+            p_mask=0.5,
+        )
+
+    assert tuple(parameter.requires_grad for parameter in parameters) == flags
+    assert [parameter.detach().cpu().numpy().tobytes() for parameter in parameters] == parameter_bytes
+    assert all(parameter.grad is None for parameter in parameters)
+
+
+# Mutation caught: charging all blocks as block 0 or omitting 80 states changes 44,800 seconds.
+def test_project_scoring_seconds_fits_suffix_cost_and_rejects_negative_slope():
+    projection = project_scoring_seconds(2.0, 33.0)
+    assert projection["fixed_seconds"] == pytest.approx(2.0)
+    assert projection["suffix_seconds"] == pytest.approx(1.0)
+    assert projection["projected_scoring_seconds"] == pytest.approx(44_800.0)
+    with pytest.raises(ValueError, match="suffix"):
+        project_scoring_seconds(2.0, 1.0)
+
+
+# Mutation caught: strict inequalities reject scientifically valid exact-boundary runs.
+def test_feasibility_gate_accepts_exact_memory_and_runtime_boundaries():
+    gib = 1024**3
+    measurements = [
+        {
+            "max_memory_allocated_bytes": 30 * gib,
+            "max_memory_reserved_bytes": 30 * gib,
+            "vm_swap_delta_kib": 0,
+            "gradient_element_count": 7,
+            "finite_gradient_count": 7,
+            "nonzero_gradient_count": 1,
+        }
+        for _ in range(2)
+    ]
+    decision = feasibility_gate(measurements, projected_seconds=24 * 60 * 60)
+    assert decision["passed"]
+    assert all(decision["checks"].values())
+    assert len(decision["measurement_checks"]) == 2
+    assert all(all(check["checks"].values()) for check in decision["measurement_checks"])
+
+    measurements[0]["max_memory_reserved_bytes"] += 1
+    assert not feasibility_gate(measurements, 24 * 60 * 60)["passed"]
+    measurements[0]["max_memory_reserved_bytes"] -= 1
+    measurements[1]["vm_swap_delta_kib"] = 1
+    assert not feasibility_gate(measurements, 24 * 60 * 60)["passed"]
+    measurements[1]["vm_swap_delta_kib"] = 0
+    assert not feasibility_gate(measurements, math.nextafter(24 * 60 * 60, math.inf))["passed"]
+
+
+# Mutation caught: returning before serialization loses scientifically valid NO-GO evidence.
+def test_feasibility_cli_writes_gate_failure_and_returns_two(tmp_path, monkeypatch):
+    config_path = tmp_path / "pilot.json"
+    output_path = tmp_path / "stage0.json"
+    config_path.write_text("{}")
+    report = {"stage": 0, "gate": {"passed": False, "checks": {"runtime": False}}}
+    monkeypatch.setattr(sensitivity_cli, "run_feasibility", lambda config: report)
+
+    status = sensitivity_cli.main(
+        ["feasibility", "--config", str(config_path), "--output", str(output_path)]
+    )
+
+    assert status == 2
+    assert json.loads(output_path.read_text()) == report
