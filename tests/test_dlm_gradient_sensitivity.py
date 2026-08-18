@@ -273,12 +273,12 @@ def test_top_fraction_overlap_uses_top_one_percent_and_rejects_invalid_inputs():
         top_fraction_overlap(torch.ones(2), torch.ones(3), 0.01)
 
 
-def _tiny_llada():
+def _tiny_llada(n_layers=2, d_model=8, vocab_size=19):
     config = LLaDAConfig(
-        d_model=8,
-        n_heads=2,
-        n_layers=2,
-        mlp_hidden_size=16,
+        d_model=d_model,
+        n_heads=1,
+        n_layers=n_layers,
+        mlp_hidden_size=d_model * 2,
         activation_type="silu",
         block_type="llama",
         rope=True,
@@ -288,10 +288,11 @@ def _tiny_llada():
         embedding_dropout=0.0,
         input_emb_norm=True,
         max_sequence_length=8,
-        vocab_size=19,
+        vocab_size=vocab_size,
         embedding_size=None,
         weight_tying=True,
         scale_logits=True,
+        mask_token_id=vocab_size - 1,
         use_cache=False,
     )
     return LLaDAModelLM(config, init_params=True).eval()
@@ -440,3 +441,136 @@ def test_feasibility_cli_writes_gate_failure_and_returns_two(tmp_path, monkeypat
 
     assert status == 2
     assert json.loads(output_path.read_text()) == report
+
+
+# Mutation caught: reading only the current CUDA device can hide the true peak on a mapped block.
+def test_cuda_peak_accounting_covers_every_model_device_and_rejects_offload(monkeypatch):
+    reset_devices = []
+    monkeypatch.setattr(
+        torch.cuda, "reset_peak_memory_stats", lambda device: reset_devices.append(device)
+    )
+    monkeypatch.setattr(
+        torch.cuda,
+        "max_memory_allocated",
+        lambda device: {0: 11, 2: 31}[device],
+    )
+    monkeypatch.setattr(
+        torch.cuda,
+        "max_memory_reserved",
+        lambda device: {0: 13, 2: 37}[device],
+    )
+
+    sensitivity_cli._reset_cuda_peaks((0, 2))
+    peaks = sensitivity_cli._read_cuda_peaks((0, 2))
+
+    assert reset_devices == [0, 2]
+    assert peaks == {
+        "devices": [
+            {
+                "device": "cuda:0",
+                "max_memory_allocated_bytes": 11,
+                "max_memory_reserved_bytes": 13,
+            },
+            {
+                "device": "cuda:2",
+                "max_memory_allocated_bytes": 31,
+                "max_memory_reserved_bytes": 37,
+            },
+        ],
+        "max_memory_allocated_bytes": 31,
+        "max_memory_reserved_bytes": 37,
+    }
+
+    offloaded = type(
+        "OffloadedModel", (), {"hf_device_map": {"model.embed": "cuda:0", "model.block": "cpu"}}
+    )()
+    with pytest.raises(RuntimeError, match="offload"):
+        sensitivity_cli._model_cuda_devices(offloaded)
+
+
+# Mutation caught: moving replay/finish into the state timer or omitting finalization changes projection.
+def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(monkeypatch):
+    torch.manual_seed(2)
+    model = _tiny_llada(n_layers=32, d_model=4, vocab_size=7)
+    clean_ids = torch.tensor([[1, 2]])
+    config = {
+        "model": {"id": "tiny", "revision": "test"},
+        "dataset": {"loader_name": "tiny"},
+        "calibration": {
+            "seed": 0,
+            "sequence_count": 8,
+            "sequence_length": 2,
+            "timesteps": list(midpoint_timesteps()),
+        },
+        "stage0": {
+            "model_block_count": 32,
+            "measured_blocks": [31, 0],
+            "max_gpu_memory_gib": 30,
+            "max_projected_gpu_hours": 24,
+        },
+    }
+    events = []
+    clock_values = iter((0.0, 2.0, 10.0, 10.5, 20.0, 53.0, 60.0, 60.25))
+
+    def clock():
+        value = next(clock_values)
+        events.append(("clock", value))
+        return value
+
+    real_gradients = sensitivity_cli.block_state_gradients
+
+    def tracked_gradients(*args, **kwargs):
+        gradients, cache = real_gradients(*args, **kwargs)
+        events.append(("backward", args[1], all(g.dtype == torch.float32 for g in gradients.values())))
+        return gradients, cache
+
+    real_accumulator = sensitivity_cli.TimestepSensitivityAccumulator
+
+    class TrackedAccumulator(real_accumulator):
+        def add_state(self, gradients, split):
+            super().add_state(gradients, split)
+            squared = all(
+                torch.equal(self._sum_sq[split][name], gradient.square())
+                for name, gradient in gradients.items()
+            ) if self._count[split] == 1 else True
+            events.append(("add", split, all(g.dtype == torch.float32 for g in gradients.values()), squared))
+
+        def finish_timestep(self):
+            events.append(("finish",))
+            super().finish_timestep()
+
+    monkeypatch.setattr(sensitivity_cli, "block_state_gradients", tracked_gradients)
+    monkeypatch.setattr(sensitivity_cli, "TimestepSensitivityAccumulator", TrackedAccumulator)
+    monkeypatch.setattr(sensitivity_cli, "_synchronize", lambda devices=(): None)
+    monkeypatch.setattr(
+        sensitivity_cli,
+        "_process_memory",
+        lambda: {"vm_rss_kib": 100, "vm_swap_kib": 0},
+    )
+
+    report = sensitivity_cli._run_loaded_feasibility(
+        model, config, clean_ids, cuda_devices=(), clock=clock
+    )
+
+    assert [event[1] for event in events if event[0] == "backward"] == [31, 0]
+    assert all(event[2] for event in events if event[0] == "backward")
+    adds = [event for event in events if event[0] == "add"]
+    assert len(adds) == 16
+    assert all(event[2] and event[3] for event in adds)
+    for backward_position in [
+        index for index, event in enumerate(events) if event[0] == "backward"
+    ]:
+        state_end = next(
+            index for index in range(backward_position, len(events))
+            if events[index][0] == "clock"
+        )
+        assert [event[0] for event in events[backward_position + 1:state_end]] == ["add"]
+        finish_position = next(
+            index for index in range(state_end, len(events)) if events[index][0] == "finish"
+        )
+        assert sum(event[0] == "add" for event in events[state_end + 1:finish_position]) == 7
+        assert events[finish_position - 1][0] == "clock"
+        assert events[finish_position + 1][0] == "clock"
+    assert report["projection"]["projected_scoring_seconds"] == pytest.approx(44_800)
+    assert report["projection"]["projected_statistic_finalization_seconds"] == pytest.approx(160)
+    assert report["projection"]["projected_total_seconds"] == pytest.approx(44_960)
