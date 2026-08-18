@@ -92,7 +92,7 @@ split-mask predicate fails independently at every decision sparsity:
 | --- | ---: | ---: |
 | 0.50 | 0.792833 | 0.95 |
 | 0.60 | 0.812856 | 0.95 |
-| 0.70 | 0.838614 | 0.95 |
+| 0.70 | 0.838615 | 0.95 |
 
 Useful masks are not all identical to Mean, so that separate stop is false.
 Reliability nevertheless fails, therefore Stage 1 is **NO-GO** and Task 8 is
