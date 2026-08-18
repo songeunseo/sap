@@ -1,7 +1,26 @@
+import base64
+import hashlib
+import json
 import math
+import os
+import tempfile
+from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn.functional as F
+
+
+_MASK_ARTIFACT_VERSION = 1
+_MASK_BITORDER = "big"
+
+
+class _DiagnosticFloat(float):
+    def __new__(cls, value: float, sample_indices: torch.Tensor, reason: str | None = None):
+        result = float.__new__(cls, value)
+        result.sample_indices = sample_indices
+        result.reason = reason
+        return result
 
 
 def midpoint_timesteps(count: int = 10) -> tuple[float, ...]:
@@ -56,6 +75,202 @@ def official_dlm_loss(
         raise ValueError("official DLM loss requires at least one masked token")
     token_loss = F.cross_entropy(logits[mask].float(), clean_ids[mask], reduction="sum")
     return token_loss / p_mask / clean_ids.numel()
+
+
+def rowwise_prune_mask(score: torch.Tensor, sparsity: float) -> torch.Tensor:
+    if not isinstance(score, torch.Tensor) or score.ndim != 2:
+        raise ValueError("score must be a two-dimensional tensor")
+    if not torch.isfinite(score).all().item():
+        raise ValueError("score must be finite")
+    if isinstance(sparsity, bool) or not isinstance(sparsity, (int, float)):
+        raise ValueError("sparsity must be between 0 and 1")
+    if not math.isfinite(sparsity) or not 0 <= sparsity <= 1:
+        raise ValueError("sparsity must be between 0 and 1")
+    prune_count = math.floor(score.shape[1] * sparsity)
+    mask = torch.zeros_like(score, dtype=torch.bool)
+    if prune_count:
+        mask.scatter_(1, torch.argsort(score, dim=1, stable=True)[:, :prune_count], True)
+    return mask
+
+
+def _mask_header(artifact: dict) -> dict:
+    required = {"version", "shape", "dtype", "bitorder", "prune_count", "per_row_prune_count", "byte_length"}
+    if not isinstance(artifact, dict) or set(artifact) != required | {"bits", "sha256"}:
+        raise ValueError("invalid mask artifact")
+    shape = artifact["shape"]
+    if (
+        artifact["version"] != _MASK_ARTIFACT_VERSION
+        or artifact["dtype"] != "bool"
+        or artifact["bitorder"] != _MASK_BITORDER
+        or not isinstance(shape, list)
+        or len(shape) != 2
+        or any(isinstance(size, bool) or not isinstance(size, int) or size <= 0 for size in shape)
+    ):
+        raise ValueError("invalid mask artifact header")
+    if (
+        not isinstance(artifact["prune_count"], int)
+        or artifact["prune_count"] < 0
+        or not isinstance(artifact["per_row_prune_count"], list)
+        or not isinstance(artifact["byte_length"], int)
+    ):
+        raise ValueError("invalid mask artifact header")
+    return {key: artifact[key] for key in required}
+
+
+def _mask_checksum(header: dict, bits: bytes) -> str:
+    encoded_header = json.dumps(header, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded_header + bits).hexdigest()
+
+
+def pack_mask(mask: torch.Tensor) -> dict:
+    if not isinstance(mask, torch.Tensor) or mask.ndim != 2 or mask.dtype != torch.bool:
+        raise ValueError("mask must be a two-dimensional bool tensor")
+    packed = np.packbits(mask.detach().cpu().numpy().reshape(-1), bitorder=_MASK_BITORDER).tobytes()
+    header = {
+        "version": _MASK_ARTIFACT_VERSION,
+        "shape": list(mask.shape),
+        "dtype": "bool",
+        "bitorder": _MASK_BITORDER,
+        "prune_count": int(mask.sum().item()),
+        "per_row_prune_count": mask.sum(dim=1).cpu().tolist(),
+        "byte_length": len(packed),
+    }
+    return {**header, "bits": packed, "sha256": _mask_checksum(header, packed)}
+
+
+def unpack_mask(artifact: dict) -> torch.Tensor:
+    header = _mask_header(artifact)
+    bits = artifact["bits"]
+    if not isinstance(bits, bytes) or len(bits) != header["byte_length"]:
+        raise ValueError("invalid mask bit length")
+    if len(bits) != math.ceil(math.prod(header["shape"]) / 8):
+        raise ValueError("invalid mask bit length")
+    if not isinstance(artifact["sha256"], str) or _mask_checksum(header, bits) != artifact["sha256"]:
+        raise ValueError("mask checksum mismatch")
+    if (
+        len(header["per_row_prune_count"]) != header["shape"][0]
+        or any(
+            not isinstance(count, int) or count < 0 or count > header["shape"][1]
+            for count in header["per_row_prune_count"]
+        )
+    ):
+        raise ValueError("invalid mask prune counts")
+    values = np.unpackbits(np.frombuffer(bits, dtype=np.uint8), bitorder=_MASK_BITORDER)
+    bit_count = math.prod(header["shape"])
+    if values.size != math.ceil(bit_count / 8) * 8 or values[bit_count:].any():
+        raise ValueError("invalid mask trailing bits")
+    mask = torch.from_numpy(values[:bit_count].reshape(header["shape"]).astype(np.bool_, copy=True))
+    if int(mask.sum().item()) != header["prune_count"] or mask.sum(dim=1).tolist() != header["per_row_prune_count"]:
+        raise ValueError("invalid mask prune counts")
+    return mask
+
+
+def _json_mask_artifact(artifact: dict) -> dict:
+    return {**artifact, "bits": base64.b64encode(artifact["bits"]).decode("ascii")}
+
+
+def _from_json_mask_artifact(artifact: dict) -> dict:
+    if not isinstance(artifact, dict) or not isinstance(artifact.get("bits"), str):
+        raise ValueError("invalid mask artifact")
+    try:
+        return {**artifact, "bits": base64.b64decode(artifact["bits"], validate=True)}
+    except ValueError as error:
+        raise ValueError("invalid mask artifact") from error
+
+
+def save_mask_block(path: Path, masks: dict, metadata: dict) -> None:
+    if not isinstance(masks, dict) or not isinstance(metadata, dict):
+        raise ValueError("masks and metadata must be dictionaries")
+    document = {
+        "version": _MASK_ARTIFACT_VERSION,
+        "metadata": metadata,
+        "masks": {name: _json_mask_artifact(pack_mask(mask)) for name, mask in masks.items()},
+    }
+    encoded = json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+    destination = Path(path)
+    temporary_name = None
+    try:
+        with tempfile.NamedTemporaryFile("wb", dir=destination.parent, delete=False) as temporary:
+            temporary_name = temporary.name
+            temporary.write(encoded)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        Path(temporary_name).replace(destination)
+        temporary_name = None
+    finally:
+        if temporary_name:
+            Path(temporary_name).unlink(missing_ok=True)
+
+
+def load_mask_block(path: Path) -> tuple[dict, dict]:
+    try:
+        with Path(path).open("rb") as handle:
+            document = json.load(handle)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError("invalid mask block") from error
+    if (
+        not isinstance(document, dict)
+        or document.get("version") != _MASK_ARTIFACT_VERSION
+        or not isinstance(document.get("metadata"), dict)
+        or not isinstance(document.get("masks"), dict)
+    ):
+        raise ValueError("invalid mask block")
+    return (
+        {name: unpack_mask(_from_json_mask_artifact(artifact)) for name, artifact in document["masks"].items()},
+        document["metadata"],
+    )
+
+
+def _average_ranks(values: torch.Tensor) -> torch.Tensor:
+    sorted_values, order = torch.sort(values)
+    starts = torch.cat(
+        (torch.zeros(1, dtype=torch.long), torch.nonzero(sorted_values[1:] != sorted_values[:-1]).flatten() + 1)
+    )
+    ends = torch.cat((starts[1:], torch.tensor([values.numel()], dtype=torch.long)))
+    average_ranks = (starts + ends + 1).to(sorted_values.dtype) / 2
+    sorted_ranks = torch.repeat_interleave(average_ranks, ends - starts)
+    ranks = torch.empty_like(sorted_ranks)
+    ranks[order] = sorted_ranks
+    return ranks
+
+
+def sampled_spearman(left: torch.Tensor, right: torch.Tensor, sample_size: int, seed: int) -> float:
+    if (
+        not isinstance(left, torch.Tensor)
+        or not isinstance(right, torch.Tensor)
+        or left.shape != right.shape
+        or not left.numel()
+        or not torch.isfinite(left).all().item()
+        or not torch.isfinite(right).all().item()
+    ):
+        raise ValueError("inputs must be finite tensors with matching nonempty shapes")
+    if isinstance(sample_size, bool) or not isinstance(sample_size, int) or sample_size <= 0:
+        raise ValueError("sample_size must be positive")
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise ValueError("seed must be an integer")
+    count = min(sample_size, left.numel())
+    indices = (
+        torch.arange(left.numel())
+        if count == left.numel()
+        else torch.randperm(left.numel(), generator=torch.Generator().manual_seed(seed))[:count]
+    )
+    left_ranks = _average_ranks(left.detach().cpu().reshape(-1).double()[indices])
+    right_ranks = _average_ranks(right.detach().cpu().reshape(-1).double()[indices])
+    left_centered = left_ranks - left_ranks.mean()
+    right_centered = right_ranks - right_ranks.mean()
+    denominator = torch.sqrt(left_centered.square().sum() * right_centered.square().sum())
+    if denominator.item() == 0:
+        return _DiagnosticFloat(float("nan"), indices, "constant vector")
+    return _DiagnosticFloat(float((left_centered * right_centered).sum() / denominator), indices)
+
+
+def jaccard(left: torch.Tensor, right: torch.Tensor) -> float:
+    if not isinstance(left, torch.Tensor) or not isinstance(right, torch.Tensor) or left.shape != right.shape:
+        raise ValueError("masks must have matching shapes")
+    if left.dtype != torch.bool or right.dtype != torch.bool:
+        raise ValueError("masks must be bool tensors")
+    union = torch.logical_or(left, right).sum().item()
+    return 1.0 if union == 0 else torch.logical_and(left, right).sum().item() / union
 
 
 class TimestepSensitivityAccumulator:
