@@ -695,6 +695,7 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
     torch.manual_seed(11)
     model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
     config = _toy_score_config()
+    config["reliability"]["spearman_sample_size"] = 10_000
     states = _toy_cached_states(model, config)
     layers = find_layers(model.model.transformer.blocks[0])
     saved_gradients = {}
@@ -762,6 +763,56 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
     finally:
         hook.remove()
 
+    def literal_spearman(left, right):
+        def ranks(values):
+            values = [float(value) for value in values.reshape(-1)]
+            ordered = sorted(values)
+            return torch.tensor(
+                [
+                    (
+                        ordered.index(value)
+                        + len(ordered)
+                        - 1
+                        - ordered[::-1].index(value)
+                        + 2
+                    )
+                    / 2
+                    for value in values
+                ],
+                dtype=torch.float64,
+            )
+
+        left_ranks = ranks(left)
+        right_ranks = ranks(right)
+        left_ranks -= left_ranks.mean()
+        right_ranks -= right_ranks.mean()
+        denominator = torch.sqrt(
+            left_ranks.square().sum() * right_ranks.square().sum()
+        )
+        if denominator == 0:
+            return None
+        return ((left_ranks * right_ranks).sum() / denominator).item()
+
+    def literal_top_overlap(left, right):
+        count = max(1, math.ceil(left.numel() * 0.01))
+        left_top = set(
+            torch.argsort(left.reshape(-1), descending=True, stable=True)[:count].tolist()
+        )
+        right_top = set(
+            torch.argsort(right.reshape(-1), descending=True, stable=True)[:count].tolist()
+        )
+        return len(left_top & right_top) / len(left_top | right_top)
+
+    def literal_rowwise_mask(score, sparsity):
+        mask = torch.zeros_like(score, dtype=torch.bool)
+        prune_count = math.floor(score.shape[1] * sparsity)
+        for row_index, row in enumerate(score):
+            order = sorted(
+                range(row.numel()), key=lambda column: (float(row[column]), column)
+            )
+            mask[row_index, order[:prune_count]] = True
+        return mask
+
     assert result["update_count"] == 2
     assert list(next_states) == list(states)
     assert len(returned_outputs) == len(states) == 16
@@ -769,6 +820,9 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
     assert len(block_forward_calls) == len(states)
     for key, output in returned_outputs.items():
         torch.testing.assert_close(next_states[key]["hidden"], output)
+    expected_split_rhos = []
+    expected_lambda_one_jaccards = {sparsity: [] for sparsity in (0.5, 0.6, 0.7)}
+    all_useful_masks_identical = True
     for name, statistics in expected.items():
         for statistic in ("mu", "sigma", "sigma_A", "sigma_B"):
             torch.testing.assert_close(result["statistics"][name][statistic], statistics[statistic])
@@ -777,12 +831,12 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
             for sparsity in (0.5, 0.6, 0.7, 0.75):
                 assert torch.equal(
                     result["masks"][(name, risk_lambda, sparsity)],
-                    rowwise_prune_mask(score, sparsity),
+                    literal_rowwise_mask(score, sparsity),
                 )
-                split_a_mask = rowwise_prune_mask(
+                split_a_mask = literal_rowwise_mask(
                     statistics["mu_A"] + risk_lambda * statistics["sigma_A"], sparsity
                 )
-                split_b_mask = rowwise_prune_mask(
+                split_b_mask = literal_rowwise_mask(
                     statistics["mu_B"] + risk_lambda * statistics["sigma_B"], sparsity
                 )
                 diagnostic = result["diagnostics"][name]["masks"][
@@ -795,7 +849,7 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
                 assert diagnostic["split_jaccard"] == pytest.approx(
                     1.0 if union == 0 else intersection / union
                 )
-                mean_mask = rowwise_prune_mask(statistics["mu"], sparsity)
+                mean_mask = literal_rowwise_mask(statistics["mu"], sparsity)
                 changed = result["masks"][(name, risk_lambda, sparsity)].ne(mean_mask)
                 assert diagnostic["mean_disagreement_count"] == changed.sum().item()
                 assert diagnostic["mean_disagreement_fraction"] == pytest.approx(
@@ -804,6 +858,20 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
                 assert diagnostic["changed_row_fraction"] == pytest.approx(
                     changed.any(dim=1).float().mean().item()
                 )
+                full_mask = result["masks"][(name, risk_lambda, sparsity)]
+                mean_union = torch.logical_or(mean_mask, full_mask).sum().item()
+                mean_intersection = torch.logical_and(mean_mask, full_mask).sum().item()
+                assert diagnostic["mean_jaccard"] == pytest.approx(
+                    1.0 if mean_union == 0 else mean_intersection / mean_union
+                )
+                expected_identical = not changed.any().item()
+                assert diagnostic["identical_to_mean"] is expected_identical
+                if risk_lambda and sparsity in expected_lambda_one_jaccards:
+                    all_useful_masks_identical &= expected_identical
+                if risk_lambda == 1.0 and sparsity in expected_lambda_one_jaccards:
+                    expected_lambda_one_jaccards[sparsity].append(
+                        1.0 if union == 0 else intersection / union
+                    )
         ratio = statistics["sigma"] / (
             statistics["mu"] + torch.finfo(torch.float32).eps
         )
@@ -814,6 +882,46 @@ def test_score_block_matches_literal_direct_gradient_loop_and_masks(monkeypatch)
             "p90": quantiles[1].item(),
             "p99": quantiles[2].item(),
         })
+        module_diagnostic = result["diagnostics"][name]
+        expected_mu_sigma_rho = literal_spearman(statistics["mu"], statistics["sigma"])
+        expected_split_rho = literal_spearman(statistics["sigma_A"], statistics["sigma_B"])
+        expected_split_rhos.append(expected_split_rho)
+        if expected_mu_sigma_rho is None:
+            assert module_diagnostic["rho_mu_sigma"]["value"] is None
+        else:
+            assert module_diagnostic["rho_mu_sigma"]["value"] == pytest.approx(
+                expected_mu_sigma_rho
+            )
+        if expected_split_rho is None:
+            assert module_diagnostic["rho_sigma_A_sigma_B"]["value"] is None
+        else:
+            assert module_diagnostic["rho_sigma_A_sigma_B"]["value"] == pytest.approx(
+                expected_split_rho
+            )
+        assert module_diagnostic["top_sigma_overlap"] == pytest.approx(
+            literal_top_overlap(statistics["sigma_A"], statistics["sigma_B"])
+        )
+
+    aggregated = sensitivity_cli._stage1_gate(
+        list(result["diagnostics"].values()), config, all_useful_masks_identical
+    )
+    defined_rhos = sorted(value for value in expected_split_rhos if value is not None)
+    middle = len(defined_rhos) // 2
+    expected_median = (
+        defined_rhos[middle]
+        if len(defined_rhos) % 2
+        else (defined_rhos[middle - 1] + defined_rhos[middle]) / 2
+    )
+    assert aggregated["median_module_split_sigma_spearman"] == pytest.approx(
+        expected_median
+    )
+    assert aggregated["mean_split_mask_jaccard"] == pytest.approx(
+        {
+            f"{sparsity:g}": sum(values) / len(values)
+            for sparsity, values in expected_lambda_one_jaccards.items()
+        }
+    )
+    assert aggregated["all_useful_masks_identical"] is all_useful_masks_identical
 
 
 # Mutation caught: resume that trusts filenames, silently rescores block 0, or rewrites JSON changes output bytes.
@@ -935,6 +1043,98 @@ def _restore_toy_score_artifacts(tmp_path, saved):
     for name, contents in saved.items():
         (artifact_dir / name).write_bytes(contents)
     return artifact_dir
+
+
+def _rewrite_completed_block(artifact_dir, masks, metadata):
+    block_path = artifact_dir / "block-000.json"
+    receipt = save_mask_block(block_path, masks, metadata)
+    manifest_path = artifact_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["completed_blocks"][0].update(receipt)
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
+
+
+def test_score_resume_rejects_self_consistent_module_rename(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    masks, metadata = load_mask_block(artifact_dir / "block-000.json")
+    original = next(iter(metadata["module_shapes"]))
+    forged = f"forged.{original}"
+    metadata["module_shapes"][forged] = metadata["module_shapes"].pop(original)
+    metadata["module_diagnostics"][forged] = metadata["module_diagnostics"].pop(original)
+    masks = {
+        (name.replace(f"{original}|", f"{forged}|", 1) if name.startswith(f"{original}|") else name): mask
+        for name, mask in masks.items()
+    }
+    _rewrite_completed_block(artifact_dir, masks, metadata)
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="module|metadata|audit"):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+def test_score_resume_rejects_nested_numeric_alias(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    masks, metadata = load_mask_block(artifact_dir / "block-000.json")
+    module_name = next(iter(metadata["module_shapes"]))
+    metadata["module_shapes"][module_name][0] = float(
+        metadata["module_shapes"][module_name][0]
+    )
+    _rewrite_completed_block(artifact_dir, masks, metadata)
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="module|metadata|audit"):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+def test_score_resume_rejects_mutated_state_file_bytes(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    states_path = artifact_dir / "states.json"
+    states = json.loads(states_path.read_text())
+    states["states"][0]["sequence_index"] = 9
+    states_path.write_text(json.dumps(states, sort_keys=True, separators=(",", ":")))
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="state"):
+        sensitivity_cli._run_loaded_score(
+            model,
+            _toy_score_config(blocks=1, timesteps=(0.5,)),
+            _toy_clean_ids(),
+            artifact_dir,
+        )
+
+
+def test_score_resume_rejects_changed_actual_config_and_digest(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    config = _toy_score_config(blocks=1, timesteps=(0.5,))
+    config["reliability"]["minimum_mean_split_mask_jaccard"] = 0.94
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    with pytest.raises(ValueError, match="config_digest"):
+        sensitivity_cli._run_loaded_score(
+            model, config, _toy_clean_ids(), artifact_dir
+        )
 
 
 @pytest.mark.parametrize(
@@ -1075,7 +1275,7 @@ def test_score_resume_rejects_every_corrupt_block_metadata_field(
         )
 
 
-@pytest.mark.parametrize("fault", ["post_write", "internally_consistent"])
+@pytest.mark.parametrize("fault", ["post_write", "nested_alias", "wrong_mask"])
 def test_score_write_validates_before_manifest_or_stat_release(tmp_path, monkeypatch, fault):
     torch.manual_seed(37)
     model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
@@ -1098,10 +1298,21 @@ def test_score_write_validates_before_manifest_or_stat_release(tmp_path, monkeyp
             expected = real_save(path, masks, metadata)
             contents = path.read_bytes()
             path.write_bytes(contents[:-1] + (b"{" if contents[-1:] != b"{" else b"}"))
-        else:
+        elif fault == "nested_alias":
             corrupt_metadata = copy.deepcopy(metadata)
-            corrupt_metadata["block_index"] += 1
+            module_name = next(iter(corrupt_metadata["module_diagnostics"]))
+            corrupt_metadata["module_diagnostics"][module_name]["masks"][
+                "lambda=0|sparsity=0.5"
+            ]["mean_disagreement_count"] = False
             expected = real_save(path, masks, corrupt_metadata)
+        else:
+            corrupt_masks = {name: mask.clone() for name, mask in masks.items()}
+            mask = next(iter(corrupt_masks.values()))
+            pruned = torch.nonzero(mask[0]).flatten()[0]
+            kept = torch.nonzero(~mask[0]).flatten()[0]
+            mask[0, pruned] = False
+            mask[0, kept] = True
+            expected = real_save(path, corrupt_masks, metadata)
         return expected
 
     def tracked_validate(*args, **kwargs):

@@ -515,6 +515,7 @@ def _load_manifest(path: Path) -> dict:
 
 
 def _validate_block_artifact(
+    model,
     artifact_dir: Path,
     entry: dict,
     manifest: dict,
@@ -533,7 +534,9 @@ def _validate_block_artifact(
     if _file_sha256(block_path) != entry.get("sha256"):
         raise ValueError("score block checksum mismatch")
     masks, metadata = load_mask_block(block_path)
-    if expected_metadata is not None and metadata != expected_metadata:
+    if expected_metadata is not None and not _same_typed_value(
+        metadata, expected_metadata
+    ):
         raise ValueError("written block metadata mismatch")
     if expected_masks is not None and (
         set(masks) != set(expected_masks)
@@ -549,11 +552,20 @@ def _validate_block_artifact(
     expected_welford = manifest["welford_updates_per_module"]
     expected_variants = manifest["mask_variant_count"]
     expected_entries = expected_modules * expected_variants
+    from lib.prune_llada import find_layers
+
+    block = model.model.transformer.blocks[block_index]
+    layers = find_layers(block)
+    if len(layers) != expected_modules:
+        raise ValueError("score block model module count mismatch")
+    expected_module_shapes = {
+        name: list(layer.weight.shape) for name, layer in layers.items()
+    }
     module_shapes = metadata.get("module_shapes")
     module_diagnostics = metadata.get("module_diagnostics")
     if not isinstance(module_shapes, dict) or not isinstance(module_diagnostics, dict):
         raise ValueError("score block module metadata is invalid")
-    module_names = set(module_shapes)
+    module_names = set(expected_module_shapes)
     expected_mask_names = {
         f"{name}|lambda={risk_lambda:g}|sparsity={sparsity:g}"
         for name in module_names
@@ -572,8 +584,11 @@ def _validate_block_artifact(
             metadata.get("score_definition"), manifest["score_definition"]
         )
         or not _same_typed_value(metadata.get("calibration"), manifest["calibration"])
-        or len(module_names) != expected_modules
+        or not _same_typed_value(module_shapes, expected_module_shapes)
         or set(module_diagnostics) != module_names
+        or not _diagnostics_have_exact_types(
+            module_diagnostics, module_names, expected_mask_names
+        )
         or set(masks) != expected_mask_names
         or len(masks) != expected_entries
         or not _same_typed_value(entry.get("module_count"), metadata.get("module_count"))
@@ -587,8 +602,8 @@ def _validate_block_artifact(
         or not _same_typed_value(entry.get("mask_entry_count"), len(masks))
     ):
         raise ValueError("score block audit metadata mismatch")
-    for module_name, shape in module_shapes.items():
-        if not isinstance(shape, list) or any(
+    for module_name, shape in expected_module_shapes.items():
+        if any(
             list(mask.shape) != shape
             for mask_name, mask in masks.items()
             if mask_name.startswith(f"{module_name}|lambda=")
@@ -598,7 +613,7 @@ def _validate_block_artifact(
 
 
 def _validated_completed_blocks(
-    artifact_dir: Path, manifest: dict, expected: dict
+    model, artifact_dir: Path, manifest: dict, expected: dict
 ) -> tuple[list[dict], list[tuple[dict, dict]]]:
     for key, value in expected.items():
         if not _same_typed_value(manifest.get(key), value):
@@ -612,7 +627,9 @@ def _validated_completed_blocks(
         raise ValueError("score manifest has too many completed blocks")
     validated = []
     for entry in completed:
-        validated.append((entry, _validate_block_artifact(artifact_dir, entry, manifest)))
+        validated.append(
+            (entry, _validate_block_artifact(model, artifact_dir, entry, manifest))
+        )
     return completed, validated
 
 
@@ -684,6 +701,59 @@ def _same_typed_value(actual, expected) -> bool:
             _same_typed_value(actual[key], value) for key, value in expected.items()
         )
     return actual == expected
+
+
+def _diagnostics_have_exact_types(
+    diagnostics: dict, module_names: set[str], mask_names: set[str]
+) -> bool:
+    try:
+        normalized = {}
+        for module_name in module_names:
+            module = diagnostics[module_name]
+
+            def rho(name):
+                value = module[name]
+                return {
+                    "value": None if value["value"] is None else float(value["value"]),
+                    "reason": None if value["reason"] is None else str(value["reason"]),
+                    "sample_size": int(value["sample_size"]),
+                    "sample_indices_sha256": str(value["sample_indices_sha256"]),
+                }
+
+            module_mask_names = {
+                name.split("|", 1)[1]
+                for name in mask_names
+                if name.startswith(f"{module_name}|")
+            }
+            normalized_masks = {}
+            for name in module_mask_names:
+                value = module["masks"][name]
+                normalized_masks[name] = {
+                    "mean_disagreement_count": int(value["mean_disagreement_count"]),
+                    "mean_disagreement_fraction": float(
+                        value["mean_disagreement_fraction"]
+                    ),
+                    "mean_jaccard": float(value["mean_jaccard"]),
+                    "changed_row_fraction": float(value["changed_row_fraction"]),
+                    "identical_to_mean": bool(value["identical_to_mean"]),
+                    "split_jaccard": float(value["split_jaccard"]),
+                    "split_A_sha256": str(value["split_A_sha256"]),
+                    "split_B_sha256": str(value["split_B_sha256"]),
+                }
+            ratio = module["sigma_over_mu_plus_eps"]
+            normalized[module_name] = {
+                "sigma_over_mu_plus_eps": {
+                    key: float(ratio[key]) for key in ("epsilon", "median", "p90", "p99")
+                },
+                "rho_mu_sigma": rho("rho_mu_sigma"),
+                "rho_sigma_A_sigma_B": rho("rho_sigma_A_sigma_B"),
+                "top_sigma_overlap": float(module["top_sigma_overlap"]),
+                "top_sigma_fraction": float(module["top_sigma_fraction"]),
+                "masks": normalized_masks,
+            }
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False
+    return _same_typed_value(diagnostics, normalized)
 
 
 def _validate_production_score_config(config: dict) -> None:
@@ -793,7 +863,7 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
         if _file_sha256(states_path) != state_digest or states_path.read_bytes() != state_bytes:
             raise ValueError("scoring state checksum mismatch")
         completed, validated_blocks = _validated_completed_blocks(
-            artifact_dir, manifest, header
+            model, artifact_dir, manifest, header
         )
         repeat_check = manifest.get("repeat_gradient_square")
         if not isinstance(repeat_check, dict) or (
@@ -861,6 +931,7 @@ def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifa
             "mask_entry_count": len(flat_masks),
         }
         validated_metadata = _validate_block_artifact(
+            model,
             artifact_dir,
             entry,
             manifest,
