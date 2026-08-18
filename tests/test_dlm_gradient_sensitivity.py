@@ -489,7 +489,31 @@ def test_cuda_peak_accounting_covers_every_model_device_and_rejects_offload(monk
 
 
 # Mutation caught: moving replay/finish into the state timer or omitting finalization changes projection.
-def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(monkeypatch):
+@pytest.mark.parametrize(
+    ("clock_values", "expected_state", "expected_total", "fit_status", "fit_method", "raw_difference", "raw_suffix"),
+    [
+        ((0.0, 2.0, 10.0, 10.5, 20.0, 53.0, 60.0, 60.25), 44_800, 44_960, "unconstrained", "two_point_linear", 31.0, 1.0),
+        (
+            (0.0, 0.503889, 10.0, 10.5, 20.0, 20.474458, 60.0, 60.25),
+            80 * 32 * 0.503889,
+            80 * 32 * 0.503889 + 160,
+            "constrained",
+            "max_endpoint_constant",
+            0.474458 - 0.503889,
+            (0.474458 - 0.503889) / 31,
+        ),
+    ],
+)
+def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(
+    monkeypatch,
+    clock_values,
+    expected_state,
+    expected_total,
+    fit_status,
+    fit_method,
+    raw_difference,
+    raw_suffix,
+):
     torch.manual_seed(2)
     model = _tiny_llada(n_layers=32, d_model=4, vocab_size=7)
     clean_ids = torch.tensor([[1, 2]])
@@ -510,7 +534,7 @@ def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(monk
         },
     }
     events = []
-    clock_values = iter((0.0, 2.0, 10.0, 10.5, 20.0, 53.0, 60.0, 60.25))
+    clock_values = iter(clock_values)
 
     def clock():
         value = next(clock_values)
@@ -571,6 +595,18 @@ def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(monk
         assert sum(event[0] == "add" for event in events[state_end + 1:finish_position]) == 7
         assert events[finish_position - 1][0] == "clock"
         assert events[finish_position + 1][0] == "clock"
-    assert report["projection"]["projected_scoring_seconds"] == pytest.approx(44_800)
+    assert report["projection"]["fit_status"] == fit_status
+    assert report["projection"]["fit_method"] == fit_method
+    assert report["projection"]["raw_endpoint_difference_seconds"] == pytest.approx(raw_difference)
+    assert report["projection"]["raw_unconstrained_suffix_seconds"] == pytest.approx(raw_suffix)
+    assert report["projection"]["projected_scoring_seconds"] == pytest.approx(expected_state)
     assert report["projection"]["projected_statistic_finalization_seconds"] == pytest.approx(160)
-    assert report["projection"]["projected_total_seconds"] == pytest.approx(44_960)
+    assert report["projection"]["projected_total_seconds"] == pytest.approx(expected_total)
+    if fit_status == "constrained":
+        assert report["projection"]["fixed_seconds"] == pytest.approx(0.503889)
+        assert report["projection"]["suffix_seconds"] == 0
+        assert report["projection"]["per_block_seconds"] == pytest.approx([0.503889] * 32)
+    else:
+        assert report["projection"]["fixed_seconds"] == 2
+        assert report["projection"]["suffix_seconds"] == 1
+        assert report["projection"]["per_block_seconds"] == [2 + 31 - block for block in range(32)]

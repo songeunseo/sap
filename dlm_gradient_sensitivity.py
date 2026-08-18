@@ -199,18 +199,44 @@ def _run_loaded_feasibility(
     ]
     by_block = {measurement["block"]: measurement for measurement in measurements}
     last_block, first_block = measured_blocks
-    projection = project_scoring_seconds(
-        by_block[last_block]["state_seconds"],
-        by_block[first_block]["state_seconds"],
-        blocks=config["stage0"]["model_block_count"],
-        states=calibration["sequence_count"] * len(calibration["timesteps"]),
+    blocks = config["stage0"]["model_block_count"]
+    states = calibration["sequence_count"] * len(calibration["timesteps"])
+    last_seconds = by_block[last_block]["state_seconds"]
+    first_seconds = by_block[first_block]["state_seconds"]
+    raw_difference = first_seconds - last_seconds
+    raw_suffix = raw_difference / (blocks - 1)
+    try:
+        projection = project_scoring_seconds(
+            last_seconds, first_seconds, blocks=blocks, states=states
+        )
+        fit_status = "unconstrained"
+        fit_method = "two_point_linear"
+    except ValueError:
+        if not raw_suffix < 0:
+            raise
+        constant = max(last_seconds, first_seconds)
+        projection = {
+            "fixed_seconds": constant,
+            "suffix_seconds": 0.0,
+            "per_block_seconds": [constant] * blocks,
+            "projected_scoring_seconds": states * blocks * constant,
+        }
+        fit_status = "constrained"
+        fit_method = "max_endpoint_constant"
+    projection.update(
+        {
+            "fit_status": fit_status,
+            "fit_method": fit_method,
+            "raw_endpoint_difference_seconds": raw_difference,
+            "raw_unconstrained_suffix_seconds": raw_suffix,
+        }
     )
     finish_per_block = max(
         measurement["finish_timestep_seconds"] for measurement in measurements
     )
     finish_total = (
         len(calibration["timesteps"])
-        * config["stage0"]["model_block_count"]
+        * blocks
         * finish_per_block
     )
     projected_total = projection["projected_scoring_seconds"] + finish_total
