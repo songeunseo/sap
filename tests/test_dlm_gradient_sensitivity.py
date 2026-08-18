@@ -27,6 +27,7 @@ from lib.dlm_gradient_sensitivity import (
     rowwise_prune_mask,
     sampled_spearman,
     save_mask_block,
+    score_block,
     unpack_mask,
 )
 from lib.prune_llada import find_layers
@@ -631,3 +632,255 @@ def test_loaded_feasibility_runs_real_tiny_block_workflow_with_exact_timing(
         assert report["projection"]["fixed_seconds"] == 2
         assert report["projection"]["suffix_seconds"] == 1
         assert report["projection"]["per_block_seconds"] == [2 + 31 - block for block in range(32)]
+
+
+def _toy_score_config(blocks=1, timesteps=(0.25, 0.75)):
+    return {
+        "model": {"id": "tiny", "revision": "test-revision"},
+        "dataset": {"loader_name": "tiny"},
+        "calibration": {
+            "seed": 3,
+            "sequence_indices": list(range(8)),
+            "sequence_count": 8,
+            "sequence_length": 3,
+            "timesteps": list(timesteps),
+            "split_a": [0, 1, 2, 3],
+            "split_b": [4, 5, 6, 7],
+        },
+        "scoring": {
+            "lambdas": [0.25, 0.5, 1.0],
+            "sparsities": [0.5, 0.6, 0.7, 0.75],
+            "decision_sparsities": [0.5, 0.6, 0.7],
+        },
+        "stage0": {"model_block_count": blocks},
+        "reliability": {
+            "spearman_sample_size": 32,
+            "minimum_median_split_sigma_spearman": 0.5,
+            "minimum_mean_split_mask_jaccard": 0.95,
+            "top_sigma_fraction": 0.01,
+        },
+    }
+
+
+def _toy_clean_ids():
+    return [torch.tensor([[1 + index % 3, 4 + index % 3, 7 + index % 3]]) for index in range(8)]
+
+
+def _toy_cached_states(model, config):
+    states = {}
+    calibration = config["calibration"]
+    for timestep_index, timestep in enumerate(calibration["timesteps"]):
+        for sequence_index, clean_ids in enumerate(_toy_clean_ids()):
+            mask_seed = calibration["seed"] + timestep_index * 8 + sequence_index
+            noisy_ids, mask, p_mask = make_masked_state(
+                clean_ids, timestep, model.config.mask_token_id, mask_seed
+            )
+            states[(timestep_index, sequence_index)] = {
+                "timestep_index": timestep_index,
+                "sequence_index": sequence_index,
+                "clean_ids": clean_ids,
+                "noisy_ids": noisy_ids,
+                "mask": mask,
+                "p_mask": p_mask,
+                "hidden": embed_state(model, noisy_ids).detach().cpu(),
+            }
+    return states
+
+
+# Mutation caught: updating Welford per sequence measures sample+timestep dispersion, not timestep dispersion.
+def test_score_block_matches_literal_direct_gradient_loop_and_masks():
+    torch.manual_seed(11)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    config = _toy_score_config()
+    states = _toy_cached_states(model, config)
+    layers = find_layers(model.model.transformer.blocks[0])
+    saved_gradients = {}
+    for key in sorted(states):
+        state = states[key]
+        saved_gradients[key], _ = block_state_gradients(
+            model,
+            0,
+            state["hidden"],
+            state["clean_ids"],
+            state["mask"],
+            state["p_mask"],
+        )
+
+    expected = {}
+    for name, layer in layers.items():
+        timestep_full = []
+        timestep_a = []
+        timestep_b = []
+        weight_sq = layer.weight.detach().float().cpu().square()
+        for timestep_index in range(2):
+            a = weight_sq * torch.stack(
+                [saved_gradients[(timestep_index, index)][name].square() for index in range(4)]
+            ).mean(dim=0)
+            b = weight_sq * torch.stack(
+                [saved_gradients[(timestep_index, index)][name].square() for index in range(4, 8)]
+            ).mean(dim=0)
+            timestep_a.append(a)
+            timestep_b.append(b)
+            timestep_full.append((a + b) / 2)
+        expected[name] = {
+            "mu": torch.stack(timestep_full).mean(dim=0),
+            "sigma": torch.stack(timestep_full).std(dim=0, unbiased=False),
+            "mu_A": torch.stack(timestep_a).mean(dim=0),
+            "sigma_A": torch.stack(timestep_a).std(dim=0, unbiased=False),
+            "mu_B": torch.stack(timestep_b).mean(dim=0),
+            "sigma_B": torch.stack(timestep_b).std(dim=0, unbiased=False),
+        }
+
+    result, next_states = score_block(model, 0, states, config)
+
+    assert result["update_count"] == 2
+    assert list(next_states) == list(states)
+    for name, statistics in expected.items():
+        for statistic in ("mu", "sigma", "sigma_A", "sigma_B"):
+            torch.testing.assert_close(result["statistics"][name][statistic], statistics[statistic])
+        for risk_lambda in (0.0, 0.25, 0.5, 1.0):
+            score = statistics["mu"] + risk_lambda * statistics["sigma"]
+            for sparsity in (0.5, 0.6, 0.7, 0.75):
+                assert torch.equal(
+                    result["masks"][(name, risk_lambda, sparsity)],
+                    rowwise_prune_mask(score, sparsity),
+                )
+                split_a_mask = rowwise_prune_mask(
+                    statistics["mu_A"] + risk_lambda * statistics["sigma_A"], sparsity
+                )
+                split_b_mask = rowwise_prune_mask(
+                    statistics["mu_B"] + risk_lambda * statistics["sigma_B"], sparsity
+                )
+                diagnostic = result["diagnostics"][name]["masks"][
+                    f"lambda={risk_lambda:g}|sparsity={sparsity:g}"
+                ]
+                assert diagnostic["split_A_sha256"] == pack_mask(split_a_mask)["sha256"]
+                assert diagnostic["split_B_sha256"] == pack_mask(split_b_mask)["sha256"]
+
+
+# Mutation caught: resume that trusts filenames, silently rescores block 0, or rewrites JSON changes output bytes.
+def test_score_resume_skips_verified_block_and_is_byte_identical(tmp_path, monkeypatch):
+    config = _toy_score_config(blocks=2, timesteps=(0.5,))
+    clean_ids = _toy_clean_ids()
+    resumed_dir = tmp_path / "resumed"
+    uninterrupted_dir = tmp_path / "uninterrupted"
+
+    torch.manual_seed(19)
+    interrupted_model = _tiny_llada(n_layers=2, d_model=4, vocab_size=11)
+    real_score_block = sensitivity_cli.score_block
+
+    def interrupt_after_block_zero(model, block_index, cached_states, score_config):
+        if block_index == 1:
+            raise RuntimeError("simulated interruption")
+        return real_score_block(model, block_index, cached_states, score_config)
+
+    monkeypatch.setattr(sensitivity_cli, "score_block", interrupt_after_block_zero)
+    with pytest.raises(RuntimeError, match="simulated interruption"):
+        sensitivity_cli._run_loaded_score(interrupted_model, config, clean_ids, resumed_dir)
+    block_zero_before = (resumed_dir / "block-000.json").read_bytes()
+
+    def reject_block_zero(model, block_index, cached_states, score_config):
+        if block_index == 0:
+            raise AssertionError("verified block 0 was recomputed")
+        return real_score_block(model, block_index, cached_states, score_config)
+
+    monkeypatch.setattr(sensitivity_cli, "score_block", reject_block_zero)
+    resumed = sensitivity_cli._run_loaded_score(interrupted_model, config, clean_ids, resumed_dir)
+
+    torch.manual_seed(19)
+    uninterrupted_model = _tiny_llada(n_layers=2, d_model=4, vocab_size=11)
+    monkeypatch.setattr(sensitivity_cli, "score_block", real_score_block)
+    uninterrupted = sensitivity_cli._run_loaded_score(
+        uninterrupted_model, config, clean_ids, uninterrupted_dir
+    )
+
+    assert (resumed_dir / "block-000.json").read_bytes() == block_zero_before
+    assert json.dumps(resumed, sort_keys=True, separators=(",", ":")) == json.dumps(
+        uninterrupted, sort_keys=True, separators=(",", ":")
+    )
+    for name in ("states.json", "block-000.json", "block-001.json", "manifest.json"):
+        assert (resumed_dir / name).read_bytes() == (uninterrupted_dir / name).read_bytes()
+    manifest = json.loads((resumed_dir / "manifest.json").read_text())
+    assert manifest["welford_updates_per_module"] == {"full": 1, "A": 1, "B": 1}
+    assert manifest["mask_variant_count"] == 16
+    assert all(entry["mask_entry_count"] == 7 * 16 for entry in manifest["completed_blocks"])
+
+
+# Mutation caught: treating a corrupt completed-block checksum as an incomplete block hides damaged science data.
+def test_score_resume_hard_fails_on_corrupt_block_checksum(tmp_path, monkeypatch):
+    torch.manual_seed(23)
+    model = _tiny_llada(n_layers=2, d_model=4, vocab_size=11)
+    config = _toy_score_config(blocks=2, timesteps=(0.5,))
+    artifact_dir = tmp_path / "artifacts"
+    real_score_block = sensitivity_cli.score_block
+
+    def interrupt_after_block_zero(model, block_index, cached_states, score_config):
+        if block_index == 1:
+            raise RuntimeError("simulated interruption")
+        return real_score_block(model, block_index, cached_states, score_config)
+
+    monkeypatch.setattr(sensitivity_cli, "score_block", interrupt_after_block_zero)
+    with pytest.raises(RuntimeError, match="simulated interruption"):
+        sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
+
+    manifest_path = artifact_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["completed_blocks"][0]["sha256"] = "0" * 64
+    manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
+    monkeypatch.setattr(sensitivity_cli, "score_block", real_score_block)
+
+    with pytest.raises(ValueError, match="checksum"):
+        sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
+
+
+# Mutation caught: hashing only model metadata lets resume mix masks from different dense weights.
+def test_score_resume_rejects_changed_model_digest(tmp_path, monkeypatch):
+    torch.manual_seed(29)
+    model = _tiny_llada(n_layers=2, d_model=4, vocab_size=11)
+    config = _toy_score_config(blocks=2, timesteps=(0.5,))
+    artifact_dir = tmp_path / "artifacts"
+    real_score_block = sensitivity_cli.score_block
+
+    def interrupt_after_block_zero(model, block_index, cached_states, score_config):
+        if block_index == 1:
+            raise RuntimeError("simulated interruption")
+        return real_score_block(model, block_index, cached_states, score_config)
+
+    monkeypatch.setattr(sensitivity_cli, "score_block", interrupt_after_block_zero)
+    with pytest.raises(RuntimeError, match="simulated interruption"):
+        sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
+    with torch.no_grad():
+        next(model.parameters()).view(-1)[0].add_(1)
+    monkeypatch.setattr(sensitivity_cli, "score_block", real_score_block)
+
+    with pytest.raises(ValueError, match="model_digest"):
+        sensitivity_cli._run_loaded_score(model, config, _toy_clean_ids(), artifact_dir)
+
+
+# Mutation caught: pooling weights or sparsities can pass a gate whose predeclared module summaries fail.
+def test_score_block_stage1_gate_uses_unweighted_module_thresholds_and_signal_stop():
+    config = _toy_score_config()
+    diagnostics = [
+        {
+            "rho_sigma_A_sigma_B": {"value": rho, "reason": None},
+            "masks": {
+                f"lambda=1|sparsity={sparsity:g}": {"split_jaccard": overlap}
+                for sparsity, overlap in zip((0.5, 0.6, 0.7), overlaps)
+            },
+        }
+        for rho, overlaps in (
+            (0.4, (0.94, 0.95, 0.96)),
+            (0.5, (0.96, 0.95, 0.94)),
+            (0.9, (0.95, 0.95, 0.95)),
+        )
+    ]
+
+    gate = sensitivity_cli._stage1_gate(diagnostics, config, all_useful_masks_identical=False)
+    stopped = sensitivity_cli._stage1_gate(diagnostics, config, all_useful_masks_identical=True)
+
+    assert gate["median_module_split_sigma_spearman"] == pytest.approx(0.5)
+    assert gate["mean_split_mask_jaccard"] == {"0.5": 0.95, "0.6": 0.95, "0.7": 0.95}
+    assert gate["reliability_passed"]
+    assert gate["passed"]
+    assert not stopped["passed"]
+    assert stopped["stop_reason"] == "all useful Time-Risk masks are identical to Mean"

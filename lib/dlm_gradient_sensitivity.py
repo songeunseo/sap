@@ -607,3 +607,155 @@ class TimestepSensitivityAccumulator:
                 },
             }
         return result
+
+
+def _rho_diagnostic(value: _DiagnosticFloat) -> dict:
+    return {
+        "value": None if math.isnan(value) else float(value),
+        "reason": value.reason,
+        "sample_size": value.sample_indices.numel(),
+        "sample_indices_sha256": hashlib.sha256(
+            value.sample_indices.numpy().tobytes()
+        ).hexdigest(),
+    }
+
+
+def score_block(model, block_index: int, cached_states: dict, config: dict) -> tuple[dict, dict]:
+    from .prune_llada import find_layers
+
+    calibration = config["calibration"]
+    split_a = calibration["split_a"]
+    split_b = calibration["split_b"]
+    sequence_indices = calibration["sequence_indices"]
+    timesteps = calibration["timesteps"]
+    if (
+        not isinstance(cached_states, dict)
+        or not timesteps
+        or len(split_a) != len(split_b)
+        or set(split_a).intersection(split_b)
+        or set(split_a + split_b) != set(sequence_indices)
+    ):
+        raise ValueError("cached states or calibration split is invalid")
+    expected_keys = {
+        (timestep_index, sequence_index)
+        for timestep_index in range(len(timesteps))
+        for sequence_index in sequence_indices
+    }
+    if set(cached_states) != expected_keys:
+        raise ValueError("cached states do not match calibration states")
+
+    block = _llada_core(model).transformer.blocks[block_index]
+    layers = find_layers(block)
+    if len(layers) != 7:
+        raise ValueError(f"expected seven block linear weights, found {len(layers)}")
+    accumulator = TimestepSensitivityAccumulator(
+        {name: layer.weight for name, layer in layers.items()},
+        split_size=len(split_a),
+        expected_timesteps=len(timesteps),
+    )
+    next_states = {}
+    _, block_dtype = _module_device_dtype(block)
+    for timestep_index in range(len(timesteps)):
+        for split, members in (("a", split_a), ("b", split_b)):
+            for sequence_index in members:
+                key = (timestep_index, sequence_index)
+                state = cached_states[key]
+                if (
+                    state.get("timestep_index") != timestep_index
+                    or state.get("sequence_index") != sequence_index
+                ):
+                    raise ValueError("cached state metadata does not match its key")
+                gradients, target_output = block_state_gradients(
+                    model,
+                    block_index,
+                    state["hidden"],
+                    state["clean_ids"],
+                    state["mask"],
+                    state["p_mask"],
+                )
+                accumulator.add_state(gradients, split)
+                next_states[key] = {
+                    **state,
+                    "hidden": target_output.to(device="cpu", dtype=block_dtype),
+                }
+        accumulator.finish_timestep()
+
+    finalized = accumulator.finalize()
+    del accumulator
+    lambdas = (0.0, *map(float, config["scoring"]["lambdas"]))
+    sparsities = tuple(map(float, config["scoring"]["sparsities"]))
+    sample_size = config["reliability"]["spearman_sample_size"]
+    seed = calibration["seed"]
+    top_fraction = config["reliability"]["top_sigma_fraction"]
+    ratio_eps = torch.finfo(torch.float32).eps
+    statistics = {}
+    masks = {}
+    diagnostics = {}
+    for name in layers:
+        mu = finalized["full"]["mu"][name]
+        sigma = finalized["full"]["sigma"][name]
+        mu_a = finalized["a"]["mu"][name]
+        sigma_a = finalized["a"]["sigma"][name]
+        mu_b = finalized["b"]["mu"][name]
+        sigma_b = finalized["b"]["sigma"][name]
+        statistics[name] = {
+            "mu": mu,
+            "sigma": sigma,
+            "sigma_A": sigma_a,
+            "sigma_B": sigma_b,
+        }
+        rho_mu_sigma = sampled_spearman(mu, sigma, sample_size, seed)
+        rho_split = sampled_spearman(sigma_a, sigma_b, sample_size, seed)
+        if not torch.equal(rho_mu_sigma.sample_indices, rho_split.sample_indices):
+            raise RuntimeError("Spearman diagnostics did not use the same sample")
+        ratio = sigma / (mu + ratio_eps)
+        quantiles = torch.quantile(
+            ratio.reshape(-1), torch.tensor([0.5, 0.9, 0.99], dtype=ratio.dtype)
+        )
+        module_masks = {}
+        for risk_lambda in lambdas:
+            full_score = mu + risk_lambda * sigma
+            split_a_score = mu_a + risk_lambda * sigma_a
+            split_b_score = mu_b + risk_lambda * sigma_b
+            for sparsity in sparsities:
+                full_mask = rowwise_prune_mask(full_score, sparsity)
+                split_a_mask = rowwise_prune_mask(split_a_score, sparsity)
+                split_b_mask = rowwise_prune_mask(split_b_score, sparsity)
+                masks[(name, risk_lambda, sparsity)] = full_mask
+                mean_mask = (
+                    full_mask
+                    if risk_lambda == 0
+                    else masks[(name, 0.0, sparsity)]
+                )
+                changed = full_mask.ne(mean_mask)
+                key = f"lambda={risk_lambda:g}|sparsity={sparsity:g}"
+                module_masks[key] = {
+                    "mean_disagreement_count": int(changed.sum().item()),
+                    "mean_disagreement_fraction": changed.float().mean().item(),
+                    "mean_jaccard": jaccard(mean_mask, full_mask),
+                    "changed_row_fraction": row_change_fraction(mean_mask, full_mask),
+                    "identical_to_mean": torch.equal(mean_mask, full_mask),
+                    "split_jaccard": jaccard(split_a_mask, split_b_mask),
+                    "split_A_sha256": pack_mask(split_a_mask)["sha256"],
+                    "split_B_sha256": pack_mask(split_b_mask)["sha256"],
+                }
+        diagnostics[name] = {
+            "sigma_over_mu_plus_eps": {
+                "epsilon": ratio_eps,
+                "median": quantiles[0].item(),
+                "p90": quantiles[1].item(),
+                "p99": quantiles[2].item(),
+            },
+            "rho_mu_sigma": _rho_diagnostic(rho_mu_sigma),
+            "rho_sigma_A_sigma_B": _rho_diagnostic(rho_split),
+            "top_sigma_overlap": top_fraction_overlap(sigma_a, sigma_b, top_fraction),
+            "top_sigma_fraction": top_fraction,
+            "masks": module_masks,
+        }
+    return {
+        "block_index": block_index,
+        "update_count": finalized["update_count"],
+        "statistics": statistics,
+        "masks": masks,
+        "diagnostics": diagnostics,
+    }, next_states

@@ -1,6 +1,10 @@
 import argparse
+import hashlib
 import json
+import os
+import statistics
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -12,9 +16,17 @@ from lib.dlm_gradient_sensitivity import (
     block_state_gradients,
     embed_state,
     feasibility_gate,
+    load_mask_block,
     make_masked_state,
     project_scoring_seconds,
+    save_mask_block,
+    score_block,
 )
+
+
+_SCORE_ARTIFACT_VERSION = 1
+_REPEAT_GRADIENT_ATOL = 1e-6
+_REPEAT_GRADIENT_RTOL = 1e-5
 
 
 def _process_memory() -> dict[str, int]:
@@ -307,19 +319,501 @@ def run_feasibility(config: dict) -> dict:
     return _run_loaded_feasibility(model, config, loader[0][0], cuda_devices)
 
 
+def _canonical_json(document: dict) -> bytes:
+    return json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+
+
+def _atomic_write_json(path: Path, document: dict) -> None:
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary_name = None
+    try:
+        with tempfile.NamedTemporaryFile("wb", dir=destination.parent, delete=False) as temporary:
+            temporary_name = temporary.name
+            temporary.write(_canonical_json(document))
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        Path(temporary_name).replace(destination)
+        temporary_name = None
+    finally:
+        if temporary_name:
+            Path(temporary_name).unlink(missing_ok=True)
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _model_digest(model, config: dict) -> str:
+    model_config = model.config.to_dict() if hasattr(model.config, "to_dict") else vars(model.config)
+    digest = hashlib.sha256(
+        _canonical_json({"model": config["model"], "loaded_config": model_config})
+    )
+    for name, parameter in model.named_parameters():
+        digest.update(
+            _canonical_json(
+                {"name": name, "shape": list(parameter.shape), "dtype": str(parameter.dtype)}
+            )
+        )
+        raw = parameter.detach().to(device="cpu").contiguous().view(torch.uint8).numpy()
+        digest.update(memoryview(raw))
+    return digest.hexdigest()
+
+
+def _scoring_state_document(model, config: dict, clean_ids: list[torch.Tensor]) -> dict:
+    calibration = config["calibration"]
+    sequence_indices = calibration["sequence_indices"]
+    if len(clean_ids) != calibration["sequence_count"] or len(clean_ids) != len(sequence_indices):
+        raise ValueError("clean calibration sequence count does not match configuration")
+    mask_id = model.config.mask_token_id
+    if mask_id is None:
+        raise ValueError("model config does not define mask_token_id")
+    states = []
+    for timestep_index, timestep in enumerate(calibration["timesteps"]):
+        for sequence_position, (sequence_index, clean) in enumerate(zip(sequence_indices, clean_ids)):
+            clean = clean.detach().to(device="cpu", dtype=torch.long)
+            if clean.ndim != 2 or clean.shape[0] != 1 or clean.shape[1] != calibration["sequence_length"]:
+                raise ValueError("clean calibration sequence shape does not match configuration")
+            mask_seed = (
+                calibration["seed"]
+                + timestep_index * calibration["sequence_count"]
+                + sequence_position
+            )
+            noisy, mask, p_mask = make_masked_state(clean, timestep, mask_id, mask_seed)
+            states.append(
+                {
+                    "timestep_index": timestep_index,
+                    "timestep": timestep,
+                    "sequence_index": sequence_index,
+                    "mask_seed": mask_seed,
+                    "p_mask": p_mask,
+                    "clean_ids": clean.tolist(),
+                    "noisy_ids": noisy.tolist(),
+                    "mask": mask.tolist(),
+                }
+            )
+    return {"version": _SCORE_ARTIFACT_VERSION, "states": states}
+
+
+def _cache_scoring_states(model, document: dict) -> dict:
+    if document.get("version") != _SCORE_ARTIFACT_VERSION or not isinstance(document.get("states"), list):
+        raise ValueError("invalid scoring state artifact")
+    cached = {}
+    embedding_dtype = model.model.transformer.wte.weight.dtype
+    for saved in document["states"]:
+        key = (saved["timestep_index"], saved["sequence_index"])
+        if key in cached:
+            raise ValueError("duplicate scoring state")
+        clean_ids = torch.tensor(saved["clean_ids"], dtype=torch.long)
+        noisy_ids = torch.tensor(saved["noisy_ids"], dtype=torch.long)
+        mask = torch.tensor(saved["mask"], dtype=torch.bool)
+        hidden = embed_state(model, noisy_ids).detach().to(device="cpu", dtype=embedding_dtype)
+        cached[key] = {
+            "timestep_index": saved["timestep_index"],
+            "sequence_index": saved["sequence_index"],
+            "clean_ids": clean_ids,
+            "noisy_ids": noisy_ids,
+            "mask": mask,
+            "p_mask": saved["p_mask"],
+            "hidden": hidden,
+        }
+    return cached
+
+
+@torch.no_grad()
+def _advance_cached_states(model, cached_states: dict, completed_blocks: int) -> dict:
+    advanced = cached_states
+    for block_index in range(completed_blocks):
+        block = model.model.transformer.blocks[block_index]
+        parameter = next(block.parameters())
+        next_states = {}
+        for key, state in advanced.items():
+            hidden, _ = block(
+                state["hidden"].to(device=parameter.device, dtype=parameter.dtype),
+                attention_bias=None,
+                layer_past=None,
+                use_cache=False,
+                replace_position=None,
+                attn_collector=None,
+            )
+            next_states[key] = {
+                **state,
+                "hidden": hidden.detach().to(device="cpu", dtype=parameter.dtype),
+            }
+        advanced = next_states
+    return advanced
+
+
+def _repeat_gradient_square_check(model, config: dict, cached_states: dict) -> dict:
+    block_count = len(model.model.transformer.blocks)
+    if block_count != 32:
+        return {"status": "not_required", "reason": "model does not have 32 blocks"}
+    first_key = (0, config["calibration"]["sequence_indices"][0])
+    state = _advance_cached_states(model, {first_key: cached_states[first_key]}, block_count - 1)[first_key]
+    first, _ = block_state_gradients(
+        model,
+        block_count - 1,
+        state["hidden"],
+        state["clean_ids"],
+        state["mask"],
+        state["p_mask"],
+    )
+    second, _ = block_state_gradients(
+        model,
+        block_count - 1,
+        state["hidden"],
+        state["clean_ids"],
+        state["mask"],
+        state["p_mask"],
+    )
+    max_absolute = 0.0
+    max_relative = 0.0
+    finite = True
+    within_tolerance = True
+    for name in first:
+        left = first[name].square()
+        right = second[name].square()
+        finite = finite and torch.isfinite(left).all().item() and torch.isfinite(right).all().item()
+        difference = (left - right).abs()
+        max_absolute = max(max_absolute, difference.max().item())
+        relative = difference / torch.maximum(
+            torch.maximum(left.abs(), right.abs()),
+            torch.tensor(torch.finfo(left.dtype).tiny),
+        )
+        max_relative = max(max_relative, relative.max().item())
+        within_tolerance = within_tolerance and torch.allclose(
+            left, right, atol=_REPEAT_GRADIENT_ATOL, rtol=_REPEAT_GRADIENT_RTOL
+        )
+    result = {
+        "status": "passed" if finite and within_tolerance else "failed",
+        "block_index": block_count - 1,
+        "state": {"timestep_index": first_key[0], "sequence_index": first_key[1]},
+        "maximum_absolute_gradient_square_difference": max_absolute,
+        "maximum_relative_gradient_square_difference": max_relative,
+        "absolute_tolerance": _REPEAT_GRADIENT_ATOL,
+        "relative_tolerance": _REPEAT_GRADIENT_RTOL,
+        "finite": finite,
+        "within_tolerance": within_tolerance,
+    }
+    return result
+
+
+def _load_manifest(path: Path) -> dict:
+    try:
+        with Path(path).open(encoding="utf-8") as handle:
+            manifest = json.load(handle)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError("invalid score manifest") from error
+    if not isinstance(manifest, dict) or manifest.get("version") != _SCORE_ARTIFACT_VERSION:
+        raise ValueError("invalid score manifest")
+    return manifest
+
+
+def _verify_completed_blocks(artifact_dir: Path, manifest: dict, expected: dict) -> list[dict]:
+    for key, value in expected.items():
+        if manifest.get(key) != value:
+            raise ValueError(f"score manifest {key} mismatch")
+    completed = manifest.get("completed_blocks")
+    if not isinstance(completed, list):
+        raise ValueError("invalid completed block manifest")
+    if [entry.get("block_index") for entry in completed] != list(range(len(completed))):
+        raise ValueError("completed score blocks must be contiguous")
+    if len(completed) > manifest["block_count"]:
+        raise ValueError("score manifest has too many completed blocks")
+    for entry in completed:
+        block_index = entry["block_index"]
+        expected_name = f"block-{block_index:03d}.json"
+        if entry.get("path") != expected_name:
+            raise ValueError("score block path mismatch")
+        block_path = artifact_dir / expected_name
+        if not block_path.is_file() or block_path.stat().st_size != entry.get("byte_length"):
+            raise ValueError("score block size mismatch")
+        if _file_sha256(block_path) != entry.get("sha256"):
+            raise ValueError("score block checksum mismatch")
+        masks, metadata = load_mask_block(block_path)
+        for key in ("model_revision", "model_digest", "config_digest", "state_digest"):
+            if metadata.get(key) != manifest[key]:
+                raise ValueError(f"score block {key} mismatch")
+        if (
+            metadata.get("block_index") != block_index
+            or metadata.get("module_count") != manifest["modules_per_block"]
+            or metadata.get("update_count") != manifest["updates_per_module"]
+            or metadata.get("welford_updates") != manifest["welford_updates_per_module"]
+            or metadata.get("mask_variant_count") != manifest["mask_variant_count"]
+            or entry.get("welford_updates") != manifest["welford_updates_per_module"]
+            or len(masks) != manifest["modules_per_block"] * manifest["mask_variant_count"]
+        ):
+            raise ValueError("score block audit metadata mismatch")
+    return completed
+
+
+def _stage1_gate(
+    module_diagnostics: list[dict], config: dict, all_useful_masks_identical: bool
+) -> dict:
+    reliability = config["reliability"]
+    decision_sparsities = config["scoring"]["decision_sparsities"]
+    rho_values = [
+        module["rho_sigma_A_sigma_B"]["value"]
+        for module in module_diagnostics
+        if module["rho_sigma_A_sigma_B"]["value"] is not None
+    ]
+    undefined_rho_count = len(module_diagnostics) - len(rho_values)
+    median_rho = statistics.median(rho_values) if rho_values else None
+    mean_jaccard = {
+        f"{sparsity:g}": statistics.mean(
+            module["masks"][f"lambda=1|sparsity={sparsity:g}"]["split_jaccard"]
+            for module in module_diagnostics
+        )
+        for sparsity in decision_sparsities
+    }
+    rho_passed = (
+        undefined_rho_count == 0
+        and median_rho is not None
+        and median_rho >= reliability["minimum_median_split_sigma_spearman"]
+    )
+    mask_checks = {
+        sparsity: value >= reliability["minimum_mean_split_mask_jaccard"]
+        for sparsity, value in mean_jaccard.items()
+    }
+    reliability_passed = rho_passed and all(mask_checks.values())
+    passed = reliability_passed and not all_useful_masks_identical
+    if not reliability_passed:
+        stop_reason = "split-half reliability gate failed"
+    elif all_useful_masks_identical:
+        stop_reason = "all useful Time-Risk masks are identical to Mean"
+    else:
+        stop_reason = None
+    return {
+        "passed": passed,
+        "reliability_passed": reliability_passed,
+        "all_useful_masks_identical": all_useful_masks_identical,
+        "median_module_split_sigma_spearman": median_rho,
+        "undefined_split_sigma_spearman_modules": undefined_rho_count,
+        "mean_split_mask_jaccard": mean_jaccard,
+        "checks": {"split_sigma_spearman": rho_passed, "split_mask_jaccard": mask_checks},
+        "thresholds": {
+            "minimum_median_split_sigma_spearman": reliability[
+                "minimum_median_split_sigma_spearman"
+            ],
+            "minimum_mean_split_mask_jaccard": reliability[
+                "minimum_mean_split_mask_jaccard"
+            ],
+        },
+        "stop_reason": stop_reason,
+    }
+
+
+def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifact_dir: Path) -> dict:
+    artifact_dir = Path(artifact_dir)
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = artifact_dir / "manifest.json"
+    states_path = artifact_dir / "states.json"
+    block_count = len(model.model.transformer.blocks)
+    if block_count != config["stage0"]["model_block_count"]:
+        raise ValueError("configured model block count does not match loaded model")
+    state_document = _scoring_state_document(model, config, clean_ids)
+    state_bytes = _canonical_json(state_document)
+    state_digest = hashlib.sha256(state_bytes).hexdigest()
+    config_digest = hashlib.sha256(_canonical_json(config)).hexdigest()
+    model_digest = _model_digest(model, config)
+    header = {
+        "version": _SCORE_ARTIFACT_VERSION,
+        "model": config["model"],
+        "model_revision": config["model"]["revision"],
+        "model_digest": model_digest,
+        "config_digest": config_digest,
+        "state_digest": state_digest,
+        "state_artifact": {
+            "path": states_path.name,
+            "sha256": state_digest,
+            "byte_length": len(state_bytes),
+            "state_count": len(state_document["states"]),
+        },
+        "block_count": block_count,
+        "modules_per_block": 7,
+        "updates_per_module": len(config["calibration"]["timesteps"]),
+        "welford_updates_per_module": {
+            group: len(config["calibration"]["timesteps"])
+            for group in ("full", "A", "B")
+        },
+        "mask_variant_count": (len(config["scoring"]["lambdas"]) + 1)
+        * len(config["scoring"]["sparsities"]),
+    }
+    if manifest_path.exists():
+        manifest = _load_manifest(manifest_path)
+        if not states_path.is_file() or states_path.stat().st_size != len(state_bytes):
+            raise ValueError("scoring state artifact size mismatch")
+        if _file_sha256(states_path) != state_digest or states_path.read_bytes() != state_bytes:
+            raise ValueError("scoring state checksum mismatch")
+        completed = _verify_completed_blocks(artifact_dir, manifest, header)
+        repeat_check = manifest.get("repeat_gradient_square")
+        if not isinstance(repeat_check, dict) or (
+            block_count == 32 and repeat_check.get("status") != "passed"
+        ):
+            raise RuntimeError("repeated gradient-square check is not valid")
+        cached_states = _cache_scoring_states(model, state_document)
+    else:
+        orphaned = sorted(artifact_dir.glob("block-*.json"))
+        if states_path.exists() or orphaned:
+            raise ValueError("score artifacts exist without a manifest")
+        _atomic_write_json(states_path, state_document)
+        cached_for_repeat = _cache_scoring_states(model, state_document)
+        repeat_check = _repeat_gradient_square_check(model, config, cached_for_repeat)
+        manifest = {**header, "repeat_gradient_square": repeat_check, "completed_blocks": []}
+        _atomic_write_json(manifest_path, manifest)
+        if repeat_check["status"] == "failed":
+            raise RuntimeError("repeated gradient-square check failed")
+        completed = []
+        cached_states = cached_for_repeat
+
+    cached_states = _advance_cached_states(model, cached_states, len(completed))
+    for block_index in range(len(completed), block_count):
+        block_path = artifact_dir / f"block-{block_index:03d}.json"
+        if block_path.exists():
+            raise ValueError("untracked score block artifact")
+        block_result, cached_states = score_block(
+            model, block_index, cached_states, config
+        )
+        flat_masks = {
+            f"{name}|lambda={risk_lambda:g}|sparsity={sparsity:g}": mask
+            for (name, risk_lambda, sparsity), mask in block_result["masks"].items()
+        }
+        metadata = {
+            "block_index": block_index,
+            "model_revision": header["model_revision"],
+            "model_digest": model_digest,
+            "config_digest": config_digest,
+            "state_digest": state_digest,
+            "module_count": len(block_result["statistics"]),
+            "update_count": block_result["update_count"],
+            "welford_updates": header["welford_updates_per_module"],
+            "mask_variant_count": header["mask_variant_count"],
+            "lambdas": [0.0, *config["scoring"]["lambdas"]],
+            "sparsities": config["scoring"]["sparsities"],
+            "score_definition": "mu + lambda * population_std_timestep_sensitivity",
+            "calibration": {
+                "sequence_indices": config["calibration"]["sequence_indices"],
+                "seed": config["calibration"]["seed"],
+                "timesteps": config["calibration"]["timesteps"],
+                "split_A": config["calibration"]["split_a"],
+                "split_B": config["calibration"]["split_b"],
+            },
+            "module_shapes": {
+                name: list(values["mu"].shape)
+                for name, values in block_result["statistics"].items()
+            },
+            "module_diagnostics": block_result["diagnostics"],
+        }
+        save_mask_block(block_path, flat_masks, metadata)
+        entry = {
+            "block_index": block_index,
+            "path": block_path.name,
+            "sha256": _file_sha256(block_path),
+            "byte_length": block_path.stat().st_size,
+            "module_count": metadata["module_count"],
+            "update_count": metadata["update_count"],
+            "welford_updates": metadata["welford_updates"],
+            "mask_variant_count": metadata["mask_variant_count"],
+            "mask_entry_count": len(flat_masks),
+        }
+        manifest["completed_blocks"].append(entry)
+        _atomic_write_json(manifest_path, manifest)
+        del block_result, flat_masks, metadata
+
+    module_diagnostics = []
+    all_useful_masks_identical = True
+    for entry in manifest["completed_blocks"]:
+        _, metadata = load_mask_block(artifact_dir / entry["path"])
+        for module_name, diagnostic in metadata["module_diagnostics"].items():
+            module_diagnostics.append(
+                {"block_index": entry["block_index"], "module": module_name, **diagnostic}
+            )
+            for risk_lambda in config["scoring"]["lambdas"]:
+                for sparsity in config["scoring"]["decision_sparsities"]:
+                    all_useful_masks_identical = all_useful_masks_identical and diagnostic[
+                        "masks"
+                    ][f"lambda={risk_lambda:g}|sparsity={sparsity:g}"]["identical_to_mean"]
+    gate = _stage1_gate(module_diagnostics, config, all_useful_masks_identical)
+    expected_modules = block_count * header["modules_per_block"]
+    return {
+        "stage": 1,
+        "model": config["model"],
+        "model_digest": model_digest,
+        "config_digest": config_digest,
+        "state_digest": state_digest,
+        "repeat_gradient_square": manifest["repeat_gradient_square"],
+        "audit": {
+            "expected_blocks": block_count,
+            "completed_blocks": len(manifest["completed_blocks"]),
+            "expected_module_entries": expected_modules,
+            "module_entries": len(module_diagnostics),
+            "updates_per_module": header["updates_per_module"],
+            "welford_updates_per_module": header["welford_updates_per_module"],
+            "mask_variant_count": header["mask_variant_count"],
+            "packed_mask_entries": sum(
+                entry["mask_entry_count"] for entry in manifest["completed_blocks"]
+            ),
+        },
+        "module_diagnostics": module_diagnostics,
+        "gate": gate,
+    }
+
+
+def run_score(config: dict, artifact_dir: Path) -> dict:
+    if not torch.cuda.is_available():
+        raise RuntimeError("Stage 1 scoring requires CUDA")
+
+    from transformers import AutoTokenizer
+    from lib.data import get_loaders
+    from model import LLaDAModelLM
+
+    model_config = config["model"]
+    model = LLaDAModelLM.from_pretrained(
+        model_config["id"],
+        revision=model_config["revision"],
+        torch_dtype=torch.bfloat16,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+    ).eval()
+    _model_cuda_devices(model)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_config["id"], revision=model_config["revision"], trust_remote_code=True
+    )
+    calibration = config["calibration"]
+    loader, _ = get_loaders(
+        config["dataset"]["loader_name"],
+        nsamples=calibration["sequence_count"],
+        seed=calibration["seed"],
+        seqlen=calibration["sequence_length"],
+        tokenizer=tokenizer,
+    )
+    return _run_loaded_score(model, config, [sample[0] for sample in loader], artifact_dir)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     feasibility = subparsers.add_parser("feasibility")
     feasibility.add_argument("--config", type=Path, required=True)
     feasibility.add_argument("--output", type=Path, required=True)
+    score = subparsers.add_parser("score")
+    score.add_argument("--config", type=Path, required=True)
+    score.add_argument("--artifact-dir", type=Path, required=True)
+    score.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
 
     with args.config.open(encoding="utf-8") as handle:
         config = json.load(handle)
-    report = run_feasibility(config)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    report = (
+        run_feasibility(config)
+        if args.command == "feasibility"
+        else run_score(config, args.artifact_dir)
+    )
+    _atomic_write_json(args.output, report)
     return 0 if report["gate"]["passed"] else 2
 
 
