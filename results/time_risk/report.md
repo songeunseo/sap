@@ -40,8 +40,8 @@ per-block costs set to the slower endpoint. Independent recomputation gives:
 
 This equals `stage0.json`. Every declared gate predicate is true: memory,
 swap, finite gradients, nonzero gradients, and total runtime <= 24 GPU hours.
-The separate 12-hour result target is also met (`0.5081 h <= 8 h`); this does
-not alter the predeclared 24-hour scientific gate.
+The projection is inside the user's 12-hour result window (`0.5081 h < 12 h`);
+this does not alter the predeclared 24-hour scientific gate.
 
 ## Next authorized stage
 
