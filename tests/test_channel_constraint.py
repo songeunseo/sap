@@ -178,6 +178,61 @@ def test_delta_artifact_round_trip_applies_to_fresh_baseline(tmp_path):
     assert torch.equal(other_weight[:, 0].eq(0), apply_delta_to_mask(baseline_mask, bundles[4]["modules"][module_name])[:, 0])
 
 
+def test_partial_delta_applies_largest_weights_only_in_requested_block(tmp_path):
+    weight = torch.arange(24, dtype=torch.float32).reshape(4, 6) + 1
+    large_weight = weight + 100
+    baseline_mask = _baseline_mask()
+    bundles = new_delta_bundles([0])
+    for block in (0, 1):
+        for name, values in (("q_proj", large_weight), ("k_proj", weight)):
+            record_module_deltas(
+                bundles,
+                f"model.transformer.blocks.{block}.{name}",
+                values,
+                values,
+                baseline_mask,
+            )
+    save_delta_bundles(bundles, tmp_path, {"method": "wanda"})
+
+    model = _ToyModel(large_weight)
+    model.model.transformer.blocks[0].k_proj = nn.Linear(6, 4, bias=False)
+    model.model.transformer.blocks[0].k_proj.weight.data.copy_(weight)
+    model.model.transformer.blocks.append(copy.deepcopy(model.model.transformer.blocks[0]))
+    for block in model.model.transformer.blocks:
+        block.q_proj.weight.data[baseline_mask] = 0
+        block.k_proj.weight.data[baseline_mask] = 0
+
+    report = apply_channel_delta(
+        model,
+        tmp_path / "channel-0.pt",
+        block=1,
+        top_fraction=0.25,
+    )
+
+    assert torch.equal(
+        model.model.transformer.blocks[0].q_proj.weight.data.eq(0), baseline_mask
+    )
+    assert torch.equal(
+        model.model.transformer.blocks[0].k_proj.weight.data.eq(0), baseline_mask
+    )
+    changed = model.model.transformer.blocks[1].q_proj.weight.data.flatten()
+    assert changed[[0, 6]].eq(0).all()
+    assert changed[[12, 18]].tolist() == [113, 119]
+    assert changed[[14, 19]].eq(0).all()
+    assert torch.equal(
+        model.model.transformer.blocks[1].k_proj.weight.data.eq(0), baseline_mask
+    )
+    assert report["application"] == {
+        "block": 1,
+        "top_fraction": 0.25,
+        "source_restorable": 8,
+        "restored": 2,
+        "compensation_pruned": 2,
+        "mask_difference_count": 4,
+        "modules_changed": 1,
+    }
+
+
 def test_delta_request_accepts_only_the_causal_experiment_scope():
     validate_delta_request(0.75, "unstructured", False, "wanda", 3848, 4096)
     validate_delta_request(0.75, "unstructured", False, "sink", 3848, 4096)

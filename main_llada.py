@@ -250,6 +250,8 @@ def main():
     parser.add_argument('--protect_channel', type=int, default=3848)
     parser.add_argument('--random_channel_count', type=int, default=0)
     parser.add_argument('--apply_channel_delta', type=str, default=None)
+    parser.add_argument('--delta_block', type=int, default=None)
+    parser.add_argument('--delta_top_fraction', type=float, default=1.0)
     parser.add_argument('--skip_ppl', action='store_true')
 
     parser.add_argument("--eval_zero_shot", action="store_true")
@@ -307,8 +309,15 @@ def main():
     if args.apply_channel_delta:
         if args.delta_dir or args.sparsity_ratio != 0:
             raise ValueError("Apply one channel delta to an unmodified baseline load")
-        application_report = apply_channel_delta(model, args.apply_channel_delta)
+        application_report = apply_channel_delta(
+            model,
+            args.apply_channel_delta,
+            block=args.delta_block,
+            top_fraction=args.delta_top_fraction,
+        )
         print(json.dumps(application_report, indent=2, sort_keys=True))
+    elif args.delta_block is not None or args.delta_top_fraction != 1.0:
+        raise ValueError("Partial delta options require --apply_channel_delta")
     elif args.sparsity_ratio != 0:
         print("pruning starts")
         if args.prune_method == "wanda":

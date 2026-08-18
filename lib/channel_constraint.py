@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 import torch
@@ -254,12 +255,50 @@ def save_delta_bundles(
     return paths
 
 
-def apply_channel_delta(model: torch.nn.Module, artifact_path: Path | str) -> dict:
+def _select_delta_positions(modules: dict, block: int | None, top_fraction: float) -> dict:
+    if not 0 < top_fraction <= 1:
+        raise ValueError("Delta top fraction must be in (0, 1]")
+    prefix = None if block is None else f"model.transformer.blocks.{block}."
+    selected = {
+        name: delta for name, delta in modules.items() if prefix is None or name.startswith(prefix)
+    }
+    if not selected:
+        raise ValueError(f"No delta modules found for block {block}")
+
+    magnitudes = torch.cat(
+        [delta["restore_values"].float().abs().flatten() for delta in selected.values()]
+    )
+    count = math.ceil(magnitudes.numel() * top_fraction)
+    chosen = torch.zeros(magnitudes.numel(), dtype=torch.bool)
+    chosen[torch.argsort(magnitudes, descending=True, stable=True)[:count]] = True
+
+    positions = {}
+    offset = 0
+    for name, delta in selected.items():
+        size = delta["restore_indices"].numel()
+        positions[name] = chosen[offset : offset + size].nonzero().flatten()
+        offset += size
+    return positions
+
+
+def apply_channel_delta(
+    model: torch.nn.Module,
+    artifact_path: Path | str,
+    block: int | None = None,
+    top_fraction: float = 1.0,
+) -> dict:
     artifact = torch.load(artifact_path, map_location="cpu", weights_only=True)
     named_modules = dict(model.named_modules())
     prepared = []
+    positions = _select_delta_positions(artifact["modules"], block, top_fraction)
+    source_restorable = sum(
+        artifact["modules"][name]["restore_indices"].numel() for name in positions
+    )
 
-    for name, delta in artifact["modules"].items():
+    for name, selected_positions in positions.items():
+        if not selected_positions.numel():
+            continue
+        delta = artifact["modules"][name]
         module = named_modules.get(name)
         if module is None or not hasattr(module, "weight"):
             raise ValueError(f"Delta module not found: {name}")
@@ -267,13 +306,14 @@ def apply_channel_delta(model: torch.nn.Module, artifact_path: Path | str) -> di
         if tuple(weight.shape) != tuple(delta["shape"]):
             raise ValueError(f"Weight shape mismatch for {name}")
         flat = weight.flatten()
-        restore = delta["restore_indices"].to(flat.device)
-        compensation = delta["compensation_indices"].to(flat.device)
+        restore = delta["restore_indices"][selected_positions].to(flat.device)
+        compensation = delta["compensation_indices"][selected_positions].to(flat.device)
+        restore_values = delta["restore_values"][selected_positions]
         if flat[restore].count_nonzero().item():
             raise ValueError(f"Restore targets are not pruned in baseline module {name}")
         if compensation.numel() and flat[compensation].eq(0).any():
             raise ValueError(f"Compensation targets are already pruned in baseline module {name}")
-        prepared.append((name, flat, restore, compensation, delta["restore_values"]))
+        prepared.append((name, flat, restore, compensation, restore_values))
 
     module_wise = {}
     for name, flat, restore, compensation, restore_values in prepared:
@@ -291,12 +331,17 @@ def apply_channel_delta(model: torch.nn.Module, artifact_path: Path | str) -> di
             "sparsity_after": after / flat.numel(),
         }
 
-    total = sum(stats["total_weights"] for stats in module_wise.values())
-    pruned = sum(stats["zeros_after"] for stats in module_wise.values())
+    restored = sum(len(restore) for _, _, restore, _, _ in prepared)
     return {
         **artifact["summary"],
-        "total_prunable_weights": total,
-        "total_pruned_weights": pruned,
-        "actual_global_sparsity": pruned / total,
+        "application": {
+            "block": block,
+            "top_fraction": top_fraction,
+            "source_restorable": source_restorable,
+            "restored": restored,
+            "compensation_pruned": restored,
+            "mask_difference_count": 2 * restored,
+            "modules_changed": len(prepared),
+        },
         "application_module_wise": module_wise,
     }
