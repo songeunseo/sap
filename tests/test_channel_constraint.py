@@ -1,10 +1,12 @@
 import copy
+import csv
 import json
 
 import pytest
 import torch
 from torch import nn
 
+import activation_diagnostic
 import eval_llada
 from activation_diagnostic import collect_channel_activations
 from lib.channel_constraint import (
@@ -300,6 +302,29 @@ class _ToyActivationModel(nn.Module):
         return hidden
 
 
+class _ProfileBlock(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.q_proj = nn.Identity()
+
+    def forward(self, hidden):
+        self.q_proj(hidden)
+        return hidden + 1, None
+
+
+class _ToyProfileModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = nn.Module()
+        self.model.transformer = nn.Module()
+        self.model.transformer.blocks = nn.ModuleList([_ProfileBlock(), _ProfileBlock()])
+
+    def forward(self, hidden):
+        for block in self.model.transformer.blocks:
+            hidden = block(hidden)[0]
+        return hidden
+
+
 def test_activation_diagnostic_measures_post_block_channel_and_removes_hooks():
     model = _ToyActivationModel()
     batches = [torch.zeros(1, 2, 3), torch.full((1, 2, 3), 2.0)]
@@ -308,6 +333,57 @@ def test_activation_diagnostic_measures_post_block_channel_and_removes_hooks():
 
     assert stats == {0: 2.0, 15: 17.0, 31: 33.0}
     assert all(not block._forward_hooks for block in model.model.transformer.blocks)
+
+
+def test_activation_diagnostic_profiles_and_ranks_every_channel():
+    model = _ToyProfileModel()
+    batches = [torch.tensor([[[0.0, 1.0, 4.0], [0.0, 1.0, 4.0]]])]
+
+    profile = activation_diagnostic.collect_all_channel_activations(model, batches, top_k=3)
+
+    assert profile["channel_count"] == 3
+    assert profile["q_proj_input"]["mean_abs"] == [0.5, 1.5, 4.5]
+    assert profile["q_proj_input"]["max_abs"] == [1.0, 2.0, 5.0]
+    assert profile["q_proj_input"]["ranking"] == [2, 1, 0]
+    assert profile["q_proj_input"]["by_block"][0]["mean_abs"] == [0.0, 1.0, 4.0]
+    assert profile["post_block"]["mean_abs"] == [1.5, 2.5, 5.5]
+    assert profile["post_block"]["ranking"] == [2, 1, 0]
+    assert all(not block._forward_hooks for block in model.model.transformer.blocks)
+    assert all(not block.q_proj._forward_pre_hooks for block in model.model.transformer.blocks)
+
+
+def test_activation_diagnostic_writes_full_ranked_json_and_csv(tmp_path):
+    profile = activation_diagnostic.collect_all_channel_activations(
+        _ToyProfileModel(),
+        [torch.tensor([[[0.0, 1.0, 4.0]]])],
+        top_k=2,
+    )
+    output = tmp_path / "profile.json"
+
+    activation_diagnostic.write_all_channel_profile(
+        profile,
+        output,
+        {"model": "toy", "samples": 1, "seed": 0},
+    )
+
+    payload = json.loads(output.read_text())
+    assert payload["model"] == "toy"
+    assert payload["primary_metric"] == "q_proj_input mean(abs), averaged over samples, tokens, and blocks"
+    assert payload["profile"]["q_proj_input"]["top_channels"] == [2, 1]
+    rows = list(csv.DictReader(output.with_suffix(".csv").open()))
+    assert len(rows) == 12
+    assert next(
+        row
+        for row in rows
+        if row["location"] == "q_proj_input" and row["block"] == "0" and row["channel"] == "2"
+    ) == {
+        "location": "q_proj_input",
+        "block": "0",
+        "channel": "2",
+        "mean_abs": "4.0",
+        "max_abs": "4.0",
+        "mean_abs_rank": "1",
+    }
 
 
 class _Request:
