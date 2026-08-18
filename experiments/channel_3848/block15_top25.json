@@ -1,0 +1,25 @@
+{
+  "baseline_model": "pruned_weights/channel_3848/wanda75-baseline",
+  "channel_delta": "results/channel_3848/wanda75-deltas/channel-3848.pt",
+  "delta_block": 15,
+  "delta_top_fraction": 0.25,
+  "ranking": "absolute_dense_weight_among_baseline_pruned_protected_weights",
+  "source_restorable": 15313,
+  "selected_restored": 3829,
+  "selected_by_module": {
+    "attn_out": 570,
+    "ff_out": 3259
+  },
+  "activation": {
+    "blocks": [0, 15, 31],
+    "samples": 8
+  },
+  "evaluation": {
+    "task": "gsm8k",
+    "limit": 64,
+    "gen_length": 1024,
+    "steps": 1024,
+    "block_length": 1024
+  },
+  "go_no_go": "run 256 examples only if flexible exact match exceeds the 1/64 baseline"
+}
