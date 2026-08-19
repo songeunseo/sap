@@ -1118,8 +1118,15 @@ def test_apply_mean_masks_preserves_survivors_and_reports_actual_rowwise_sparsit
     expected_pruned = 0
     expected_total = sum(layer.weight.numel() for layer in layers.values())
     assert report["method"] == "mean_dlm_sensitivity"
+    assert report["lambda_zero_equals_mean"] is True
     assert report["requested_sparsity"] == 0.6
     assert report["module_count"] == 7
+    assert report["aggregation"] == {
+        "sequence_count": 8,
+        "timestep_count": 1,
+        "updates_per_module": 1,
+        "welford_updates_per_module": {"A": 1, "B": 1, "full": 1},
+    }
     for module in report["modules"]:
         name = module["module"]
         mask = saved_masks[f"{name}|lambda=0|sparsity=0.6"]
@@ -1148,6 +1155,92 @@ def test_apply_mean_masks_rejects_unavailable_sparsity(
     model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
     with pytest.raises(ValueError, match="not present"):
         sensitivity_cli._apply_mean_masks(model, artifact_dir, 0.61)
+
+
+def test_materialize_mean_writes_new_checkpoint_and_machine_readable_report(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    output_dir = tmp_path / "mean-60"
+
+    class Tokenizer:
+        def save_pretrained(self, path):
+            (Path(path) / "tokenizer.json").write_text("{}")
+
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    report = sensitivity_cli._materialize_loaded_mean(
+        model, Tokenizer(), artifact_dir, 0.6, output_dir
+    )
+
+    assert report["checkpoint"] == str(output_dir)
+    assert json.loads((output_dir / "mean_dlm_pruning.json").read_text()) == report
+    assert (output_dir / "model.safetensors").is_file()
+    assert (output_dir / "config.json").is_file()
+    assert (output_dir / "tokenizer.json").is_file()
+
+    with pytest.raises(FileExistsError, match="nonempty"):
+        sensitivity_cli._materialize_loaded_mean(
+            model, Tokenizer(), artifact_dir, 0.6, output_dir
+        )
+
+
+def test_run_materialize_loads_bound_model_and_copies_llada_support(
+    tmp_path, completed_toy_score_artifacts, monkeypatch
+):
+    import main_llada
+    import model as model_package
+    import transformers
+
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    output_dir = tmp_path / "mean-60"
+    config = _toy_score_config(blocks=1, timesteps=(0.5,))
+    calls = {}
+
+    class Tokenizer:
+        def save_pretrained(self, path):
+            (Path(path) / "tokenizer.json").write_text("{}")
+
+    def load_model(_, model_id, **kwargs):
+        calls["model"] = (model_id, kwargs)
+        torch.manual_seed(31)
+        return _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    def load_tokenizer(_, model_id, **kwargs):
+        calls["tokenizer"] = (model_id, kwargs)
+        return Tokenizer()
+
+    monkeypatch.setattr(sensitivity_cli, "_validate_production_score_config", lambda _: None)
+    monkeypatch.setattr(sensitivity_cli, "_model_cuda_devices", lambda _: (0,))
+    monkeypatch.setattr(model_package.LLaDAModelLM, "from_pretrained", classmethod(load_model))
+    monkeypatch.setattr(transformers.AutoTokenizer, "from_pretrained", classmethod(load_tokenizer))
+    monkeypatch.setattr(
+        main_llada,
+        "copy_llada_support_files",
+        lambda source, destination: calls.setdefault("support", (source, destination)),
+    )
+
+    report = sensitivity_cli.run_materialize(
+        config, artifact_dir, 0.6, output_dir
+    )
+
+    assert calls["model"] == (
+        "tiny",
+        {
+            "revision": "test-revision",
+            "torch_dtype": torch.bfloat16,
+            "low_cpu_mem_usage": True,
+            "device_map": "auto",
+        },
+    )
+    assert calls["tokenizer"] == (
+        "tiny",
+        {"revision": "test-revision", "trust_remote_code": True},
+    )
+    assert calls["support"] == ("tiny", str(output_dir))
+    assert report["actual_sparsity"] == pytest.approx(
+        report["pruned_weight_count"] / report["total_weight_count"]
+    )
 
 
 def test_score_resume_rejects_self_consistent_module_rename(

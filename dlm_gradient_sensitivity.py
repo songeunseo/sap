@@ -664,6 +664,16 @@ def _apply_mean_masks(model, artifact_dir: Path, sparsity: float) -> dict:
         layers = find_layers(blocks[block_index])
         for name, layer in layers.items():
             key = f"{name}|lambda=0|sparsity={sparsity:g}"
+            mean_diagnostic = metadata["module_diagnostics"][name]["masks"][
+                f"lambda=0|sparsity={sparsity:g}"
+            ]
+            if (
+                mean_diagnostic["identical_to_mean"] is not True
+                or mean_diagnostic["mean_disagreement_count"] != 0
+                or mean_diagnostic["mean_disagreement_fraction"] != 0.0
+                or mean_diagnostic["mean_jaccard"] != 1.0
+            ):
+                raise ValueError("lambda=0 mask is not identical to Mean sensitivity")
             mask = masks[key]
             weight = layer.weight.data
             if torch.count_nonzero(weight == 0).item():
@@ -691,9 +701,21 @@ def _apply_mean_masks(model, artifact_dir: Path, sparsity: float) -> dict:
         del masks, metadata
 
     actual_sparsity = pruned_weight_count / total_weight_count
+    calibration = manifest["calibration"]
     return {
         "method": "mean_dlm_sensitivity",
         "score_variant": "lambda=0",
+        "model": manifest["model"],
+        "model_digest": manifest["model_digest"],
+        "config_digest": manifest["config_digest"],
+        "state_digest": manifest["state_digest"],
+        "lambda_zero_equals_mean": True,
+        "aggregation": {
+            "sequence_count": len(calibration["split_A"]) + len(calibration["split_B"]),
+            "timestep_count": len(calibration["timesteps"]),
+            "updates_per_module": manifest["updates_per_module"],
+            "welford_updates_per_module": manifest["welford_updates_per_module"],
+        },
         "requested_sparsity": sparsity,
         "pruned_weight_count": pruned_weight_count,
         "total_weight_count": total_weight_count,
@@ -702,6 +724,64 @@ def _apply_mean_masks(model, artifact_dir: Path, sparsity: float) -> dict:
         "module_count": len(modules),
         "modules": modules,
     }
+
+
+def _materialize_loaded_mean(
+    model,
+    tokenizer,
+    artifact_dir: Path,
+    sparsity: float,
+    output_dir: Path,
+) -> dict:
+    output_dir = Path(output_dir)
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite nonempty output directory: {output_dir}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report = {
+        **_apply_mean_masks(model, artifact_dir, sparsity),
+        "checkpoint": str(output_dir),
+    }
+    model.save_pretrained(output_dir, safe_serialization=True)
+    tokenizer.save_pretrained(output_dir)
+    _atomic_write_json(output_dir / "mean_dlm_pruning.json", report)
+    return report
+
+
+def run_materialize(
+    config: dict,
+    artifact_dir: Path,
+    sparsity: float,
+    output_dir: Path,
+) -> dict:
+    _validate_production_score_config(config)
+    output_dir = Path(output_dir)
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite nonempty output directory: {output_dir}")
+    manifest = _load_manifest(Path(artifact_dir) / "manifest.json")
+    if hashlib.sha256(_canonical_json(config)).hexdigest() != manifest.get("config_digest"):
+        raise ValueError("materialization config does not match score artifacts")
+
+    from transformers import AutoTokenizer
+    from main_llada import copy_llada_support_files
+    from model import LLaDAModelLM
+
+    model_config = config["model"]
+    model = LLaDAModelLM.from_pretrained(
+        model_config["id"],
+        revision=model_config["revision"],
+        torch_dtype=torch.bfloat16,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+    ).eval()
+    _model_cuda_devices(model)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_config["id"], revision=model_config["revision"], trust_remote_code=True
+    )
+    report = _materialize_loaded_mean(
+        model, tokenizer, artifact_dir, sparsity, output_dir
+    )
+    copy_llada_support_files(model_config["id"], str(output_dir))
+    return report
 
 
 def _stage1_gate(
@@ -1100,17 +1180,26 @@ def main(argv=None) -> int:
     score.add_argument("--config", type=Path, required=True)
     score.add_argument("--artifact-dir", type=Path, required=True)
     score.add_argument("--output", type=Path, required=True)
+    materialize = subparsers.add_parser("materialize")
+    materialize.add_argument("--config", type=Path, required=True)
+    materialize.add_argument("--artifact-dir", type=Path, required=True)
+    materialize.add_argument("--sparsity", type=float, required=True)
+    materialize.add_argument("--output-dir", type=Path, required=True)
+    materialize.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
 
     with args.config.open(encoding="utf-8") as handle:
         config = json.load(handle)
-    report = (
-        run_feasibility(config)
-        if args.command == "feasibility"
-        else run_score(config, args.artifact_dir)
-    )
+    if args.command == "feasibility":
+        report = run_feasibility(config)
+    elif args.command == "score":
+        report = run_score(config, args.artifact_dir)
+    else:
+        report = run_materialize(
+            config, args.artifact_dir, args.sparsity, args.output_dir
+        )
     _atomic_write_json(args.output, report)
-    return 0 if report["gate"]["passed"] else 2
+    return 0 if args.command == "materialize" or report["gate"]["passed"] else 2
 
 
 if __name__ == "__main__":
