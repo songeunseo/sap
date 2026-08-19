@@ -521,7 +521,8 @@ def _validate_block_artifact(
     manifest: dict,
     expected_masks: dict | None = None,
     expected_metadata: dict | None = None,
-) -> dict:
+    include_masks: bool = False,
+) -> dict | tuple[dict, dict]:
     block_index = entry.get("block_index")
     if isinstance(block_index, bool) or not isinstance(block_index, int):
         raise ValueError("score block index is invalid")
@@ -609,7 +610,7 @@ def _validate_block_artifact(
             if mask_name.startswith(f"{module_name}|lambda=")
         ):
             raise ValueError("score block module shape mismatch")
-    return metadata
+    return (metadata, masks) if include_masks else metadata
 
 
 def _validated_completed_blocks(
@@ -631,6 +632,76 @@ def _validated_completed_blocks(
             (entry, _validate_block_artifact(model, artifact_dir, entry, manifest))
         )
     return completed, validated
+
+
+@torch.no_grad()
+def _apply_mean_masks(model, artifact_dir: Path, sparsity: float) -> dict:
+    artifact_dir = Path(artifact_dir)
+    manifest = _load_manifest(artifact_dir / "manifest.json")
+    if manifest.get("score_definition") != "mu + lambda * population_std_timestep_sensitivity":
+        raise ValueError("score manifest does not contain Mean DLM sensitivity")
+    if 0.0 not in manifest.get("lambdas", []):
+        raise ValueError("score manifest does not contain lambda=0 Mean masks")
+    if sparsity not in manifest.get("sparsities", []):
+        raise ValueError(f"sparsity {sparsity} is not present in score artifacts")
+    blocks = model.model.transformer.blocks
+    completed = manifest.get("completed_blocks", [])
+    if manifest.get("block_count") != len(blocks) or len(completed) != len(blocks):
+        raise ValueError("score artifacts do not cover every model block")
+    if _model_digest(model, {"model": manifest["model"]}) != manifest.get("model_digest"):
+        raise ValueError("score manifest model_digest mismatch")
+
+    from lib.prune_llada import find_layers
+
+    modules = []
+    pruned_weight_count = 0
+    total_weight_count = 0
+    for entry in completed:
+        metadata, masks = _validate_block_artifact(
+            model, artifact_dir, entry, manifest, include_masks=True
+        )
+        block_index = entry["block_index"]
+        layers = find_layers(blocks[block_index])
+        for name, layer in layers.items():
+            key = f"{name}|lambda=0|sparsity={sparsity:g}"
+            mask = masks[key]
+            weight = layer.weight.data
+            if torch.count_nonzero(weight == 0).item():
+                raise ValueError("Mean masks must be applied to the unpruned dense model")
+            device_mask = mask.to(weight.device)
+            weight[device_mask] = 0
+            zero_count = torch.count_nonzero(weight == 0).item()
+            if zero_count != mask.sum().item():
+                raise RuntimeError("applied Mean mask zero count mismatch")
+            row_counts = mask.sum(dim=1)
+            module_total = mask.numel()
+            pruned_weight_count += zero_count
+            total_weight_count += module_total
+            modules.append(
+                {
+                    "block": block_index,
+                    "module": name,
+                    "pruned_weight_count": zero_count,
+                    "total_weight_count": module_total,
+                    "actual_sparsity": zero_count / module_total,
+                    "pruned_per_row_min": row_counts.min().item(),
+                    "pruned_per_row_max": row_counts.max().item(),
+                }
+            )
+        del masks, metadata
+
+    actual_sparsity = pruned_weight_count / total_weight_count
+    return {
+        "method": "mean_dlm_sensitivity",
+        "score_variant": "lambda=0",
+        "requested_sparsity": sparsity,
+        "pruned_weight_count": pruned_weight_count,
+        "total_weight_count": total_weight_count,
+        "actual_sparsity": actual_sparsity,
+        "sparsity_delta": actual_sparsity - sparsity,
+        "module_count": len(modules),
+        "modules": modules,
+    }
 
 
 def _stage1_gate(

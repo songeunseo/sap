@@ -1102,6 +1102,54 @@ def _rewrite_completed_block(artifact_dir, masks, metadata):
     manifest_path.write_text(json.dumps(manifest, sort_keys=True, separators=(",", ":")))
 
 
+# Mutation caught: selecting a nonzero lambda applies the old risk mask instead of pure Mean.
+def test_apply_mean_masks_preserves_survivors_and_reports_actual_rowwise_sparsity(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    layers = find_layers(model.model.transformer.blocks[0])
+    before = {name: layer.weight.detach().clone() for name, layer in layers.items()}
+    saved_masks, _ = load_mask_block(artifact_dir / "block-000.json")
+
+    report = sensitivity_cli._apply_mean_masks(model, artifact_dir, 0.6)
+
+    expected_pruned = 0
+    expected_total = sum(layer.weight.numel() for layer in layers.values())
+    assert report["method"] == "mean_dlm_sensitivity"
+    assert report["requested_sparsity"] == 0.6
+    assert report["module_count"] == 7
+    for module in report["modules"]:
+        name = module["module"]
+        mask = saved_masks[f"{name}|lambda=0|sparsity=0.6"]
+        weight = layers[name].weight.detach()
+        expected_pruned += mask.sum().item()
+        assert torch.count_nonzero(weight[mask]) == 0
+        torch.testing.assert_close(weight[~mask], before[name][~mask])
+        assert module["pruned_weight_count"] == mask.sum().item()
+        assert module["total_weight_count"] == mask.numel()
+        assert module["actual_sparsity"] == pytest.approx(mask.float().mean().item())
+        assert module["pruned_per_row_min"] == math.floor(mask.shape[1] * 0.6)
+        assert module["pruned_per_row_max"] == math.floor(mask.shape[1] * 0.6)
+    assert report["pruned_weight_count"] == expected_pruned
+    assert report["total_weight_count"] == expected_total
+    assert report["actual_sparsity"] == pytest.approx(expected_pruned / expected_total)
+    assert report["sparsity_delta"] == pytest.approx(
+        expected_pruned / expected_total - 0.6
+    )
+
+
+def test_apply_mean_masks_rejects_unavailable_sparsity(
+    tmp_path, completed_toy_score_artifacts
+):
+    artifact_dir = _restore_toy_score_artifacts(tmp_path, completed_toy_score_artifacts)
+    torch.manual_seed(31)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    with pytest.raises(ValueError, match="not present"):
+        sensitivity_cli._apply_mean_masks(model, artifact_dir, 0.61)
+
+
 def test_score_resume_rejects_self_consistent_module_rename(
     tmp_path, completed_toy_score_artifacts
 ):
