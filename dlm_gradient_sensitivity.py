@@ -747,6 +747,99 @@ def _materialize_loaded_mean(
     return report
 
 
+def _materialize_loaded_mean_direct(
+    model,
+    tokenizer,
+    config: dict,
+    clean_ids: list[torch.Tensor],
+    sparsity: float,
+    output_dir: Path,
+) -> dict:
+    output_dir = Path(output_dir)
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite nonempty output directory: {output_dir}")
+    if isinstance(sparsity, bool) or not isinstance(sparsity, (int, float)) or not 0 <= sparsity <= 1:
+        raise ValueError("sparsity must be between 0 and 1")
+
+    state_document = _scoring_state_document(model, config, clean_ids)
+    cached_states = _cache_scoring_states(model, state_document)
+    score_config = {
+        **config,
+        "scoring": {**config["scoring"], "lambdas": [], "sparsities": [sparsity]},
+    }
+    model_digest = _model_digest(model, config)
+    modules = []
+    pruned_weight_count = 0
+    total_weight_count = 0
+    from lib.prune_llada import find_layers
+
+    for block_index, block in enumerate(model.model.transformer.blocks):
+        block_result, cached_states = score_block(
+            model, block_index, cached_states, score_config
+        )
+        layers = find_layers(block)
+        with torch.no_grad():
+            for name, layer in layers.items():
+                mask = block_result["masks"][(name, 0.0, float(sparsity))]
+                weight = layer.weight.data
+                if torch.count_nonzero(weight == 0).item():
+                    raise ValueError("Mean masks must be applied to the unpruned dense model")
+                weight[mask.to(weight.device)] = 0
+                zero_count = torch.count_nonzero(weight == 0).item()
+                if zero_count != mask.sum().item():
+                    raise RuntimeError("applied Mean mask zero count mismatch")
+                row_counts = mask.sum(dim=1)
+                module_total = mask.numel()
+                pruned_weight_count += zero_count
+                total_weight_count += module_total
+                modules.append(
+                    {
+                        "block": block_index,
+                        "module": name,
+                        "pruned_weight_count": zero_count,
+                        "total_weight_count": module_total,
+                        "actual_sparsity": zero_count / module_total,
+                        "pruned_per_row_min": row_counts.min().item(),
+                        "pruned_per_row_max": row_counts.max().item(),
+                    }
+                )
+        del block_result
+
+    actual_sparsity = pruned_weight_count / total_weight_count
+    calibration = config["calibration"]
+    report = {
+        "method": "mean_dlm_sensitivity",
+        "source": "direct_dlm_gradient_scoring",
+        "score_variant": "lambda=0",
+        "model": config["model"],
+        "model_digest": model_digest,
+        "config_digest": hashlib.sha256(_canonical_json(config)).hexdigest(),
+        "state_digest": hashlib.sha256(_canonical_json(state_document)).hexdigest(),
+        "lambda_zero_equals_mean": True,
+        "aggregation": {
+            "sequence_count": calibration["sequence_count"],
+            "timestep_count": len(calibration["timesteps"]),
+            "updates_per_module": len(calibration["timesteps"]),
+            "welford_updates_per_module": {
+                group: len(calibration["timesteps"]) for group in ("A", "B", "full")
+            },
+        },
+        "requested_sparsity": sparsity,
+        "pruned_weight_count": pruned_weight_count,
+        "total_weight_count": total_weight_count,
+        "actual_sparsity": actual_sparsity,
+        "sparsity_delta": actual_sparsity - sparsity,
+        "module_count": len(modules),
+        "modules": modules,
+        "checkpoint": str(output_dir),
+    }
+    output_dir.mkdir(parents=True, exist_ok=True)
+    model.save_pretrained(output_dir, safe_serialization=True)
+    tokenizer.save_pretrained(output_dir)
+    _atomic_write_json(output_dir / "mean_dlm_pruning.json", report)
+    return report
+
+
 def run_materialize(
     config: dict,
     artifact_dir: Path,

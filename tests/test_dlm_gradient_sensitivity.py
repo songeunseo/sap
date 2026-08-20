@@ -1185,6 +1185,42 @@ def test_materialize_mean_writes_new_checkpoint_and_machine_readable_report(
         )
 
 
+# Mutation caught: direct materialization computes scores but forgets to apply the
+# requested row-wise Mean mask before saving.
+def test_materialize_mean_direct_scores_and_prunes_requested_sparsity(tmp_path):
+    class Tokenizer:
+        def save_pretrained(self, path):
+            (Path(path) / "tokenizer.json").write_text("{}")
+
+    torch.manual_seed(37)
+    model = _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+    config = _toy_score_config(blocks=1, timesteps=(0.5,))
+    output_dir = tmp_path / "mean-25"
+
+    report = sensitivity_cli._materialize_loaded_mean_direct(
+        model, Tokenizer(), config, _toy_clean_ids(), 0.25, output_dir
+    )
+
+    layers = find_layers(model.model.transformer.blocks[0])
+    assert report["requested_sparsity"] == 0.25
+    assert report["source"] == "direct_dlm_gradient_scoring"
+    assert report["module_count"] == 7
+    assert report["pruned_weight_count"] == sum(
+        layer.weight.shape[0] * math.floor(layer.weight.shape[1] * 0.25)
+        for layer in layers.values()
+    )
+    for module in report["modules"]:
+        weight = layers[module["module"]].weight.detach()
+        expected_per_row = math.floor(weight.shape[1] * 0.25)
+        assert torch.count_nonzero(weight == 0, dim=1).unique().tolist() == [
+            expected_per_row
+        ]
+        assert module["pruned_per_row_min"] == expected_per_row
+        assert module["pruned_per_row_max"] == expected_per_row
+    assert json.loads((output_dir / "mean_dlm_pruning.json").read_text()) == report
+    assert (output_dir / "model.safetensors").is_file()
+
+
 def test_run_materialize_loads_bound_model_and_copies_llada_support(
     tmp_path, completed_toy_score_artifacts, monkeypatch
 ):
