@@ -1279,6 +1279,54 @@ def test_run_materialize_loads_bound_model_and_copies_llada_support(
     )
 
 
+def test_run_materialize_direct_loads_calibration_and_copies_support(
+    tmp_path, monkeypatch
+):
+    import main_llada
+    import model as model_package
+    import transformers
+    from lib import data
+
+    output_dir = tmp_path / "mean-25"
+    config = _toy_score_config(blocks=1, timesteps=(0.5,))
+    calls = {}
+
+    class Tokenizer:
+        def save_pretrained(self, path):
+            (Path(path) / "tokenizer.json").write_text("{}")
+
+    def load_model(_, model_id, **kwargs):
+        torch.manual_seed(41)
+        return _tiny_llada(n_layers=1, d_model=4, vocab_size=11)
+
+    monkeypatch.setattr(sensitivity_cli, "_validate_production_score_config", lambda _: None)
+    monkeypatch.setattr(sensitivity_cli, "_model_cuda_devices", lambda _: (0,))
+    monkeypatch.setattr(model_package.LLaDAModelLM, "from_pretrained", classmethod(load_model))
+    monkeypatch.setattr(
+        transformers.AutoTokenizer,
+        "from_pretrained",
+        classmethod(lambda *_args, **_kwargs: Tokenizer()),
+    )
+    monkeypatch.setattr(
+        data,
+        "get_loaders",
+        lambda *args, **kwargs: ([(ids, None) for ids in _toy_clean_ids()], None),
+    )
+    monkeypatch.setattr(
+        main_llada,
+        "copy_llada_support_files",
+        lambda source, destination: calls.setdefault("support", (source, destination)),
+    )
+
+    report = sensitivity_cli.run_materialize_direct(config, 0.25, output_dir)
+
+    assert report["requested_sparsity"] == 0.25
+    assert report["actual_sparsity"] == pytest.approx(
+        report["pruned_weight_count"] / report["total_weight_count"]
+    )
+    assert calls["support"] == ("tiny", str(output_dir))
+
+
 def test_score_resume_rejects_self_consistent_module_rename(
     tmp_path, completed_toy_score_artifacts
 ):

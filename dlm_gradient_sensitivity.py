@@ -877,6 +877,48 @@ def run_materialize(
     return report
 
 
+def run_materialize_direct(config: dict, sparsity: float, output_dir: Path) -> dict:
+    _validate_production_score_config(config)
+    if not torch.cuda.is_available():
+        raise RuntimeError("direct Mean materialization requires CUDA")
+
+    from transformers import AutoTokenizer
+    from lib.data import get_loaders
+    from main_llada import copy_llada_support_files
+    from model import LLaDAModelLM
+
+    model_config = config["model"]
+    model = LLaDAModelLM.from_pretrained(
+        model_config["id"],
+        revision=model_config["revision"],
+        torch_dtype=torch.bfloat16,
+        low_cpu_mem_usage=True,
+        device_map="auto",
+    ).eval()
+    _model_cuda_devices(model)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_config["id"], revision=model_config["revision"], trust_remote_code=True
+    )
+    calibration = config["calibration"]
+    loader, _ = get_loaders(
+        config["dataset"]["loader_name"],
+        nsamples=calibration["sequence_count"],
+        seed=calibration["seed"],
+        seqlen=calibration["sequence_length"],
+        tokenizer=tokenizer,
+    )
+    report = _materialize_loaded_mean_direct(
+        model,
+        tokenizer,
+        config,
+        [sample[0] for sample in loader],
+        sparsity,
+        output_dir,
+    )
+    copy_llada_support_files(model_config["id"], str(output_dir))
+    return report
+
+
 def _stage1_gate(
     module_diagnostics: list[dict], config: dict, all_useful_masks_identical: bool
 ) -> dict:
@@ -1279,6 +1321,11 @@ def main(argv=None) -> int:
     materialize.add_argument("--sparsity", type=float, required=True)
     materialize.add_argument("--output-dir", type=Path, required=True)
     materialize.add_argument("--output", type=Path, required=True)
+    direct = subparsers.add_parser("materialize-direct")
+    direct.add_argument("--config", type=Path, required=True)
+    direct.add_argument("--sparsity", type=float, required=True)
+    direct.add_argument("--output-dir", type=Path, required=True)
+    direct.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
 
     with args.config.open(encoding="utf-8") as handle:
@@ -1287,12 +1334,14 @@ def main(argv=None) -> int:
         report = run_feasibility(config)
     elif args.command == "score":
         report = run_score(config, args.artifact_dir)
-    else:
+    elif args.command == "materialize":
         report = run_materialize(
             config, args.artifact_dir, args.sparsity, args.output_dir
         )
+    else:
+        report = run_materialize_direct(config, args.sparsity, args.output_dir)
     _atomic_write_json(args.output, report)
-    return 0 if args.command == "materialize" or report["gate"]["passed"] else 2
+    return 0 if args.command.startswith("materialize") or report["gate"]["passed"] else 2
 
 
 if __name__ == "__main__":
