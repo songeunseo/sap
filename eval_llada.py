@@ -8,7 +8,6 @@ from pathlib import Path
 import random
 import numpy as np
 import torch.nn.functional as F
-from datasets import Dataset
 from lm_eval.__main__ import cli_evaluate
 from lm_eval.api.instance import Instance
 from lm_eval.api.model import LM
@@ -208,30 +207,14 @@ class LLaDAEvalHarness(LM):
         return context_enc, continuation_enc
 
     def loglikelihood(self, requests):
-        def _tokenize(e):
-            prefix, target = self._encode_pair(e["prefix"], e["target"])
-            return {
-                "prefix_text": e["prefix"],
-                "target_text": e["target"],
-                "prefix": prefix,
-                "target": target,
-            }
-
-        ds = []
-        ds = [{"prefix": req.args[0], "target": req.args[1]} for req in requests]
-        ds = Dataset.from_list(ds)
-        ds = ds.map(_tokenize)
-        ds = ds.with_format("torch")
-        prompt_len = [len(x["prefix"]) + len(x["target"]) for x in ds]
+        ds = [tuple(map(torch.tensor, self._encode_pair(*req.args))) for req in requests]
+        prompt_len = [len(prefix) + len(target) for prefix, target in ds]
 
         assert max(prompt_len) <= 4096
 
         out = []
         with torch.no_grad():
-            for elem in tqdm(ds, desc="Computing likelihood..."):
-                prefix = elem["prefix"]
-                target = elem["target"]
-
+            for prefix, target in tqdm(ds, desc="Computing likelihood..."):
                 ll = self.get_loglikelihood(prefix, target)
 
                 is_target_greedy_dec = self.suffix_greedy_prediction(prefix, target)
