@@ -1,0 +1,51 @@
+Script started on 2026-08-23 06:46:10+09:00 [COMMAND="python main_llada.py --model GSAI-ML/LLaDA-8B-Base --prune_method sink --sparsity_ratio 0.75 --sparsity_type unstructured --calib_dataset wikitext2 --nsamples 8 --seqlen 256 --seed 0 --skip_ppl --save_model /dev/shm/controlled-sink-75" TERM="dumb" TTY="/dev/pts/49" COLUMNS="80" LINES="24"]
+torch 2.8.0+cu128
+transformers 4.49.0
+accelerate 0.34.2
+# of gpus:  1
+loading dllm model GSAI-ML/LLaDA-8B-Base
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|                         | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|██▊              | 1/6 [00:00<00:02,  2.47it/s]Loading checkpoint shards:  33%|█████▋           | 2/6 [00:00<00:01,  2.12it/s]Loading checkpoint shards:  50%|████████▌        | 3/6 [00:01<00:01,  2.05it/s]Loading checkpoint shards:  67%|███████████▎     | 4/6 [00:01<00:00,  2.07it/s]Loading checkpoint shards:  83%|██████████████▏  | 5/6 [00:02<00:00,  2.09it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.23it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.17it/s]
+use device  cuda:0
+pruning starts
+loading calibration data
+dataset loading complete
+Sink calibration:   0%|                               | 0/80 [00:00<?, ?step/s]Sink calibration:   1%|▎                      | 1/80 [00:00<00:31,  2.50step/s]Sink calibration:   4%|▊                      | 3/80 [00:00<00:11,  6.48step/s]Sink calibration:   6%|█▍                     | 5/80 [00:00<00:08,  9.08step/s]Sink calibration:   9%|██                     | 7/80 [00:00<00:06, 10.81step/s]Sink calibration:  11%|██▌                    | 9/80 [00:00<00:05, 11.99step/s]Sink calibration:  14%|███                   | 11/80 [00:01<00:05, 12.79step/s]Sink calibration:  16%|███▌                  | 13/80 [00:01<00:05, 13.35step/s]Sink calibration:  19%|████▏                 | 15/80 [00:01<00:04, 13.73step/s]Sink calibration:  21%|████▋                 | 17/80 [00:01<00:04, 14.00step/s]Sink calibration:  24%|█████▏                | 19/80 [00:01<00:04, 14.19step/s]Sink calibration:  26%|█████▊                | 21/80 [00:01<00:04, 14.32step/s]Sink calibration:  29%|██████▎               | 23/80 [00:01<00:03, 14.39step/s]Sink calibration:  31%|██████▉               | 25/80 [00:02<00:03, 14.47step/s]Sink calibration:  34%|███████▍              | 27/80 [00:02<00:03, 14.51step/s]Sink calibration:  36%|███████▉              | 29/80 [00:02<00:03, 14.54step/s]Sink calibration:  39%|████████▌             | 31/80 [00:02<00:03, 14.56step/s]Sink calibration:  41%|█████████             | 33/80 [00:02<00:03, 14.58step/s]Sink calibration:  44%|█████████▋            | 35/80 [00:02<00:03, 14.60step/s]Sink calibration:  46%|██████████▏           | 37/80 [00:02<00:02, 14.60step/s]Sink calibration:  49%|██████████▋           | 39/80 [00:02<00:02, 14.61step/s]Sink calibration:  51%|███████████▎          | 41/80 [00:03<00:02, 14.62step/s]Sink calibration:  54%|███████████▊          | 43/80 [00:03<00:02, 14.62step/s]Sink calibration:  56%|████████████▍         | 45/80 [00:03<00:02, 14.62step/s]Sink calibration:  59%|████████████▉         | 47/80 [00:03<00:02, 14.61step/s]Sink calibration:  61%|█████████████▍        | 49/80 [00:03<00:02, 14.62step/s]Sink calibration:  64%|██████████████        | 51/80 [00:03<00:01, 14.63step/s]Sink calibration:  66%|██████████████▌       | 53/80 [00:03<00:01, 14.62step/s]Sink calibration:  69%|███████████████▏      | 55/80 [00:04<00:01, 14.61step/s]Sink calibration:  71%|███████████████▋      | 57/80 [00:04<00:01, 14.62step/s]Sink calibration:  74%|████████████████▏     | 59/80 [00:04<00:01, 14.62step/s]Sink calibration:  76%|████████████████▊     | 61/80 [00:04<00:01, 14.62step/s]Sink calibration:  79%|█████████████████▎    | 63/80 [00:04<00:01, 14.62step/s]Sink calibration:  81%|█████████████████▉    | 65/80 [00:04<00:01, 14.63step/s]Sink calibration:  84%|██████████████████▍   | 67/80 [00:04<00:00, 14.62step/s]Sink calibration:  86%|██████████████████▉   | 69/80 [00:05<00:00, 14.62step/s]Sink calibration:  89%|███████████████████▌  | 71/80 [00:05<00:00, 14.63step/s]Sink calibration:  91%|████████████████████  | 73/80 [00:05<00:00, 14.62step/s]Sink calibration:  94%|████████████████████▋ | 75/80 [00:05<00:00, 14.62step/s]Sink calibration:  96%|█████████████████████▏| 77/80 [00:05<00:00, 14.62step/s]Sink calibration:  99%|█████████████████████▋| 79/80 [00:05<00:00, 14.62step/s]Sink calibration: 100%|██████████████████████| 80/80 [00:05<00:00, 13.78step/s]
+******************************
+layer 0 sparsity 0.750000
+layer 1 sparsity 0.750000
+layer 2 sparsity 0.750000
+layer 3 sparsity 0.750000
+layer 4 sparsity 0.750000
+layer 5 sparsity 0.750000
+layer 6 sparsity 0.750000
+layer 7 sparsity 0.750000
+layer 8 sparsity 0.750000
+layer 9 sparsity 0.750000
+layer 10 sparsity 0.750000
+layer 11 sparsity 0.750000
+layer 12 sparsity 0.750000
+layer 13 sparsity 0.750000
+layer 14 sparsity 0.750000
+layer 15 sparsity 0.750000
+layer 16 sparsity 0.750000
+layer 17 sparsity 0.750000
+layer 18 sparsity 0.750000
+layer 19 sparsity 0.750000
+layer 20 sparsity 0.750000
+layer 21 sparsity 0.750000
+layer 22 sparsity 0.750000
+layer 23 sparsity 0.750000
+layer 24 sparsity 0.750000
+layer 25 sparsity 0.750000
+layer 26 sparsity 0.750000
+layer 27 sparsity 0.750000
+layer 28 sparsity 0.750000
+layer 29 sparsity 0.750000
+layer 30 sparsity 0.750000
+layer 31 sparsity 0.750000
+sparsity sanity check 0.7500
+******************************
+Copied extra LLaDA files to saved model: model/tp_linear.py, model/modeling_llada.py, model/configuration_dream.py, model/__init__.py, model/configuration_llada.py, model/modeling_dream.py, configuration_llada.py, modeling_llada.py
+
+Script done on 2026-08-23 06:46:42+09:00 [COMMAND_EXIT_CODE="0"]
