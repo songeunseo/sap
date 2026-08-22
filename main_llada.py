@@ -147,7 +147,7 @@ print('transformers', version('transformers'))
 print('accelerate', version('accelerate'))
 print('# of gpus: ', torch.cuda.device_count())
 
-def get_llm(model_name, cache_dir="llm_weights"):
+def get_llm(model_name, cache_dir="llm_weights", seqlen=None):
     model = LLaDAModelLM.from_pretrained(
         model_name,
         torch_dtype=torch.bfloat16,
@@ -155,7 +155,7 @@ def get_llm(model_name, cache_dir="llm_weights"):
         device_map="auto",
     )
 
-    model.seqlen = model.config.max_sequence_length 
+    model.seqlen = seqlen or model.config.max_sequence_length
     return model
 
 def copy_llada_support_files(source_model, save_dir, cache_dir=None):
@@ -231,6 +231,7 @@ def main():
     parser.add_argument('--model', type=str, help='LLaDA model')
     parser.add_argument('--seed', type=int, default=0, help='Seed for sampling the calibration data.')
     parser.add_argument('--nsamples', type=int, default=128, help='Number of calibration samples.')
+    parser.add_argument('--seqlen', type=int, default=None, help='Calibration sequence length.')
     parser.add_argument('--sparsity_ratio', type=float, default=0, help='Sparsity level')
     parser.add_argument("--sparsity_type", type=str, choices=["unstructured", "4:8", "2:4"])
     parser.add_argument("--prune_method", type=str, choices=["magnitude", "wanda", "sparsegpt", "sink", "sink_sgpt",
@@ -271,7 +272,7 @@ def main():
 
     model_name = args.model.split("/")[-1]
     print(f"loading dllm model {args.model}")
-    model = get_llm(args.model, args.cache_dir)
+    model = get_llm(args.model, args.cache_dir, args.seqlen)
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
 
