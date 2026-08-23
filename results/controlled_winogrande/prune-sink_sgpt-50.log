@@ -1,0 +1,278 @@
+Script started on 2026-08-23 12:24:57+09:00 [COMMAND="python main_llada.py --model GSAI-ML/LLaDA-8B-Base --prune_method sink_sgpt --sparsity_ratio 0.50 --sparsity_type unstructured --calib_dataset wikitext2 --nsamples 8 --seqlen 256 --seed 0 --skip_ppl --save_model /dev/shm/controlled-sink_sgpt-50" TERM="dumb" TTY="/dev/pts/49" COLUMNS="80" LINES="24"]
+torch 2.8.0+cu128
+transformers 4.49.0
+accelerate 0.34.2
+# of gpus:  1
+loading dllm model GSAI-ML/LLaDA-8B-Base
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|                         | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|██▊              | 1/6 [00:00<00:02,  2.46it/s]Loading checkpoint shards:  33%|█████▋           | 2/6 [00:00<00:01,  2.13it/s]Loading checkpoint shards:  50%|████████▌        | 3/6 [00:01<00:01,  2.05it/s]Loading checkpoint shards:  67%|███████████▎     | 4/6 [00:01<00:00,  2.08it/s]Loading checkpoint shards:  83%|██████████████▏  | 5/6 [00:02<00:00,  2.11it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.27it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.19it/s]
+use device  cuda:0
+pruning starts
+loading calibration data
+dataset loading complete
+Computing sink masks for calibration samples...
+Sink detection:   0%|                                 | 0/80 [00:00<?, ?step/s]Sink detection:   1%|▎                        | 1/80 [00:00<00:27,  2.84step/s]Sink detection:   6%|█▌                       | 5/80 [00:00<00:05, 13.15step/s]Sink detection:  11%|██▊                      | 9/80 [00:00<00:03, 19.23step/s]Sink detection:  16%|███▉                    | 13/80 [00:00<00:02, 23.10step/s]Sink detection:  20%|████▊                   | 16/80 [00:00<00:02, 24.65step/s]Sink detection:  25%|██████                  | 20/80 [00:00<00:02, 27.11step/s]Sink detection:  30%|███████▏                | 24/80 [00:01<00:01, 28.35step/s]Sink detection:  35%|████████▍               | 28/80 [00:01<00:01, 29.20step/s]Sink detection:  40%|█████████▌              | 32/80 [00:01<00:01, 29.74step/s]Sink detection:  45%|██████████▊             | 36/80 [00:01<00:01, 30.15step/s]Sink detection:  50%|████████████            | 40/80 [00:01<00:01, 30.44step/s]Sink detection:  55%|█████████████▏          | 44/80 [00:01<00:01, 30.58step/s]Sink detection:  60%|██████████████▍         | 48/80 [00:01<00:01, 30.70step/s]Sink detection:  65%|███████████████▌        | 52/80 [00:01<00:00, 30.81step/s]Sink detection:  70%|████████████████▊       | 56/80 [00:02<00:00, 30.91step/s]Sink detection:  75%|██████████████████      | 60/80 [00:02<00:00, 30.96step/s]Sink detection:  80%|███████████████████▏    | 64/80 [00:02<00:00, 31.00step/s]Sink detection:  85%|████████████████████▍   | 68/80 [00:02<00:00, 31.03step/s]Sink detection:  90%|█████████████████████▌  | 72/80 [00:02<00:00, 31.03step/s]Sink detection:  95%|██████████████████████▊ | 76/80 [00:02<00:00, 31.04step/s]Sink detection: 100%|████████████████████████| 80/80 [00:02<00:00, 30.98step/s]Sink detection: 100%|████████████████████████| 80/80 [00:02<00:00, 27.76step/s]
+Pruning layers with SparseGPT + sink weighting...
+Layer pruning:   0%|                                    | 0/32 [00:00<?, ?it/s]Pruning layer 0 name attn_out
+Pruning layer 0 name ff_out
+Pruning layer 0 name q_proj
+Pruning layer 0 name k_proj
+Pruning layer 0 name v_proj
+Pruning layer 0 name ff_proj
+Pruning layer 0 name up_proj
+Layer pruning:   3%|▉                           | 1/32 [00:02<01:10,  2.28s/it]Pruning layer 1 name attn_out
+Pruning layer 1 name ff_out
+Pruning layer 1 name q_proj
+Pruning layer 1 name k_proj
+Pruning layer 1 name v_proj
+Pruning layer 1 name ff_proj
+Pruning layer 1 name up_proj
+Layer pruning:   6%|█▊                          | 2/32 [00:04<01:06,  2.23s/it]Pruning layer 2 name attn_out
+Pruning layer 2 name ff_out
+Pruning layer 2 name q_proj
+Pruning layer 2 name k_proj
+Pruning layer 2 name v_proj
+Pruning layer 2 name ff_proj
+Pruning layer 2 name up_proj
+Layer pruning:   9%|██▋                         | 3/32 [00:06<01:04,  2.21s/it]Pruning layer 3 name attn_out
+Pruning layer 3 name ff_out
+Pruning layer 3 name q_proj
+Pruning layer 3 name k_proj
+Pruning layer 3 name v_proj
+Pruning layer 3 name ff_proj
+Pruning layer 3 name up_proj
+Layer pruning:  12%|███▌                        | 4/32 [00:08<01:01,  2.21s/it]Pruning layer 4 name attn_out
+Pruning layer 4 name ff_out
+Pruning layer 4 name q_proj
+Pruning layer 4 name k_proj
+Pruning layer 4 name v_proj
+Pruning layer 4 name ff_proj
+Pruning layer 4 name up_proj
+Layer pruning:  16%|████▍                       | 5/32 [00:11<00:59,  2.21s/it]Pruning layer 5 name attn_out
+Pruning layer 5 name ff_out
+Pruning layer 5 name q_proj
+Pruning layer 5 name k_proj
+Pruning layer 5 name v_proj
+Pruning layer 5 name ff_proj
+Pruning layer 5 name up_proj
+Layer pruning:  19%|█████▎                      | 6/32 [00:13<00:57,  2.22s/it]Pruning layer 6 name attn_out
+Pruning layer 6 name ff_out
+Pruning layer 6 name q_proj
+Pruning layer 6 name k_proj
+Pruning layer 6 name v_proj
+Pruning layer 6 name ff_proj
+Pruning layer 6 name up_proj
+Layer pruning:  22%|██████▏                     | 7/32 [00:15<00:55,  2.22s/it]Pruning layer 7 name attn_out
+Pruning layer 7 name ff_out
+Pruning layer 7 name q_proj
+Pruning layer 7 name k_proj
+Pruning layer 7 name v_proj
+Pruning layer 7 name ff_proj
+Pruning layer 7 name up_proj
+Layer pruning:  25%|███████                     | 8/32 [00:17<00:53,  2.22s/it]Pruning layer 8 name attn_out
+Pruning layer 8 name ff_out
+Pruning layer 8 name q_proj
+Pruning layer 8 name k_proj
+Pruning layer 8 name v_proj
+Pruning layer 8 name ff_proj
+Pruning layer 8 name up_proj
+Layer pruning:  28%|███████▉                    | 9/32 [00:19<00:51,  2.22s/it]Pruning layer 9 name attn_out
+Pruning layer 9 name ff_out
+Pruning layer 9 name q_proj
+Pruning layer 9 name k_proj
+Pruning layer 9 name v_proj
+Pruning layer 9 name ff_proj
+Pruning layer 9 name up_proj
+Layer pruning:  31%|████████▍                  | 10/32 [00:22<00:48,  2.22s/it]Pruning layer 10 name attn_out
+Pruning layer 10 name ff_out
+Pruning layer 10 name q_proj
+Pruning layer 10 name k_proj
+Pruning layer 10 name v_proj
+Pruning layer 10 name ff_proj
+Pruning layer 10 name up_proj
+Layer pruning:  34%|█████████▎                 | 11/32 [00:24<00:46,  2.21s/it]Pruning layer 11 name attn_out
+Pruning layer 11 name ff_out
+Pruning layer 11 name q_proj
+Pruning layer 11 name k_proj
+Pruning layer 11 name v_proj
+Pruning layer 11 name ff_proj
+Pruning layer 11 name up_proj
+Layer pruning:  38%|██████████▏                | 12/32 [00:26<00:44,  2.20s/it]Pruning layer 12 name attn_out
+Pruning layer 12 name ff_out
+Pruning layer 12 name q_proj
+Pruning layer 12 name k_proj
+Pruning layer 12 name v_proj
+Pruning layer 12 name ff_proj
+Pruning layer 12 name up_proj
+Layer pruning:  41%|██████████▉                | 13/32 [00:28<00:41,  2.21s/it]Pruning layer 13 name attn_out
+Pruning layer 13 name ff_out
+Pruning layer 13 name q_proj
+Pruning layer 13 name k_proj
+Pruning layer 13 name v_proj
+Pruning layer 13 name ff_proj
+Pruning layer 13 name up_proj
+Layer pruning:  44%|███████████▊               | 14/32 [00:31<00:39,  2.21s/it]Pruning layer 14 name attn_out
+Pruning layer 14 name ff_out
+Pruning layer 14 name q_proj
+Pruning layer 14 name k_proj
+Pruning layer 14 name v_proj
+Pruning layer 14 name ff_proj
+Pruning layer 14 name up_proj
+Layer pruning:  47%|████████████▋              | 15/32 [00:33<00:37,  2.22s/it]Pruning layer 15 name attn_out
+Pruning layer 15 name ff_out
+Pruning layer 15 name q_proj
+Pruning layer 15 name k_proj
+Pruning layer 15 name v_proj
+Pruning layer 15 name ff_proj
+Pruning layer 15 name up_proj
+Layer pruning:  50%|█████████████▌             | 16/32 [00:35<00:35,  2.22s/it]Pruning layer 16 name attn_out
+Pruning layer 16 name ff_out
+Pruning layer 16 name q_proj
+Pruning layer 16 name k_proj
+Pruning layer 16 name v_proj
+Pruning layer 16 name ff_proj
+Pruning layer 16 name up_proj
+Layer pruning:  53%|██████████████▎            | 17/32 [00:37<00:33,  2.23s/it]Pruning layer 17 name attn_out
+Pruning layer 17 name ff_out
+Pruning layer 17 name q_proj
+Pruning layer 17 name k_proj
+Pruning layer 17 name v_proj
+Pruning layer 17 name ff_proj
+Pruning layer 17 name up_proj
+Layer pruning:  56%|███████████████▏           | 18/32 [00:39<00:31,  2.22s/it]Pruning layer 18 name attn_out
+Pruning layer 18 name ff_out
+Pruning layer 18 name q_proj
+Pruning layer 18 name k_proj
+Pruning layer 18 name v_proj
+Pruning layer 18 name ff_proj
+Pruning layer 18 name up_proj
+Layer pruning:  59%|████████████████           | 19/32 [00:42<00:28,  2.22s/it]Pruning layer 19 name attn_out
+Pruning layer 19 name ff_out
+Pruning layer 19 name q_proj
+Pruning layer 19 name k_proj
+Pruning layer 19 name v_proj
+Pruning layer 19 name ff_proj
+Pruning layer 19 name up_proj
+Layer pruning:  62%|████████████████▉          | 20/32 [00:44<00:26,  2.22s/it]Pruning layer 20 name attn_out
+Pruning layer 20 name ff_out
+Pruning layer 20 name q_proj
+Pruning layer 20 name k_proj
+Pruning layer 20 name v_proj
+Pruning layer 20 name ff_proj
+Pruning layer 20 name up_proj
+Layer pruning:  66%|█████████████████▋         | 21/32 [00:46<00:24,  2.22s/it]Pruning layer 21 name attn_out
+Pruning layer 21 name ff_out
+Pruning layer 21 name q_proj
+Pruning layer 21 name k_proj
+Pruning layer 21 name v_proj
+Pruning layer 21 name ff_proj
+Pruning layer 21 name up_proj
+Layer pruning:  69%|██████████████████▌        | 22/32 [00:48<00:22,  2.22s/it]Pruning layer 22 name attn_out
+Pruning layer 22 name ff_out
+Pruning layer 22 name q_proj
+Pruning layer 22 name k_proj
+Pruning layer 22 name v_proj
+Pruning layer 22 name ff_proj
+Pruning layer 22 name up_proj
+Layer pruning:  72%|███████████████████▍       | 23/32 [00:50<00:19,  2.21s/it]Pruning layer 23 name attn_out
+Pruning layer 23 name ff_out
+Pruning layer 23 name q_proj
+Pruning layer 23 name k_proj
+Pruning layer 23 name v_proj
+Pruning layer 23 name ff_proj
+Pruning layer 23 name up_proj
+Layer pruning:  75%|████████████████████▎      | 24/32 [00:53<00:17,  2.21s/it]Pruning layer 24 name attn_out
+Pruning layer 24 name ff_out
+Pruning layer 24 name q_proj
+Pruning layer 24 name k_proj
+Pruning layer 24 name v_proj
+Pruning layer 24 name ff_proj
+Pruning layer 24 name up_proj
+Layer pruning:  78%|█████████████████████      | 25/32 [00:55<00:15,  2.22s/it]Pruning layer 25 name attn_out
+Pruning layer 25 name ff_out
+Pruning layer 25 name q_proj
+Pruning layer 25 name k_proj
+Pruning layer 25 name v_proj
+Pruning layer 25 name ff_proj
+Pruning layer 25 name up_proj
+Layer pruning:  81%|█████████████████████▉     | 26/32 [00:57<00:13,  2.21s/it]Pruning layer 26 name attn_out
+Pruning layer 26 name ff_out
+Pruning layer 26 name q_proj
+Pruning layer 26 name k_proj
+Pruning layer 26 name v_proj
+Pruning layer 26 name ff_proj
+Pruning layer 26 name up_proj
+Layer pruning:  84%|██████████████████████▊    | 27/32 [00:59<00:11,  2.22s/it]Pruning layer 27 name attn_out
+Pruning layer 27 name ff_out
+Pruning layer 27 name q_proj
+Pruning layer 27 name k_proj
+Pruning layer 27 name v_proj
+Pruning layer 27 name ff_proj
+Pruning layer 27 name up_proj
+Layer pruning:  88%|███████████████████████▋   | 28/32 [01:02<00:08,  2.22s/it]Pruning layer 28 name attn_out
+Pruning layer 28 name ff_out
+Pruning layer 28 name q_proj
+Pruning layer 28 name k_proj
+Pruning layer 28 name v_proj
+Pruning layer 28 name ff_proj
+Pruning layer 28 name up_proj
+Layer pruning:  91%|████████████████████████▍  | 29/32 [01:04<00:06,  2.21s/it]Pruning layer 29 name attn_out
+Pruning layer 29 name ff_out
+Pruning layer 29 name q_proj
+Pruning layer 29 name k_proj
+Pruning layer 29 name v_proj
+Pruning layer 29 name ff_proj
+Pruning layer 29 name up_proj
+Layer pruning:  94%|█████████████████████████▎ | 30/32 [01:06<00:04,  2.21s/it]Pruning layer 30 name attn_out
+Pruning layer 30 name ff_out
+Pruning layer 30 name q_proj
+Pruning layer 30 name k_proj
+Pruning layer 30 name v_proj
+Pruning layer 30 name ff_proj
+Pruning layer 30 name up_proj
+Layer pruning:  97%|██████████████████████████▏| 31/32 [01:08<00:02,  2.21s/it]Pruning layer 31 name attn_out
+Pruning layer 31 name ff_out
+Pruning layer 31 name q_proj
+Pruning layer 31 name k_proj
+Pruning layer 31 name v_proj
+Pruning layer 31 name ff_proj
+Pruning layer 31 name up_proj
+Layer pruning: 100%|███████████████████████████| 32/32 [01:10<00:00,  2.21s/it]Layer pruning: 100%|███████████████████████████| 32/32 [01:10<00:00,  2.22s/it]
+******************************
+layer 0 sparsity 0.500002
+layer 1 sparsity 0.500001
+layer 2 sparsity 0.500001
+layer 3 sparsity 0.500002
+layer 4 sparsity 0.500002
+layer 5 sparsity 0.500001
+layer 6 sparsity 0.500002
+layer 7 sparsity 0.500002
+layer 8 sparsity 0.500002
+layer 9 sparsity 0.500002
+layer 10 sparsity 0.500002
+layer 11 sparsity 0.500002
+layer 12 sparsity 0.500001
+layer 13 sparsity 0.500002
+layer 14 sparsity 0.500001
+layer 15 sparsity 0.500002
+layer 16 sparsity 0.500002
+layer 17 sparsity 0.500002
+layer 18 sparsity 0.500002
+layer 19 sparsity 0.500002
+layer 20 sparsity 0.500002
+layer 21 sparsity 0.500002
+layer 22 sparsity 0.500002
+layer 23 sparsity 0.500002
+layer 24 sparsity 0.500001
+layer 25 sparsity 0.500002
+layer 26 sparsity 0.500002
+layer 27 sparsity 0.500002
+layer 28 sparsity 0.500002
+layer 29 sparsity 0.500002
+layer 30 sparsity 0.500002
+layer 31 sparsity 0.500002
+sparsity sanity check 0.5000
+******************************
+Copied extra LLaDA files to saved model: model/tp_linear.py, model/modeling_llada.py, model/configuration_dream.py, model/__init__.py, model/configuration_llada.py, model/modeling_dream.py, configuration_llada.py, modeling_llada.py
+
+Script done on 2026-08-23 12:26:36+09:00 [COMMAND_EXIT_CODE="0"]

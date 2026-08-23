@@ -1,0 +1,111 @@
+{
+  "results": {
+    "winogrande": {
+      "alias": "winogrande",
+      "acc,none": 0.6771902131018153,
+      "acc_stderr,none": 0.013140498173357931
+    }
+  },
+  "group_subtasks": {
+    "winogrande": []
+  },
+  "configs": {
+    "winogrande": {
+      "task": "winogrande",
+      "dataset_path": "winogrande",
+      "dataset_name": "winogrande_xl",
+      "dataset_kwargs": {
+        "trust_remote_code": true
+      },
+      "training_split": "train",
+      "validation_split": "validation",
+      "doc_to_text": "def doc_to_text(doc):\n    answer_to_num = {\"1\": 0, \"2\": 1}\n    return answer_to_num[doc[\"answer\"]]\n",
+      "doc_to_target": "def doc_to_target(doc):\n    idx = doc[\"sentence\"].index(\"_\") + 1\n    return doc[\"sentence\"][idx:].strip()\n",
+      "unsafe_code": false,
+      "doc_to_choice": "def doc_to_choice(doc):\n    idx = doc[\"sentence\"].index(\"_\")\n    options = [doc[\"option1\"], doc[\"option2\"]]\n    return [doc[\"sentence\"][:idx] + opt for opt in options]\n",
+      "description": "",
+      "target_delimiter": " ",
+      "fewshot_delimiter": "\n\n",
+      "num_fewshot": 5,
+      "metric_list": [
+        {
+          "metric": "acc",
+          "aggregation": "mean",
+          "higher_is_better": true
+        }
+      ],
+      "output_type": "multiple_choice",
+      "repeats": 1,
+      "should_decontaminate": true,
+      "doc_to_decontamination_query": "sentence",
+      "metadata": {
+        "version": 1.0
+      }
+    }
+  },
+  "versions": {
+    "winogrande": 1.0
+  },
+  "n-shot": {
+    "winogrande": 5
+  },
+  "higher_is_better": {
+    "winogrande": {
+      "acc": true
+    }
+  },
+  "n-samples": {
+    "winogrande": {
+      "original": 1267,
+      "effective": 1267
+    }
+  },
+  "config": {
+    "model": "llada_dist",
+    "model_args": "model_path=/dev/shm/controlled-sink_sgpt-50,cfg=0.0,is_check_greedy=False,mc_num=128",
+    "batch_size": "8",
+    "batch_sizes": [],
+    "device": null,
+    "use_cache": null,
+    "limit": null,
+    "bootstrap_iters": 100000,
+    "gen_kwargs": null,
+    "random_seed": 0,
+    "numpy_seed": 1234,
+    "torch_seed": 1234,
+    "fewshot_seed": 1234
+  },
+  "git_hash": "111c035",
+  "date": 1787455605.7632852,
+  "pretty_env_info": "PyTorch version: 2.8.0+cu128\nIs debug build: False\nCUDA used to build PyTorch: 12.8\nROCM used to build PyTorch: N/A\n\nOS: Ubuntu 24.04.2 LTS (x86_64)\nGCC version: (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nClang version: Could not collect\nCMake version: Could not collect\nLibc version: glibc-2.39\n\nPython version: 3.10.19 | packaged by conda-forge | (main, Oct 22 2025, 22:29:10) [GCC 14.3.0] (64-bit runtime)\nPython platform: Linux-6.14.0-37-generic-x86_64-with-glibc2.39\nIs CUDA available: True\nCUDA runtime version: Could not collect\nCUDA_MODULE_LOADING set to: LAZY\nGPU models and configuration: GPU 0: NVIDIA GeForce RTX 5090\nNvidia driver version: 570.211.01\ncuDNN version: Probably one of the following:\n/usr/lib/x86_64-linux-gnu/libcudnn.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_adv_infer.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_adv_train.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_cnn_infer.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_cnn_train.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_ops_infer.so.8.9.7\n/usr/lib/x86_64-linux-gnu/libcudnn_ops_train.so.8.9.7\nHIP runtime version: N/A\nMIOpen runtime version: N/A\nIs XNNPACK available: True\n\nCPU:\nArchitecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  32\nOn-line CPU(s) list:                     0-31\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen 9 9950X3D 16-Core Processor\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      16\nSocket(s):                               1\nStepping:                                0\nFrequency boost:                         enabled\nCPU(s) scaling MHz:                      94%\nCPU max MHz:                             5756.0000\nCPU min MHz:                             600.0000\nBogoMIPS:                                8583.34\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\nVirtualization:                          AMD-V\nL1d cache:                               768 KiB (16 instances)\nL1i cache:                               512 KiB (16 instances)\nL2 cache:                                16 MiB (16 instances)\nL3 cache:                                128 MiB (2 instances)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-31\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; IBPB on VMEXIT only\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB on VMEXIT\n\nVersions of relevant libraries:\n[pip3] mypy==1.19.1\n[pip3] mypy_extensions==1.1.0\n[pip3] numpy==1.26.4\n[pip3] nvidia-cublas==13.1.0.3\n[pip3] nvidia-cublas-cu12==12.8.4.1\n[pip3] nvidia-cuda-cupti==13.0.85\n[pip3] nvidia-cuda-cupti-cu12==12.8.90\n[pip3] nvidia-cuda-nvrtc==13.0.88\n[pip3] nvidia-cuda-nvrtc-cu12==12.8.93\n[pip3] nvidia-cuda-runtime==13.0.96\n[pip3] nvidia-cuda-runtime-cu12==12.8.90\n[pip3] nvidia-cudnn-cu12==9.10.2.21\n[pip3] nvidia-cudnn-cu13==9.19.0.56\n[pip3] nvidia-cudnn-frontend==1.27.0\n[pip3] nvidia-cufft==12.0.0.61\n[pip3] nvidia-cufft-cu12==11.3.3.83\n[pip3] nvidia-curand==10.4.0.35\n[pip3] nvidia-curand-cu12==10.3.9.90\n[pip3] nvidia-cusolver==12.0.4.66\n[pip3] nvidia-cusolver-cu12==11.7.3.90\n[pip3] nvidia-cusparse==12.6.3.3\n[pip3] nvidia-cusparse-cu12==12.5.8.93\n[pip3] nvidia-cusparselt-cu12==0.7.1\n[pip3] nvidia-cusparselt-cu13==0.8.0\n[pip3] nvidia-nccl-cu12==2.27.3\n[pip3] nvidia-nccl-cu13==2.28.9\n[pip3] nvidia-nvjitlink==13.0.88\n[pip3] nvidia-nvjitlink-cu12==12.8.93\n[pip3] nvidia-nvtx==13.0.85\n[pip3] nvidia-nvtx-cu12==12.8.90\n[pip3] nvtx==0.2.15\n[pip3] pytorch-triton==3.2.0+git4b3bb1f8\n[pip3] tokenspeed-triton==3.8.10.post20260721\n[pip3] torch==2.8.0+cu128\n[pip3] torch_c_dlpack_ext==0.1.5\n[pip3] torchaudio==2.8.0+cu128\n[pip3] torchcodec==0.15.0\n[pip3] torchtyping==0.1.4\n[pip3] torchvision==0.23.0+cu128\n[pip3] triton==3.4.0\n[conda] numpy                                       1.26.4               pypi_0                pypi\n[conda] nvidia-cublas                               13.1.0.3             pypi_0                pypi\n[conda] nvidia-cublas-cu12                          12.8.4.1             pypi_0                pypi\n[conda] nvidia-cuda-cupti                           13.0.85              pypi_0                pypi\n[conda] nvidia-cuda-cupti-cu12                      12.8.90              pypi_0                pypi\n[conda] nvidia-cuda-nvrtc                           13.0.88              pypi_0                pypi\n[conda] nvidia-cuda-nvrtc-cu12                      12.8.93              pypi_0                pypi\n[conda] nvidia-cuda-runtime                         13.0.96              pypi_0                pypi\n[conda] nvidia-cuda-runtime-cu12                    12.8.90              pypi_0                pypi\n[conda] nvidia-cudnn-cu12                           9.10.2.21            pypi_0                pypi\n[conda] nvidia-cudnn-cu13                           9.19.0.56            pypi_0                pypi\n[conda] nvidia-cudnn-frontend                       1.27.0               pypi_0                pypi\n[conda] nvidia-cufft                                12.0.0.61            pypi_0                pypi\n[conda] nvidia-cufft-cu12                           11.3.3.83            pypi_0                pypi\n[conda] nvidia-curand                               10.4.0.35            pypi_0                pypi\n[conda] nvidia-curand-cu12                          10.3.9.90            pypi_0                pypi\n[conda] nvidia-cusolver                             12.0.4.66            pypi_0                pypi\n[conda] nvidia-cusolver-cu12                        11.7.3.90            pypi_0                pypi\n[conda] nvidia-cusparse                             12.6.3.3             pypi_0                pypi\n[conda] nvidia-cusparse-cu12                        12.5.8.93            pypi_0                pypi\n[conda] nvidia-cusparselt-cu12                      0.7.1                pypi_0                pypi\n[conda] nvidia-cusparselt-cu13                      0.8.0                pypi_0                pypi\n[conda] nvidia-nccl-cu12                            2.27.3               pypi_0                pypi\n[conda] nvidia-nccl-cu13                            2.28.9               pypi_0                pypi\n[conda] nvidia-nvjitlink                            13.0.88              pypi_0                pypi\n[conda] nvidia-nvjitlink-cu12                       12.8.93              pypi_0                pypi\n[conda] nvidia-nvtx                                 13.0.85              pypi_0                pypi\n[conda] nvidia-nvtx-cu12                            12.8.90              pypi_0                pypi\n[conda] nvtx                                        0.2.15               pypi_0                pypi\n[conda] pytorch-triton                              3.2.0+git4b3bb1f8    pypi_0                pypi\n[conda] tokenspeed-triton                           3.8.10.post20260721  pypi_0                pypi\n[conda] torch                                       2.8.0+cu128          pypi_0                pypi\n[conda] torch-c-dlpack-ext                          0.1.5                pypi_0                pypi\n[conda] torchaudio                                  2.8.0+cu128          pypi_0                pypi\n[conda] torchcodec                                  0.15.0               pypi_0                pypi\n[conda] torchtyping                                 0.1.4                pypi_0                pypi\n[conda] torchvision                                 0.23.0+cu128         pypi_0                pypi\n[conda] triton                                      3.4.0                pypi_0                pypi",
+  "transformers_version": "4.49.0",
+  "upper_git_hash": null,
+  "tokenizer_pad_token": [
+    "<|endoftext|>",
+    "126081"
+  ],
+  "tokenizer_eos_token": [
+    "<|endoftext|>",
+    "126081"
+  ],
+  "tokenizer_bos_token": [
+    "<|startoftext|>",
+    "126080"
+  ],
+  "eot_token_id": null,
+  "max_length": 4096,
+  "task_hashes": {
+    "winogrande": "cb7d189b18f880587e055d13153370ab6e05d9f9b3f25aa9888f4d50338d374d"
+  },
+  "model_source": "llada_dist",
+  "model_name": "/dev/shm/controlled-sink_sgpt-50",
+  "model_name_sanitized": "__dev__shm__controlled-sink_sgpt-50",
+  "system_instruction": null,
+  "system_instruction_sha": null,
+  "fewshot_as_multiturn": false,
+  "chat_template": null,
+  "chat_template_sha": null,
+  "start_time": 17432778.123557653,
+  "end_time": 17436755.27582484,
+  "total_evaluation_time_seconds": "3977.152267187834"
+}
