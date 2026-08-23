@@ -1,0 +1,274 @@
+Script started on 2026-08-23 18:17:58+09:00 [COMMAND="python main_llada.py --model GSAI-ML/LLaDA-8B-Base --prune_method wanda --sparsity_ratio 0.50 --sparsity_type unstructured --calib_dataset wikitext2 --nsamples 16 --seqlen 512 --seed 0 --skip_ppl --save_model /dev/shm/calibration-16x512-wanda-50" TERM="dumb" TTY="/dev/pts/55" COLUMNS="80" LINES="24"]
+torch 2.8.0+cu128
+transformers 4.49.0
+accelerate 0.34.2
+# of gpus:  1
+loading dllm model GSAI-ML/LLaDA-8B-Base
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|                         | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|██▊              | 1/6 [00:00<00:02,  2.45it/s]Loading checkpoint shards:  33%|█████▋           | 2/6 [00:00<00:01,  2.10it/s]Loading checkpoint shards:  50%|████████▌        | 3/6 [00:01<00:01,  2.02it/s]Loading checkpoint shards:  67%|███████████▎     | 4/6 [00:01<00:00,  2.05it/s]Loading checkpoint shards:  83%|██████████████▏  | 5/6 [00:02<00:00,  2.08it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.22it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.15it/s]
+use device  cuda:0
+pruning starts
+loading calibdation data
+dataset loading complete
+pruning layer 0 name attn_out
+pruning layer 0 name ff_out
+pruning layer 0 name q_proj
+pruning layer 0 name k_proj
+pruning layer 0 name v_proj
+pruning layer 0 name ff_proj
+pruning layer 0 name up_proj
+pruning layer 1 name attn_out
+pruning layer 1 name ff_out
+pruning layer 1 name q_proj
+pruning layer 1 name k_proj
+pruning layer 1 name v_proj
+pruning layer 1 name ff_proj
+pruning layer 1 name up_proj
+pruning layer 2 name attn_out
+pruning layer 2 name ff_out
+pruning layer 2 name q_proj
+pruning layer 2 name k_proj
+pruning layer 2 name v_proj
+pruning layer 2 name ff_proj
+pruning layer 2 name up_proj
+pruning layer 3 name attn_out
+pruning layer 3 name ff_out
+pruning layer 3 name q_proj
+pruning layer 3 name k_proj
+pruning layer 3 name v_proj
+pruning layer 3 name ff_proj
+pruning layer 3 name up_proj
+pruning layer 4 name attn_out
+pruning layer 4 name ff_out
+pruning layer 4 name q_proj
+pruning layer 4 name k_proj
+pruning layer 4 name v_proj
+pruning layer 4 name ff_proj
+pruning layer 4 name up_proj
+pruning layer 5 name attn_out
+pruning layer 5 name ff_out
+pruning layer 5 name q_proj
+pruning layer 5 name k_proj
+pruning layer 5 name v_proj
+pruning layer 5 name ff_proj
+pruning layer 5 name up_proj
+pruning layer 6 name attn_out
+pruning layer 6 name ff_out
+pruning layer 6 name q_proj
+pruning layer 6 name k_proj
+pruning layer 6 name v_proj
+pruning layer 6 name ff_proj
+pruning layer 6 name up_proj
+pruning layer 7 name attn_out
+pruning layer 7 name ff_out
+pruning layer 7 name q_proj
+pruning layer 7 name k_proj
+pruning layer 7 name v_proj
+pruning layer 7 name ff_proj
+pruning layer 7 name up_proj
+pruning layer 8 name attn_out
+pruning layer 8 name ff_out
+pruning layer 8 name q_proj
+pruning layer 8 name k_proj
+pruning layer 8 name v_proj
+pruning layer 8 name ff_proj
+pruning layer 8 name up_proj
+pruning layer 9 name attn_out
+pruning layer 9 name ff_out
+pruning layer 9 name q_proj
+pruning layer 9 name k_proj
+pruning layer 9 name v_proj
+pruning layer 9 name ff_proj
+pruning layer 9 name up_proj
+pruning layer 10 name attn_out
+pruning layer 10 name ff_out
+pruning layer 10 name q_proj
+pruning layer 10 name k_proj
+pruning layer 10 name v_proj
+pruning layer 10 name ff_proj
+pruning layer 10 name up_proj
+pruning layer 11 name attn_out
+pruning layer 11 name ff_out
+pruning layer 11 name q_proj
+pruning layer 11 name k_proj
+pruning layer 11 name v_proj
+pruning layer 11 name ff_proj
+pruning layer 11 name up_proj
+pruning layer 12 name attn_out
+pruning layer 12 name ff_out
+pruning layer 12 name q_proj
+pruning layer 12 name k_proj
+pruning layer 12 name v_proj
+pruning layer 12 name ff_proj
+pruning layer 12 name up_proj
+pruning layer 13 name attn_out
+pruning layer 13 name ff_out
+pruning layer 13 name q_proj
+pruning layer 13 name k_proj
+pruning layer 13 name v_proj
+pruning layer 13 name ff_proj
+pruning layer 13 name up_proj
+pruning layer 14 name attn_out
+pruning layer 14 name ff_out
+pruning layer 14 name q_proj
+pruning layer 14 name k_proj
+pruning layer 14 name v_proj
+pruning layer 14 name ff_proj
+pruning layer 14 name up_proj
+pruning layer 15 name attn_out
+pruning layer 15 name ff_out
+pruning layer 15 name q_proj
+pruning layer 15 name k_proj
+pruning layer 15 name v_proj
+pruning layer 15 name ff_proj
+pruning layer 15 name up_proj
+pruning layer 16 name attn_out
+pruning layer 16 name ff_out
+pruning layer 16 name q_proj
+pruning layer 16 name k_proj
+pruning layer 16 name v_proj
+pruning layer 16 name ff_proj
+pruning layer 16 name up_proj
+pruning layer 17 name attn_out
+pruning layer 17 name ff_out
+pruning layer 17 name q_proj
+pruning layer 17 name k_proj
+pruning layer 17 name v_proj
+pruning layer 17 name ff_proj
+pruning layer 17 name up_proj
+pruning layer 18 name attn_out
+pruning layer 18 name ff_out
+pruning layer 18 name q_proj
+pruning layer 18 name k_proj
+pruning layer 18 name v_proj
+pruning layer 18 name ff_proj
+pruning layer 18 name up_proj
+pruning layer 19 name attn_out
+pruning layer 19 name ff_out
+pruning layer 19 name q_proj
+pruning layer 19 name k_proj
+pruning layer 19 name v_proj
+pruning layer 19 name ff_proj
+pruning layer 19 name up_proj
+pruning layer 20 name attn_out
+pruning layer 20 name ff_out
+pruning layer 20 name q_proj
+pruning layer 20 name k_proj
+pruning layer 20 name v_proj
+pruning layer 20 name ff_proj
+pruning layer 20 name up_proj
+pruning layer 21 name attn_out
+pruning layer 21 name ff_out
+pruning layer 21 name q_proj
+pruning layer 21 name k_proj
+pruning layer 21 name v_proj
+pruning layer 21 name ff_proj
+pruning layer 21 name up_proj
+pruning layer 22 name attn_out
+pruning layer 22 name ff_out
+pruning layer 22 name q_proj
+pruning layer 22 name k_proj
+pruning layer 22 name v_proj
+pruning layer 22 name ff_proj
+pruning layer 22 name up_proj
+pruning layer 23 name attn_out
+pruning layer 23 name ff_out
+pruning layer 23 name q_proj
+pruning layer 23 name k_proj
+pruning layer 23 name v_proj
+pruning layer 23 name ff_proj
+pruning layer 23 name up_proj
+pruning layer 24 name attn_out
+pruning layer 24 name ff_out
+pruning layer 24 name q_proj
+pruning layer 24 name k_proj
+pruning layer 24 name v_proj
+pruning layer 24 name ff_proj
+pruning layer 24 name up_proj
+pruning layer 25 name attn_out
+pruning layer 25 name ff_out
+pruning layer 25 name q_proj
+pruning layer 25 name k_proj
+pruning layer 25 name v_proj
+pruning layer 25 name ff_proj
+pruning layer 25 name up_proj
+pruning layer 26 name attn_out
+pruning layer 26 name ff_out
+pruning layer 26 name q_proj
+pruning layer 26 name k_proj
+pruning layer 26 name v_proj
+pruning layer 26 name ff_proj
+pruning layer 26 name up_proj
+pruning layer 27 name attn_out
+pruning layer 27 name ff_out
+pruning layer 27 name q_proj
+pruning layer 27 name k_proj
+pruning layer 27 name v_proj
+pruning layer 27 name ff_proj
+pruning layer 27 name up_proj
+pruning layer 28 name attn_out
+pruning layer 28 name ff_out
+pruning layer 28 name q_proj
+pruning layer 28 name k_proj
+pruning layer 28 name v_proj
+pruning layer 28 name ff_proj
+pruning layer 28 name up_proj
+pruning layer 29 name attn_out
+pruning layer 29 name ff_out
+pruning layer 29 name q_proj
+pruning layer 29 name k_proj
+pruning layer 29 name v_proj
+pruning layer 29 name ff_proj
+pruning layer 29 name up_proj
+pruning layer 30 name attn_out
+pruning layer 30 name ff_out
+pruning layer 30 name q_proj
+pruning layer 30 name k_proj
+pruning layer 30 name v_proj
+pruning layer 30 name ff_proj
+pruning layer 30 name up_proj
+pruning layer 31 name attn_out
+pruning layer 31 name ff_out
+pruning layer 31 name q_proj
+pruning layer 31 name k_proj
+pruning layer 31 name v_proj
+pruning layer 31 name ff_proj
+pruning layer 31 name up_proj
+******************************
+layer 0 sparsity 0.500000
+layer 1 sparsity 0.500000
+layer 2 sparsity 0.500000
+layer 3 sparsity 0.500000
+layer 4 sparsity 0.500000
+layer 5 sparsity 0.500000
+layer 6 sparsity 0.500000
+layer 7 sparsity 0.500000
+layer 8 sparsity 0.500000
+layer 9 sparsity 0.500000
+layer 10 sparsity 0.500000
+layer 11 sparsity 0.500000
+layer 12 sparsity 0.500000
+layer 13 sparsity 0.500000
+layer 14 sparsity 0.500000
+layer 15 sparsity 0.500000
+layer 16 sparsity 0.500000
+layer 17 sparsity 0.500000
+layer 18 sparsity 0.500000
+layer 19 sparsity 0.500000
+layer 20 sparsity 0.500000
+layer 21 sparsity 0.500000
+layer 22 sparsity 0.500000
+layer 23 sparsity 0.500000
+layer 24 sparsity 0.500000
+layer 25 sparsity 0.500000
+layer 26 sparsity 0.500000
+layer 27 sparsity 0.500000
+layer 28 sparsity 0.500000
+layer 29 sparsity 0.500000
+layer 30 sparsity 0.500000
+layer 31 sparsity 0.500000
+sparsity sanity check 0.5000
+******************************
+Copied extra LLaDA files to saved model: model/tp_linear.py, model/modeling_llada.py, model/configuration_dream.py, model/__init__.py, model/configuration_llada.py, model/modeling_dream.py, configuration_llada.py, modeling_llada.py
+
+Script done on 2026-08-23 18:18:26+09:00 [COMMAND_EXIT_CODE="0"]
