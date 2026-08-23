@@ -1,0 +1,10 @@
+Script started on 2026-08-23 21:41:19+09:00 [COMMAND="python dlm_gradient_sensitivity.py materialize-direct --config experiments/time_risk/calibration_16x512.json --sparsity 0.25 --output-dir /dev/shm/calibration-16x512-mean-25 --output results/calibration_16x512/pruning-mean-25.json" TERM="dumb" TTY="/dev/pts/55" COLUMNS="80" LINES="24"]
+torch 2.8.0+cu128
+transformers 4.49.0
+accelerate 0.34.2
+# of gpus:  1
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|                         | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|██▊              | 1/6 [00:00<00:02,  2.31it/s]Loading checkpoint shards:  33%|█████▋           | 2/6 [00:00<00:01,  2.03it/s]Loading checkpoint shards:  50%|████████▌        | 3/6 [00:01<00:01,  1.99it/s]Loading checkpoint shards:  67%|███████████▎     | 4/6 [00:01<00:00,  2.03it/s]Loading checkpoint shards:  83%|██████████████▏  | 5/6 [00:02<00:00,  2.07it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.21it/s]Loading checkpoint shards: 100%|█████████████████| 6/6 [00:02<00:00,  2.13it/s]
+Copied extra LLaDA files to saved model: model/tp_linear.py, model/modeling_llada.py, model/configuration_dream.py, model/__init__.py, model/configuration_llada.py, model/modeling_dream.py, configuration_llada.py, modeling_llada.py
+
+Script done on 2026-08-23 23:03:35+09:00 [COMMAND_EXIT_CODE="0"]
