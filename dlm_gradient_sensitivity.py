@@ -1049,6 +1049,15 @@ def _diagnostics_have_exact_types(
 
 
 def _validate_production_score_config(config: dict) -> None:
+    calibration = config.get("calibration", {})
+    sequence_count = calibration.get("sequence_count")
+    profiles = {8: 256, 16: 512}
+    if type(sequence_count) is not int or sequence_count not in profiles:
+        raise ValueError("calibration.sequence_count does not match the predeclared production score contract")
+    sequence_length = calibration.get("sequence_length")
+    if not _same_typed_value(sequence_length, profiles[sequence_count]):
+        raise ValueError("calibration.sequence_length does not match the predeclared production score contract")
+    split = sequence_count // 2
     expected = {
         "model.id": "GSAI-ML/LLaDA-8B-Base",
         "model.revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
@@ -1058,14 +1067,14 @@ def _validate_production_score_config(config: dict) -> None:
         "dataset.calibration_split": "train",
         "dataset.validation_split": "validation",
         "calibration.seed": 0,
-        "calibration.sequence_indices": list(range(8)),
-        "calibration.sequence_count": 8,
-        "calibration.sequence_length": 256,
+        "calibration.sequence_indices": list(range(sequence_count)),
+        "calibration.sequence_count": sequence_count,
+        "calibration.sequence_length": sequence_length,
         "calibration.mask_id_source": "model.config.mask_token_id",
         "calibration.epsilon": 0.001,
         "calibration.timesteps": list(midpoint_timesteps()),
-        "calibration.split_a": [0, 1, 2, 3],
-        "calibration.split_b": [4, 5, 6, 7],
+        "calibration.split_a": list(range(split)),
+        "calibration.split_b": list(range(split, sequence_count)),
         "scoring.gradient_microbatch_size": 1,
         "scoring.lambdas": [0.25, 0.5, 1.0],
         "scoring.sparsities": [0.5, 0.6, 0.7, 0.75],
@@ -1098,8 +1107,8 @@ def _validate_production_score_config(config: dict) -> None:
     state_count = config["calibration"]["sequence_count"] * len(
         config["calibration"]["timesteps"]
     )
-    if state_count != 80:
-        raise ValueError("calibration.state_count must be exactly 80")
+    if state_count not in (80, 160):
+        raise ValueError("calibration.state_count must be exactly 80 or 160")
 
 
 def _run_loaded_score(model, config: dict, clean_ids: list[torch.Tensor], artifact_dir: Path) -> dict:

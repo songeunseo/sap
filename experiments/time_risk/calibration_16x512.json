@@ -1,0 +1,59 @@
+{
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "dataset": {
+    "id": "Salesforce/wikitext",
+    "configuration": "wikitext-2-raw-v1",
+    "loader_name": "wikitext2",
+    "calibration_split": "train",
+    "validation_split": "validation"
+  },
+  "calibration": {
+    "seed": 0,
+    "sequence_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "sequence_count": 16,
+    "sequence_length": 512,
+    "mask_id_source": "model.config.mask_token_id",
+    "epsilon": 0.001,
+    "timesteps": [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95],
+    "split_a": [0, 1, 2, 3, 4, 5, 6, 7],
+    "split_b": [8, 9, 10, 11, 12, 13, 14, 15]
+  },
+  "scoring": {
+    "gradient_microbatch_size": 1,
+    "lambdas": [0.25, 0.5, 1.0],
+    "sparsities": [0.5, 0.6, 0.7, 0.75],
+    "decision_sparsities": [0.5, 0.6, 0.7]
+  },
+  "stage0": {
+    "model_block_count": 32,
+    "measured_blocks": [31, 0],
+    "max_gpu_memory_gib": 30,
+    "max_swap_delta_kib": 0,
+    "max_projected_gpu_hours": 24
+  },
+  "reliability": {
+    "spearman_sample_size": 262144,
+    "minimum_median_split_sigma_spearman": 0.5,
+    "minimum_mean_split_mask_jaccard": 0.95,
+    "top_sigma_fraction": 0.01
+  },
+  "validation": {
+    "selection_sequence_offset": 0,
+    "confirmation_sequence_offset": 8,
+    "sequence_count": 8,
+    "bootstrap_seed": 0,
+    "bootstrap_resamples": 10000,
+    "minimum_sparsity_wins": 2,
+    "minimum_mean_relative_improvement": 0.01,
+    "maximum_individual_relative_degradation": 0.01
+  },
+  "gsm8k": {
+    "pilot_example_limit": 64,
+    "confirmation_example_limit": 256,
+    "minimum_correct_gain": 2,
+    "minimum_sparsity_wins": 2
+  }
+}

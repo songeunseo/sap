@@ -1644,6 +1644,14 @@ def test_score_production_contract_accepts_committed_pilot():
     sensitivity_cli._validate_production_score_config(config)
 
 
+def test_score_production_contract_accepts_16_by_512_calibration_profile():
+    config = json.loads(
+        Path("experiments/time_risk/calibration_16x512.json").read_text()
+    )
+
+    sensitivity_cli._validate_production_score_config(config)
+
+
 def test_repeat_gradient_square_check_real_32_block_tiny_model_covers_all_outcomes(
     monkeypatch,
 ):
