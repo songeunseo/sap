@@ -6,23 +6,27 @@ Codex가 수행한 모든 실험의 설정, 실행 스크립트, 설계 문서, 
 
 ## 대상
 
-다음 다섯 실험 묶음을 정리한다.
+다음 여섯 실험 묶음을 정리한다.
 
-1. `channel_3848`: 채널 3848 및 비교 채널의 인과적 보호 실험
-2. `time_risk_sensitivity`: Time-Risk DLM gradient-sensitivity 타당성 실험
-3. `mean_dlm_sweep`: Mean-DLM의 GSM8K 및 WinoGrande sparsity sweep
-4. `controlled_winogrande`: Dense, Wanda, SparseGPT, Sink-Aware의 동일 조건 WinoGrande 비교
-5. `calibration_16x512`: Wanda, SparseGPT, Mean-DLM의 8×256 대비 16×512 calibration 비교
+1. `temporal_rho`: LLaDA temporal perturbation propagation phase1/phase2 실험
+2. `channel_3848`: 채널 3848 및 비교 채널의 인과적 보호 실험
+3. `time_risk_sensitivity`: Time-Risk DLM gradient-sensitivity 타당성 실험
+4. `mean_dlm_sweep`: Mean-DLM의 GSM8K 및 WinoGrande sparsity sweep
+5. `controlled_winogrande`: Dense, Wanda, SparseGPT, Sink-Aware의 동일 조건 WinoGrande 비교
+6. `calibration_16x512`: Wanda, SparseGPT, Mean-DLM의 8×256 대비 16×512 calibration 비교
 
 ## 디렉터리 구조
 
 ```text
 codex/
 ├── README.md
+├── temporal_rho/
+│   └── results/
 ├── channel_3848/
 │   ├── configs/
 │   ├── design.md
 │   ├── plan.md
+│   ├── pruned_weights/
 │   └── results/
 ├── time_risk_sensitivity/
 │   ├── config.json
@@ -46,8 +50,10 @@ codex/
 
 | 기존 위치 | 새 위치 |
 |---|---|
+| 기본 worktree의 `results/phase1/`, `results/phase2/` | `codex/temporal_rho/results/phase1/`, `phase2/` |
 | `experiments/channel_3848/` | `codex/channel_3848/configs/` |
 | `results/channel_3848/` | `codex/channel_3848/results/` |
+| 기본 worktree의 `pruned_weights/channel_3848/` | `codex/channel_3848/pruned_weights/` |
 | channel 3848 설계·계획 문서 | `codex/channel_3848/design.md`, `plan.md` |
 | `experiments/time_risk/pilot.json` | `codex/time_risk_sensitivity/config.json` |
 | `results/time_risk/` | `codex/time_risk_sensitivity/results/` |
@@ -66,7 +72,7 @@ codex/
 
 실행 스크립트는 어느 디렉터리에서 호출해도 저장소 루트로 이동한 뒤 실행되도록 유지한다. 설정, 결과, artifact 경로는 모두 새 `codex/` 경로를 사용한다. Mean-DLM sweep은 Time-Risk sensitivity의 단일 공용 설정과 mask artifact를 참조하며 설정 파일을 복제하지 않는다.
 
-루트 `.gitignore`의 `results/` 규칙은 중첩된 `codex/*/results/`에도 적용된다. 기존에 추적된 compact 결과와 평가 sample은 이동 후에도 계속 추적하고, 기존에 무시된 18GB raw mask/state 및 로그는 디스크상 이동하되 새로 Git에 추가하지 않는다.
+루트 `.gitignore`의 `results/`와 `pruned_weights/` 규칙은 중첩된 같은 이름의 디렉터리에도 적용된다. 기존에 추적된 compact 결과와 평가 sample은 이동 후에도 계속 추적한다. 기존에 무시된 18GB raw mask/state, 로그, 기본 worktree의 temporal-rho 결과와 45GB channel checkpoint는 디스크상 이동하되 새로 Git에 추가하지 않는다.
 
 ## README 내용
 
@@ -84,7 +90,7 @@ README는 결과를 복제 생성하지 않고 기존 JSON·Markdown·로그를 
 
 ## 검증
 
-1. 이동 전후 각 대상 디렉터리의 파일 수와 총 byte 수가 일치하는지 확인한다.
+1. 이동 전후 각 대상 디렉터리의 파일 수와 총 byte 수가 일치하는지 확인한다. 기본 worktree에만 존재하는 ignored 산출물은 fast-forward 직전에 별도로 측정하고 반영 후 다시 확인한다.
 2. 기존 대상 경로가 실행 스크립트, 테스트, 이동된 문서에 남지 않았는지 `rg`로 확인한다.
 3. 모든 JSON을 `jq empty`, shell runner를 `bash -n`으로 검사한다.
 4. 관련 pytest를 실행한다. 기존에 확인된 외부 `Dataset` monkeypatch 실패는 이번 경로 이동과 분리해 보고한다.
