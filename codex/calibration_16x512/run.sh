@@ -4,8 +4,8 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 model="GSAI-ML/LLaDA-8B-Base"
-config="experiments/time_risk/calibration_16x512.json"
-root="results/calibration_16x512"
+config="codex/calibration_16x512/config.json"
+root="codex/calibration_16x512/results"
 mkdir -p "$root"
 
 completed() {

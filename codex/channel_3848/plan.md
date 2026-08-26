@@ -28,7 +28,7 @@
 - `main_llada.py`: expose delta-generation/application arguments and skip unrelated PPL work during experiment checkpoint creation.
 - `activation_diagnostic.py`: measure channel-3848 post-block residual magnitudes on fixed calibration samples.
 - `eval_llada.py`: guard single-process synchronization only if the existing GSM8K path demonstrates the known `None` accelerator failure.
-- `results/channel_3848/`: ignored generated JSON/CSV/checkpoint outputs; the final Markdown report is force-added intentionally.
+- `codex/channel_3848/results/`: ignored generated JSON/CSV/checkpoint outputs; the final Markdown report is force-added intentionally.
 
 ### Task 1: Core local mask constraint
 
@@ -342,7 +342,7 @@ Run:
 HF_ALLOW_CODE_EVAL=1 HF_DATASETS_TRUST_REMOTE_CODE=true accelerate launch eval_llada.py \
   --tasks gsm8k --limit 1 --model llada_dist \
   --model_args model_path=GSAI-ML/LLaDA-8B-Base,gen_length=1024,steps=1024,block_length=1024 \
-  --output_path results/channel_3848/smoke-dense
+  --output_path codex/channel_3848/results/smoke-dense
 ```
 
 Expected: one sample completes and a result JSON is written.
@@ -371,9 +371,9 @@ Commit: `git add eval_llada.py tests/test_channel_constraint.py && git commit -m
 ### Task 6: Generate and verify the immutable Wanda baseline
 
 **Files:**
-- Generated: `pruned_weights/channel_3848/wanda75-baseline/`
-- Generated: `results/channel_3848/wanda75-deltas/`
-- Generated: `results/channel_3848/wanda75-pruning.log`
+- Generated: `codex/channel_3848/pruned_weights/wanda75-baseline/`
+- Generated: `codex/channel_3848/results/wanda75-deltas/`
+- Generated: `codex/channel_3848/results/wanda75-pruning.log`
 
 **Interfaces:**
 - Consumes the committed pruning implementation.
@@ -392,8 +392,8 @@ python main_llada.py \
   --model GSAI-ML/LLaDA-8B-Base \
   --prune_method wanda --sparsity_ratio 0.75 --sparsity_type unstructured \
   --seed 0 --nsamples 128 --protect_channel 3848 --random_channel_count 3 \
-  --delta_dir results/channel_3848/wanda75-deltas \
-  --save_model pruned_weights/channel_3848/wanda75-baseline --skip_ppl
+  --delta_dir codex/channel_3848/results/wanda75-deltas \
+  --save_model codex/channel_3848/pruned_weights/wanda75-baseline --skip_ppl
 ```
 
 - [ ] **Step 3: Verify artifact and checkpoint invariants**
@@ -420,17 +420,17 @@ Commit message: `exp: record Wanda channel constraint masks`
 ### Task 7: Wanda 64-example sanity and mandatory primary comparison
 
 **Files:**
-- Generated: `pruned_weights/channel_3848/wanda75-protect3848/` (temporary)
-- Generated: `results/channel_3848/gsm8k-wanda75-64/`
-- Generated: `results/channel_3848/gsm8k-wanda75-protect3848-64/`
+- Generated: `codex/channel_3848/pruned_weights/wanda75-protect3848/` (temporary)
+- Generated: `codex/channel_3848/results/gsm8k-wanda75-64/`
+- Generated: `codex/channel_3848/results/gsm8k-wanda75-protect3848-64/`
 
 - [ ] **Step 1: Materialize channel 3848 from the immutable baseline**
 
 ```bash
 python main_llada.py \
-  --model pruned_weights/channel_3848/wanda75-baseline \
-  --apply_channel_delta results/channel_3848/wanda75-deltas/channel-3848.pt \
-  --save_model pruned_weights/channel_3848/wanda75-protect3848 --skip_ppl
+  --model codex/channel_3848/pruned_weights/wanda75-baseline \
+  --apply_channel_delta codex/channel_3848/results/wanda75-deltas/channel-3848.pt \
+  --save_model codex/channel_3848/pruned_weights/wanda75-protect3848 --skip_ppl
 ```
 
 - [ ] **Step 2: Verify actual zeros and application report**
@@ -473,7 +473,7 @@ Commit message: `exp: record Wanda channel 3848 GSM8K comparison`
 
 **Files:**
 - Generated sequentially: one temporary variant checkpoint at a time
-- Generated: `results/channel_3848/` evaluation and activation JSON
+- Generated: `codex/channel_3848/results/` evaluation and activation JSON
 
 - [ ] **Step 1: If the primary comparison has a signal, evaluate Dense full GSM8K**
 
@@ -483,7 +483,7 @@ Use the identical repository protocol with
 - [ ] **Step 2: Materialize and evaluate three random controls independently**
 
 For each recorded random channel, load
-`pruned_weights/channel_3848/wanda75-baseline` fresh, apply only that channel's
+`codex/channel_3848/pruned_weights/wanda75-baseline` fresh, apply only that channel's
 artifact, verify invariants, evaluate, persist results, and remove that one
 temporary checkpoint before the next channel. Report each result and the mean.
 
@@ -512,7 +512,7 @@ Commit message: `exp: record channel protection controls`
 ### Task 9: Final verification and causal report
 
 **Files:**
-- Create: `results/channel_3848/report.md` (force-added despite ignore rule)
+- Create: `codex/channel_3848/results/report.md` (force-added despite ignore rule)
 
 - [ ] **Step 1: Run fresh code verification**
 
@@ -537,6 +537,6 @@ channel using all three random controls.
 
 - [ ] **Step 4: Review and commit the final report**
 
-Run: `git status --short && git diff --check && git diff -- results/channel_3848/report.md`
+Run: `git status --short && git diff --check && git diff -- codex/channel_3848/results/report.md`
 
-Commit: `git add -f results/channel_3848/report.md && git commit -m "exp: report LLaDA channel 3848 causal experiment"`
+Commit: `git add -f codex/channel_3848/results/report.md && git commit -m "exp: report LLaDA channel 3848 causal experiment"`

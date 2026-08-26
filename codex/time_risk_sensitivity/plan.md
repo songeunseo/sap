@@ -35,9 +35,9 @@
 - `tests/test_dlm_gradient_sensitivity.py`: focused mathematical, serialization, suffix-gradient, selection, and bootstrap checks.
 - `dlm_gradient_sensitivity.py`: the only new CLI, with `feasibility`, `score`, `materialize`, `loss`, and `summarize-loss` subcommands.
 - `main_llada.py`: add the missing `--seqlen` override so the Wanda calibration uses the same length-256 sequences.
-- `experiments/time_risk/pilot.json`: immutable pilot constants and model revision; committed before GPU work.
-- `results/time_risk/`: ignored generated masks, temporary checkpoints, state files, metrics, and logs; force-add only compact JSON/Markdown reports.
-- `results/time_risk/report.md`: final gate decisions, commands, commit hashes, artifacts, metrics, and conclusion.
+- `codex/time_risk_sensitivity/config.json`: immutable pilot constants and model revision; committed before GPU work.
+- `codex/time_risk_sensitivity/results/`: ignored generated masks, temporary checkpoints, state files, metrics, and logs; force-add only compact JSON/Markdown reports.
+- `codex/time_risk_sensitivity/results/report.md`: final gate decisions, commands, commit hashes, artifacts, metrics, and conclusion.
 
 No pruning formula or model implementation changes are planned. `dlm_gradient_sensitivity.py` imports `get_llm` and `copy_llada_support_files` from `main_llada.py`, `find_layers`/`check_sparsity` from `lib/prune_llada.py`, and `get_loaders` from `lib/data.py`.
 
@@ -215,7 +215,7 @@ Commit: `git add lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensiti
 - Modify: `tests/test_dlm_gradient_sensitivity.py`
 - Modify: `lib/dlm_gradient_sensitivity.py`
 - Create: `dlm_gradient_sensitivity.py`
-- Create: `experiments/time_risk/pilot.json`
+- Create: `codex/time_risk_sensitivity/config.json`
 
 **Interfaces:**
 - Produces: `embed_state(model, noisy_ids: Tensor) -> Tensor`
@@ -265,8 +265,8 @@ CLI command:
 
 ```bash
 python dlm_gradient_sensitivity.py feasibility \
-  --config experiments/time_risk/pilot.json \
-  --output results/time_risk/stage0.json
+  --config codex/time_risk_sensitivity/config.json \
+  --output codex/time_risk_sensitivity/results/stage0.json
 ```
 
 The process exits 0 only when both blocks use at most 30 GiB, create no additional swap, have finite nonzero gradients, and project at most 24 GPU hours. It exits 2 for a scientifically valid gate failure and writes the report before exiting.
@@ -279,15 +279,15 @@ The process exits 0 only when both blocks use at most 30 GiB, create no addition
 
 Run: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q tests/test_dlm_gradient_sensitivity.py`
 
-Run: `git status --short && git diff --check && git diff -- lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensitivity.py dlm_gradient_sensitivity.py experiments/time_risk/pilot.json`
+Run: `git status --short && git diff --check && git diff -- lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensitivity.py dlm_gradient_sensitivity.py codex/time_risk_sensitivity/config.json`
 
-Commit: `git add lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensitivity.py dlm_gradient_sensitivity.py experiments/time_risk/pilot.json && git commit -m "feat: add blockwise DLM sensitivity probe"`
+Commit: `git add lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensitivity.py dlm_gradient_sensitivity.py codex/time_risk_sensitivity/config.json && git commit -m "feat: add blockwise DLM sensitivity probe"`
 
 ### Task 5: Execute and record Stage 0
 
 **Files:**
-- Generate: `results/time_risk/stage0.json`
-- Modify: `results/time_risk/report.md`
+- Generate: `codex/time_risk_sensitivity/results/stage0.json`
+- Modify: `codex/time_risk_sensitivity/results/report.md`
 
 - [ ] **Step 1: Record environment and run the committed command**
 
@@ -303,9 +303,9 @@ If Stage 0 fails, append the exact failed condition to `report.md`, commit the r
 
 - [ ] **Step 4: Commit the compact feasibility result**
 
-Run: `git status --short && git diff --check && git diff -- results/time_risk/stage0.json results/time_risk/report.md`
+Run: `git status --short && git diff --check && git diff -- codex/time_risk_sensitivity/results/stage0.json codex/time_risk_sensitivity/results/report.md`
 
-Commit: `git add -f results/time_risk/stage0.json results/time_risk/report.md && git commit -m "exp: record DLM sensitivity feasibility"`
+Commit: `git add -f codex/time_risk_sensitivity/results/stage0.json codex/time_risk_sensitivity/results/report.md && git commit -m "exp: record DLM sensitivity feasibility"`
 
 ### Task 6: Full blockwise scorer, resume, and reliability diagnostics
 
@@ -364,17 +364,17 @@ Commit: `git add lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensiti
 ### Task 7: Execute Stage 1 and record the reliability decision
 
 **Files:**
-- Generate: `results/time_risk/masks/manifest.json`
-- Generate: `results/time_risk/stage1.json`
-- Modify: `results/time_risk/report.md`
+- Generate: `codex/time_risk_sensitivity/results/masks/manifest.json`
+- Generate: `codex/time_risk_sensitivity/results/stage1.json`
+- Modify: `codex/time_risk_sensitivity/results/report.md`
 
 - [ ] **Step 1: Run the committed scorer**
 
 ```bash
 python dlm_gradient_sensitivity.py score \
-  --config experiments/time_risk/pilot.json \
-  --artifact-dir results/time_risk/masks \
-  --output results/time_risk/stage1.json
+  --config codex/time_risk_sensitivity/config.json \
+  --artifact-dir codex/time_risk_sensitivity/results/masks \
+  --output codex/time_risk_sensitivity/results/stage1.json
 ```
 
 Capture stdout/stderr and peak resources. Resume only from checksum-verified completed blocks.
@@ -391,7 +391,7 @@ Record module-level distributions and aggregate thresholds. If reliability fails
 
 Force-add `stage1.json`, the small manifest, and `report.md`; leave packed masks ignored.
 
-Commit: `git add -f results/time_risk/stage1.json results/time_risk/masks/manifest.json results/time_risk/report.md && git commit -m "exp: record DLM sensitivity diagnostics"`
+Commit: `git add -f codex/time_risk_sensitivity/results/stage1.json codex/time_risk_sensitivity/results/masks/manifest.json codex/time_risk_sensitivity/results/report.md && git commit -m "exp: record DLM sensitivity diagnostics"`
 
 ### Task 8: Packed-mask application and exact sparsity validation
 
@@ -425,10 +425,10 @@ Example:
 
 ```bash
 python dlm_gradient_sensitivity.py materialize \
-  --config experiments/time_risk/pilot.json \
-  --artifact-dir results/time_risk/masks \
+  --config codex/time_risk_sensitivity/config.json \
+  --artifact-dir codex/time_risk_sensitivity/results/masks \
   --method mean --sparsity 0.60 \
-  --output-dir results/time_risk/tmp/mean-60
+  --output-dir codex/time_risk_sensitivity/results/tmp/mean-60
 ```
 
 - [ ] **Step 4: Run tests, review, and commit**
@@ -486,9 +486,9 @@ Commit: `git add lib/dlm_gradient_sensitivity.py tests/test_dlm_gradient_sensiti
 ### Task 10: Execute Stage 2 without retaining checkpoints
 
 **Files:**
-- Generate: `results/time_risk/loss/*.json`
-- Generate: `results/time_risk/stage2.json`
-- Modify: `results/time_risk/report.md`
+- Generate: `codex/time_risk_sensitivity/results/loss/*.json`
+- Generate: `codex/time_risk_sensitivity/results/stage2.json`
+- Modify: `codex/time_risk_sensitivity/results/report.md`
 
 - [ ] **Step 1: Create Wanda baselines with unchanged repository code**
 
@@ -510,13 +510,13 @@ If either selection or confirmation misses any point gate, record `NO-GO`, commi
 
 Run: `git status --short && git diff --check`
 
-Commit: `git add -f results/time_risk/loss results/time_risk/stage2.json results/time_risk/report.md && git commit -m "exp: record held-out DLM loss screen"`
+Commit: `git add -f codex/time_risk_sensitivity/results/loss codex/time_risk_sensitivity/results/stage2.json codex/time_risk_sensitivity/results/report.md && git commit -m "exp: record held-out DLM loss screen"`
 
 ### Task 11: Paired GSM8K-64 gate
 
 **Files:**
-- Generate: `results/time_risk/gsm8k-64/*.json`
-- Modify: `results/time_risk/report.md`
+- Generate: `codex/time_risk_sensitivity/results/gsm8k-64/*.json`
+- Modify: `codex/time_risk_sensitivity/results/report.md`
 
 - [ ] **Step 1: Freeze evaluation settings before the first run**
 
@@ -532,14 +532,14 @@ For Time-Risk versus Mean, record correct-ID sets, wins, losses, ties, and corre
 
 - [ ] **Step 4: Commit the compact Stage 3 record**
 
-Commit: `git add -f results/time_risk/gsm8k-64 results/time_risk/report.md && git commit -m "exp: record paired GSM8K-64 gate"`
+Commit: `git add -f codex/time_risk_sensitivity/results/gsm8k-64 codex/time_risk_sensitivity/results/report.md && git commit -m "exp: record paired GSM8K-64 gate"`
 
 ### Task 12: Conditional confirmation and final handoff
 
 **Files:**
-- Generate on Stage 3 GO: `results/time_risk/gsm8k-256/*.json`
-- Generate on Stage 3 GO: `results/time_risk/replication/*.json`
-- Modify: `results/time_risk/report.md`
+- Generate on Stage 3 GO: `codex/time_risk_sensitivity/results/gsm8k-256/*.json`
+- Generate on Stage 3 GO: `codex/time_risk_sensitivity/results/replication/*.json`
+- Modify: `codex/time_risk_sensitivity/results/report.md`
 
 - [ ] **Step 1: Select exactly one non-floor sparsity**
 
@@ -563,9 +563,9 @@ Run: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q`
 
 Run: `git status --short && git diff --check`
 
-Commit Stage 3 GO artifacts when present: `git add -f results/time_risk/gsm8k-256 results/time_risk/replication results/time_risk/report.md && git commit -m "exp: confirm time-risk DLM sensitivity"`
+Commit Stage 3 GO artifacts when present: `git add -f codex/time_risk_sensitivity/results/gsm8k-256 codex/time_risk_sensitivity/results/replication codex/time_risk_sensitivity/results/report.md && git commit -m "exp: confirm time-risk DLM sensitivity"`
 
-If Stage 3 is not GO, commit only the updated report: `git add -f results/time_risk/report.md && git commit -m "docs: conclude time-risk DLM sensitivity pilot"`
+If Stage 3 is not GO, commit only the updated report: `git add -f codex/time_risk_sensitivity/results/report.md && git commit -m "docs: conclude time-risk DLM sensitivity pilot"`
 
 ## Execution Checkpoints
 

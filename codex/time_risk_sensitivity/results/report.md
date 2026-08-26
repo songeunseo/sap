@@ -5,7 +5,7 @@
 Command (exit 0), at `7e7bbd3e9e06f48559ce514dcb97b3c13662c2dd`:
 
 ```bash
-python dlm_gradient_sensitivity.py feasibility --config experiments/time_risk/pilot.json --output results/time_risk/stage0.json
+python dlm_gradient_sensitivity.py feasibility --config codex/time_risk_sensitivity/config.json --output codex/time_risk_sensitivity/results/stage0.json
 ```
 
 The preflight/log is `stage0-run.log`: 2026-08-18T15:19:13Z to

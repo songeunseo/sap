@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 model="GSAI-ML/LLaDA-8B-Base"
-root="results/controlled_winogrande"
+root="codex/controlled_winogrande/results"
 mkdir -p "$root"
 
 completed() {

@@ -7,15 +7,15 @@ materialize() {
     local percent="$1" sparsity="$2" command="${3:-materialize}"
     [[ -d "/dev/shm/mean-dlm-${percent}" ]] && return
     local artifact_args=()
-    [[ "$command" == materialize ]] && artifact_args=(--artifact-dir results/time_risk/masks)
+    [[ "$command" == materialize ]] && artifact_args=(--artifact-dir codex/time_risk_sensitivity/results/masks)
     script -q -e -c \
-        "python dlm_gradient_sensitivity.py ${command} --config experiments/time_risk/pilot.json ${artifact_args[*]} --sparsity ${sparsity} --output-dir /dev/shm/mean-dlm-${percent} --output results/mean_dlm/pruning-${percent}.json" \
-        "results/mean_dlm/materialize-winogrande-${percent}.log"
+        "python dlm_gradient_sensitivity.py ${command} --config codex/time_risk_sensitivity/config.json ${artifact_args[*]} --sparsity ${sparsity} --output-dir /dev/shm/mean-dlm-${percent} --output codex/mean_dlm_sweep/results/pruning-${percent}.json" \
+        "codex/mean_dlm_sweep/results/materialize-winogrande-${percent}.log"
 }
 
 evaluate() {
     local percent="$1" suffix="$2" limit="${3:-}"
-    local output="results/mean_dlm/winogrande-mean${percent}-${suffix}"
+    local output="codex/mean_dlm_sweep/results/winogrande-mean${percent}-${suffix}"
     [[ ! -e "$output" && ! -e "${output}.log" ]]
     script -q -e -c \
         "accelerate launch eval_llada.py --tasks winogrande --num_fewshot 5 ${limit} --log_samples --model llada_dist --batch_size 8 --model_args model_path=/dev/shm/mean-dlm-${percent},cfg=0.0,is_check_greedy=False,mc_num=128 --output_path ${output}" \

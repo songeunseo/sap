@@ -1,6 +1,6 @@
 {
-  "baseline_model": "pruned_weights/channel_3848/wanda75-baseline",
-  "channel_delta": "results/channel_3848/wanda75-deltas/channel-3848.pt",
+  "baseline_model": "codex/channel_3848/pruned_weights/wanda75-baseline",
+  "channel_delta": "codex/channel_3848/results/wanda75-deltas/channel-3848.pt",
   "delta_block": 15,
   "delta_top_fraction": 0.25,
   "ranking": "absolute_dense_weight_among_baseline_pruned_protected_weights",

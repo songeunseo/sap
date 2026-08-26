@@ -1627,7 +1627,7 @@ def test_score_write_validates_before_manifest_or_stat_release(tmp_path, monkeyp
 def test_score_production_contract_rejects_changes_before_cuda_or_model_work(
     tmp_path, monkeypatch, keys, bad_value, message
 ):
-    config = json.loads(Path("experiments/time_risk/pilot.json").read_text())
+    config = json.loads(Path("codex/time_risk_sensitivity/config.json").read_text())
     config[keys[0]][keys[1]] = bad_value
     monkeypatch.setattr(
         torch.cuda,
@@ -1640,13 +1640,13 @@ def test_score_production_contract_rejects_changes_before_cuda_or_model_work(
 
 
 def test_score_production_contract_accepts_committed_pilot():
-    config = json.loads(Path("experiments/time_risk/pilot.json").read_text())
+    config = json.loads(Path("codex/time_risk_sensitivity/config.json").read_text())
     sensitivity_cli._validate_production_score_config(config)
 
 
 def test_score_production_contract_accepts_16_by_512_calibration_profile():
     config = json.loads(
-        Path("experiments/time_risk/calibration_16x512.json").read_text()
+        Path("codex/calibration_16x512/config.json").read_text()
     )
 
     sensitivity_cli._validate_production_score_config(config)
