@@ -1,0 +1,46 @@
+{
+  "heldout": {
+    "by_timestep": [
+      {
+        "confidence_mae": 0.08452468175514072,
+        "kl": 0.2086669463737338,
+        "masked_token_count": 204,
+        "prediction_agreement": 0.8676470588235294,
+        "timestep": 0.2
+      },
+      {
+        "confidence_mae": 0.08023979441931822,
+        "kl": 0.2580180930636094,
+        "masked_token_count": 419,
+        "prediction_agreement": 0.7756563245823389,
+        "timestep": 0.4
+      },
+      {
+        "confidence_mae": 0.09594442373932803,
+        "kl": 0.30762789161707643,
+        "masked_token_count": 598,
+        "prediction_agreement": 0.7424749163879598,
+        "timestep": 0.6
+      },
+      {
+        "confidence_mae": 0.05870525716708888,
+        "kl": 0.28651601596658666,
+        "masked_token_count": 813,
+        "prediction_agreement": 0.6457564575645757,
+        "timestep": 0.8
+      }
+    ],
+    "overall": {
+      "confidence_mae": 0.07667927650575442,
+      "kl": 0.27904456156427765,
+      "masked_token_count": 2034,
+      "prediction_agreement": 0.7232055063913471
+    }
+  },
+  "pruning_seconds": 71.23457383736968,
+  "sparsity": {
+    "sparsity": 0.5000015425567443,
+    "total_count": 6979321856,
+    "zero_count": 3489671694
+  }
+}
