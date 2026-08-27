@@ -229,7 +229,7 @@ def prune_wanda(
 
 
 @torch.no_grad()
-def prune_sparsegpt(
+def _prune_sparsegpt_impl(
     args,
     model,
     tokenizer,
@@ -323,15 +323,17 @@ def prune_sparsegpt(
             return tmp
 
         handles = []
-        for name in gpts:
-            handles.append(subset[name].register_forward_hook(add_batch(name)))
+        try:
+            for name in gpts:
+                handles.append(subset[name].register_forward_hook(add_batch(name)))
 
-        for j in range(args.nsamples):
-            if token_weights is not None:
-                current_token_weights[0] = token_weights[j].to(dev)
-            outs[j] = layer(inps[j].unsqueeze(0), attention_bias=attention_bias, layer_past=layer_past)[0]
-        for h in handles:
-            h.remove()
+            for j in range(args.nsamples):
+                if token_weights is not None:
+                    current_token_weights[0] = token_weights[j].to(dev)
+                outs[j] = layer(inps[j].unsqueeze(0), attention_bias=attention_bias, layer_past=layer_past)[0]
+        finally:
+            for h in handles:
+                h.remove()
 
         for name in gpts:
             print(i, name)
@@ -355,6 +357,35 @@ def prune_sparsegpt(
 
     model.config.use_cache = use_cache
     torch.cuda.empty_cache()
+
+
+@torch.no_grad()
+def prune_sparsegpt(
+    args,
+    model,
+    tokenizer,
+    dev,
+    prune_n=0,
+    prune_m=0,
+    calibration_loader=None,
+    token_weights=None,
+    hessian_diagonals=None,
+):
+    use_cache = model.config.use_cache
+    try:
+        return _prune_sparsegpt_impl(
+            args,
+            model,
+            tokenizer,
+            dev,
+            prune_n=prune_n,
+            prune_m=prune_m,
+            calibration_loader=calibration_loader,
+            token_weights=token_weights,
+            hessian_diagonals=hessian_diagonals,
+        )
+    finally:
+        model.config.use_cache = use_cache
 
 
 

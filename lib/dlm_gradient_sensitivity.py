@@ -42,11 +42,15 @@ def mask_probability(timestep: float, eps: float = 1e-3) -> float:
 
 
 def make_masked_state(
-    clean_ids: torch.Tensor, timestep: float, mask_id: int, seed: int
+    clean_ids: torch.Tensor,
+    timestep: float,
+    mask_id: int,
+    seed: int,
+    eps: float = 1e-3,
 ) -> tuple[torch.Tensor, torch.Tensor, float]:
     if not isinstance(clean_ids, torch.Tensor) or clean_ids.numel() == 0:
         raise ValueError("clean_ids must have a positive sequence length")
-    p_mask = mask_probability(timestep)
+    p_mask = mask_probability(timestep, eps)
     generator = torch.Generator(device=clean_ids.device)
     attempt = 0
     while True:

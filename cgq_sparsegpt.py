@@ -37,13 +37,13 @@ def cgq_token_weights(input_ids, logits, mask_id):
     return weights.detach(), confidence, mask_weight
 
 
-def build_corrupted_states(clean_ids, timesteps, mask_id, seed):
+def build_corrupted_states(clean_ids, timesteps, mask_id, seed, eps=1e-3):
     states = []
     for timestep_index, timestep in enumerate(timesteps):
         for sequence_index, ids in enumerate(clean_ids):
             mask_seed = seed + timestep_index * len(clean_ids) + sequence_index
             input_ids, mask, p_mask = make_masked_state(
-                ids, timestep, mask_id, mask_seed
+                ids, timestep, mask_id, mask_seed, eps
             )
             states.append(
                 {
@@ -485,12 +485,14 @@ def run_experiment(config_path, output_dir):
         calibration["timesteps"],
         mask_id,
         calibration["mask_seed"],
+        calibration["epsilon"],
     )
     heldout_states = build_corrupted_states(
         heldout_clean,
         calibration["timesteps"],
         mask_id,
         calibration["heldout_mask_seed"],
+        calibration["epsilon"],
     )
     calibration_digest = state_digest(calibration_states)
     heldout_digest = state_digest(heldout_states)
@@ -508,8 +510,8 @@ def run_experiment(config_path, output_dir):
     references = cache_dense_references(
         dense_model, heldout_states, torch.device("cuda:0")
     )
-    if len(references) != 16:
-        raise AssertionError("dense held-out reference cache must contain 16 states")
+    if len(references) != len(heldout_states):
+        raise AssertionError("dense held-out reference cache is incomplete")
     reference_digest = _reference_digest(references)
     cgq_weights, confidence = _cache_calibration_weights(
         dense_model, calibration_states, mask_id, torch.device("cuda:0")

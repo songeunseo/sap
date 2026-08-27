@@ -138,6 +138,18 @@ def test_corrupted_states_and_digest_are_deterministic():
     assert all(state["mask"].any() for state in first)
 
 
+def test_corrupted_states_forward_configured_diffusion_epsilon():
+    states = build_corrupted_states(
+        [torch.arange(12).reshape(1, 12)],
+        (0.2,),
+        mask_id=99,
+        seed=7,
+        eps=0.0,
+    )
+
+    assert states[0]["p_mask"] == pytest.approx(0.2)
+
+
 class ReferenceModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -312,3 +324,26 @@ def test_mask_id_falls_back_to_llada_model_config():
     model = SimpleNamespace(config=SimpleNamespace(mask_token_id=126336))
 
     assert resolve_mask_id(tokenizer, model) == 126336
+
+
+class FailingSparseGPT(RecordingSparseGPT):
+    def add_batch(self, _inputs, _outputs, token_weights=None):
+        raise ValueError("bad token weights")
+
+
+def test_sparsegpt_restores_cache_and_hooks_after_weighting_error(monkeypatch):
+    monkeypatch.setattr("lib.prune_llada.SparseGPT", FailingSparseGPT)
+    model = ToyModel()
+
+    with pytest.raises(ValueError, match="bad token weights"):
+        prune_sparsegpt(
+            SimpleNamespace(nsamples=1, seed=0, sparsity_ratio=0.5),
+            model,
+            tokenizer=None,
+            dev=torch.device("cpu"),
+            calibration_loader=[(torch.tensor([[1, 2, 3, 4]]),)],
+            token_weights=[torch.ones(1, 4)],
+        )
+
+    assert model.config.use_cache is True
+    assert not model.model.transformer.blocks[0].q_proj._forward_hooks
