@@ -24,10 +24,19 @@ class SparseGPT:
         self.H = torch.zeros((self.columns, self.columns), device=self.dev)
         self.nsamples = 0
 
-    def add_batch(self, inp, out):
+    def add_batch(self, inp, out, token_weights=None):
         if len(inp.shape) == 2:
             inp = inp.unsqueeze(0)
         tmp = inp.shape[0]
+        if token_weights is not None:
+            if token_weights.shape != inp.shape[:-1]:
+                raise ValueError(
+                    f"token_weights shape {tuple(token_weights.shape)} does not match "
+                    f"input token shape {tuple(inp.shape[:-1])}"
+                )
+            inp = inp.float() * token_weights.to(
+                device=inp.device, dtype=torch.float32
+            ).unsqueeze(-1)
         if isinstance(self.layer, nn.Linear) or isinstance(self.layer, transformers.Conv1D):
             if len(inp.shape) == 3:
                 inp = inp.reshape((-1, inp.shape[-1]))

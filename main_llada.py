@@ -147,9 +147,10 @@ print('transformers', version('transformers'))
 print('accelerate', version('accelerate'))
 print('# of gpus: ', torch.cuda.device_count())
 
-def get_llm(model_name, cache_dir="llm_weights", seqlen=None):
+def get_llm(model_name, cache_dir="llm_weights", seqlen=None, revision=None):
     model = LLaDAModelLM.from_pretrained(
         model_name,
+        revision=revision,
         torch_dtype=torch.bfloat16,
         low_cpu_mem_usage=True,
         device_map="auto",

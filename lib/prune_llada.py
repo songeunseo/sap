@@ -229,10 +229,28 @@ def prune_wanda(
 
 
 @torch.no_grad()
-def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0):
+def prune_sparsegpt(
+    args,
+    model,
+    tokenizer,
+    dev,
+    prune_n=0,
+    prune_m=0,
+    calibration_loader=None,
+    token_weights=None,
+    hessian_diagonals=None,
+):
     ## SparseGPT code available at: https://github.com/IST-DASLab/sparsegpt/tree/f5c25005a61f96a0933ca2f95705a963585aafaa
     print('Starting ...')
-    dataloader, _ = get_loaders("wikitext2",nsamples=args.nsamples,seed=args.seed,seqlen=model.seqlen,tokenizer=tokenizer)
+    if calibration_loader is None:
+        dataloader, _ = get_loaders(
+            "wikitext2", nsamples=args.nsamples, seed=args.seed,
+            seqlen=model.seqlen, tokenizer=tokenizer,
+        )
+    else:
+        dataloader = calibration_loader
+    if token_weights is not None and len(token_weights) != args.nsamples:
+        raise ValueError("token_weights count must match args.nsamples")
 
     use_cache = model.config.use_cache
     model.config.use_cache = False
@@ -258,12 +276,18 @@ def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0):
             cache['layer_past'] = kwargs['layer_past']
             raise ValueError
     layers[0] = Catcher(layers[0])
-    for batch in dataloader:
-        try:
-            model(batch[0].to(dev))
-        except ValueError:
-            pass
-    layers[0] = layers[0].module
+    try:
+        for batch in dataloader:
+            try:
+                model(batch[0].to(dev))
+            except ValueError:
+                pass
+    finally:
+        layers[0] = layers[0].module
+    if cache['i'] != args.nsamples:
+        raise ValueError(
+            f"calibration loader produced {cache['i']} samples, expected {args.nsamples}"
+        )
     torch.cuda.empty_cache()
 
     outs = torch.zeros_like(inps)
@@ -285,9 +309,17 @@ def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0):
         for name in subset:
             gpts[name] = SparseGPT(subset[name])
 
+        current_token_weights = [None]
+
         def add_batch(name):
             def tmp(_, inp, out):
-                gpts[name].add_batch(inp[0].data, out.data)
+                if current_token_weights[0] is None:
+                    gpts[name].add_batch(inp[0].data, out.data)
+                else:
+                    gpts[name].add_batch(
+                        inp[0].data, out.data,
+                        token_weights=current_token_weights[0],
+                    )
             return tmp
 
         handles = []
@@ -295,6 +327,8 @@ def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0):
             handles.append(subset[name].register_forward_hook(add_batch(name)))
 
         for j in range(args.nsamples):
+            if token_weights is not None:
+                current_token_weights[0] = token_weights[j].to(dev)
             outs[j] = layer(inps[j].unsqueeze(0), attention_bias=attention_bias, layer_past=layer_past)[0]
         for h in handles:
             h.remove()
@@ -302,6 +336,11 @@ def prune_sparsegpt(args, model, tokenizer, dev, prune_n=0, prune_m=0):
         for name in gpts:
             print(i, name)
             print('Pruning ...')
+
+            if hessian_diagonals is not None:
+                hessian_diagonals[
+                    f"model.transformer.blocks.{i}.{name}"
+                ] = torch.diag(gpts[name].H).detach().float().cpu().clone()
 
             gpts[name].fasterprune(args.sparsity_ratio, prune_n=prune_n, prune_m=prune_m, percdamp=0.01, blocksize=128)
             gpts[name].free()
