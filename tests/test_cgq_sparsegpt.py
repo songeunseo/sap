@@ -8,10 +8,17 @@ from torch import nn
 from cgq_sparsegpt import (
     build_corrupted_states,
     cache_dense_references,
+    calibration_statistics,
     cgq_token_weights,
+    compare_model_masks,
+    compare_packed_mask,
     diagonal_change,
+    evaluate_heldout,
     masked_logit_sums,
+    save_plain_model_masks,
+    summarize_mask_cells,
     state_digest,
+    write_packed_mask,
 )
 from lib.prune_llada import prune_sparsegpt
 
@@ -188,3 +195,112 @@ def test_diagonal_change_reports_cosine_and_relative_l2():
 
     assert result["cosine_similarity"] == pytest.approx(0.9486833)
     assert result["relative_l2_difference"] == pytest.approx(0.4472136)
+
+
+def test_calibration_statistics_split_masked_and_unmasked_tokens_by_timestep():
+    states = [
+        {"mask": torch.tensor([[True, False]]), "timestep": 0.2},
+        {"mask": torch.tensor([[True, True]]), "timestep": 0.8},
+    ]
+    confidence = [torch.tensor([[0.81, 0.25]]), torch.tensor([[0.36, 0.49]])]
+    weights = [torch.tensor([[1.9, 1.2]]), torch.tensor([[1.6, 1.7]])]
+
+    result = calibration_statistics(states, confidence, weights)
+
+    assert result["overall"]["masked_ratio"] == pytest.approx(0.75)
+    assert result["overall"]["masked"]["count"] == 3
+    assert result["overall"]["masked"]["confidence_mean"] == pytest.approx(
+        (0.81 + 0.36 + 0.49) / 3
+    )
+    assert result["overall"]["unmasked"]["r_mean"] == pytest.approx(1.2)
+    assert result["by_timestep"][0]["timestep"] == 0.2
+    assert result["by_timestep"][1]["masked_ratio"] == 1.0
+
+
+def test_packed_masks_report_exact_xor_and_aggregate_by_layer(tmp_path):
+    first_plain = torch.tensor([True, False, True, False, True, False, True, False])
+    second_plain = torch.tensor([True, True, False, False])
+    first_cgq = torch.tensor([True, True, False, False, True, False, True, False])
+    second_cgq = torch.tensor([False, True, False, True])
+    first_path = tmp_path / "first.bin"
+    second_path = tmp_path / "second.bin"
+    write_packed_mask(first_path, first_plain)
+    write_packed_mask(second_path, second_plain)
+
+    cells = [
+        {
+            "block": 0,
+            "module": "q_proj",
+            **compare_packed_mask(first_path, first_cgq),
+        },
+        {
+            "block": 1,
+            "module": "ff_out",
+            **compare_packed_mask(second_path, second_cgq),
+        },
+    ]
+    result = summarize_mask_cells(cells)
+
+    assert cells[0]["xor_count"] == 2
+    assert cells[1]["xor_count"] == 2
+    assert result["global_xor_fraction"] == pytest.approx(4 / 12)
+    assert result["mean_layer_xor_fraction"] == pytest.approx((2 / 8 + 2 / 4) / 2)
+    assert result["mean_module_xor_fraction"] == pytest.approx((2 / 8 + 2 / 4) / 2)
+    assert result["top_cells"][0]["module"] == "ff_out"
+
+
+def test_model_masks_record_exact_sparsity_and_compare_after_pruning(tmp_path):
+    model = ToyModel()
+    model.model.transformer.blocks[0].q_proj.weight.data.copy_(
+        torch.tensor([[0.0, 1.0], [2.0, 0.0]])
+    )
+
+    plain = save_plain_model_masks(model, tmp_path)
+    model.model.transformer.blocks[0].q_proj.weight.data.copy_(
+        torch.tensor([[0.0, 0.0], [2.0, 3.0]])
+    )
+    cgq, cells = compare_model_masks(model, tmp_path)
+
+    assert plain == {"zero_count": 2, "total_count": 4, "sparsity": 0.5}
+    assert cgq == {"zero_count": 2, "total_count": 4, "sparsity": 0.5}
+    assert cells[0]["block"] == 0
+    assert cells[0]["module"] == "q_proj"
+    assert cells[0]["xor_fraction"] == 0.5
+
+
+class ScaledReferenceModel(ReferenceModel):
+    def __init__(self, scale):
+        super().__init__()
+        self.scale = scale
+
+    def forward(self, input_ids):
+        self.calls += 1
+        values = input_ids.float() * self.scale
+        return SimpleNamespace(logits=torch.stack((values, -values), dim=-1))
+
+
+def test_heldout_evaluation_aggregates_the_shared_references_by_timestep():
+    states = [
+        {
+            "input_ids": torch.tensor([[1, 2, 3]]),
+            "mask": torch.tensor([[True, False, True]]),
+            "timestep": 0.2,
+        },
+        {
+            "input_ids": torch.tensor([[4, 5, 6]]),
+            "mask": torch.tensor([[False, True, False]]),
+            "timestep": 0.8,
+        },
+    ]
+    references = cache_dense_references(
+        ScaledReferenceModel(1.0), states, torch.device("cpu")
+    )
+
+    result = evaluate_heldout(
+        ScaledReferenceModel(0.5), states, references, torch.device("cpu")
+    )
+
+    assert result["overall"]["masked_token_count"] == 3
+    assert result["overall"]["prediction_agreement"] == 1.0
+    assert [row["timestep"] for row in result["by_timestep"]] == [0.2, 0.8]
+    assert all(row["kl"] > 0 for row in result["by_timestep"])

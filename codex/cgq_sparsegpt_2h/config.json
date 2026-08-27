@@ -1,0 +1,24 @@
+{
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "calibration": {
+    "dataset": "Salesforce/wikitext:wikitext-2-raw-v1:train",
+    "seed": 0,
+    "sequence_count": 4,
+    "heldout_sequence_count": 4,
+    "sequence_length": 256,
+    "timesteps": [0.2, 0.4, 0.6, 0.8],
+    "epsilon": 0.001,
+    "mask_seed": 0,
+    "heldout_mask_seed": 10000
+  },
+  "pruning": {
+    "methods": ["plain", "cgq"],
+    "sparsity": 0.5,
+    "sparsity_type": "unstructured",
+    "percdamp": 0.01,
+    "blocksize": 128
+  }
+}
