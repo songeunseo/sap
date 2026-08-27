@@ -15,6 +15,7 @@ from cgq_sparsegpt import (
     diagonal_change,
     evaluate_heldout,
     masked_logit_sums,
+    resolve_mask_id,
     save_plain_model_masks,
     summarize_mask_cells,
     state_digest,
@@ -304,3 +305,10 @@ def test_heldout_evaluation_aggregates_the_shared_references_by_timestep():
     assert result["overall"]["prediction_agreement"] == 1.0
     assert [row["timestep"] for row in result["by_timestep"]] == [0.2, 0.8]
     assert all(row["kl"] > 0 for row in result["by_timestep"])
+
+
+def test_mask_id_falls_back_to_llada_model_config():
+    tokenizer = SimpleNamespace(mask_token_id=None)
+    model = SimpleNamespace(config=SimpleNamespace(mask_token_id=126336))
+
+    assert resolve_mask_id(tokenizer, model) == 126336

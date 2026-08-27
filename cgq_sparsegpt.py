@@ -327,6 +327,17 @@ EXPECTED_MODULES = {
 }
 
 
+def resolve_mask_id(tokenizer, model):
+    tokenizer_id = getattr(tokenizer, "mask_token_id", None)
+    model_id = getattr(model.config, "mask_token_id", None)
+    if tokenizer_id is not None and model_id is not None and tokenizer_id != model_id:
+        raise ValueError("model and tokenizer mask IDs disagree")
+    mask_id = tokenizer_id if tokenizer_id is not None else model_id
+    if mask_id is None:
+        raise ValueError("model and tokenizer have no mask_token_id")
+    return mask_id
+
+
 def _write_json(path, document):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -467,9 +478,8 @@ def run_experiment(config_path, output_dir):
     }:
         raise ValueError("calibration and held-out clean sequences overlap")
 
-    mask_id = tokenizer.mask_token_id
-    if mask_id is None:
-        raise ValueError("tokenizer has no mask_token_id")
+    dense_model = _load_model(config)
+    mask_id = resolve_mask_id(tokenizer, dense_model)
     calibration_states = build_corrupted_states(
         calibration_clean,
         calibration["timesteps"],
@@ -495,9 +505,6 @@ def run_experiment(config_path, output_dir):
         sparsity_ratio=config["pruning"]["sparsity"],
     )
 
-    dense_model = _load_model(config)
-    if getattr(dense_model.config, "mask_token_id", mask_id) != mask_id:
-        raise ValueError("model and tokenizer mask IDs disagree")
     references = cache_dense_references(
         dense_model, heldout_states, torch.device("cuda:0")
     )
