@@ -31,6 +31,13 @@ This experiment does not use, modify, or compare against Sink-Aware pruning.
 - Compared methods only: Dense, Wanda 50%, SparseGPT 50%, DLM-SUM 50%,
   DLM-ABS 50%, DLM-SQUARE 50%.
 
+Wanda and SparseGPT use the standard eight clean 256-token calibration spans.
+They are reference baselines, not calibration-compute-matched baselines: each
+DLM method uses 80 corrupted states from eight spans and ten timesteps. The
+primary controlled comparison is among SUM, ABS, and SQUARE, which share the
+same states and backward passes. Beating a reference baseline must not be
+described as an improvement under matched calibration compute.
+
 ## Exact loss and effects
 
 For one batch-one state `s = (sample, timestep)` with sequence length `L`, mask
@@ -71,9 +78,16 @@ Cached dense hidden states advance one block after all 80 gradients for the
 current block have been consumed.
 
 After a block is complete, each module is finalized independently. The runner
-computes its three row-wise masks, exact matrix-level pairwise Spearman values,
-mask XOR fractions, sign consistency, spike ratio, finite/shape/count/signedness
-checks, and compact distribution summaries. FP32 scores are then discarded.
+computes its three row-wise masks, matrix-level pairwise Spearman values, exact
+mask XOR fractions, sign consistency, spike ratio, finite/shape/count checks,
+and compact distribution summaries. FP32 scores are then discarded.
+
+Before applying exact Spearman to all matrices, the smoke run profiles ranking
+the largest prunable matrix and records elapsed time and peak CPU RSS. If that
+profile is not comfortable for the current machine, Spearman alone uses a
+deterministic seed-0 sample of at most 1,000,000 shared weight indices per
+matrix. The CSV records whether each row is exact or sampled and the sample
+size. Mask construction and mask XOR remain exact over every weight.
 
 The three masks are bit-packed immediately and retained in CPU RAM. Across
 6,979,321,856 prunable weights this costs about 2.44 GiB for all methods,
@@ -87,11 +101,12 @@ Evaluation is sequential in one orchestration process:
 
 1. Collect and retain the three packed DLM masks.
 2. Evaluate Dense from the pinned checkpoint and release the model.
-3. Reload Dense, run existing Wanda 50% on the fixed eight clean calibration
+3. For SUM, ABS, and SQUARE in order, reload Dense, unpack/apply one module mask
+   at a time, evaluate, verify the mask hash/result, release the model, and free
+   that method's packed mask.
+4. Reload Dense, run existing Wanda 50% on the fixed eight clean calibration
    spans, evaluate, record the derived zero-mask hash, and release the model.
-4. Repeat for existing SparseGPT 50%.
-5. For SUM, ABS, and SQUARE in order, reload Dense, unpack/apply one module mask
-   at a time, evaluate, verify the mask hash/result, and release the model.
+5. Repeat for existing SparseGPT 50%.
 
 `eval_llada.py` gains a small optional in-memory model/tokenizer seam used by
 the experiment runner. CLI checkpoint loading remains unchanged. The runner
@@ -152,11 +167,10 @@ The runner stops without a full run when any of these occurs:
 
 - historical calibration digest mismatch;
 - model revision, mask token, block count, module count, or shape mismatch;
-- non-finite loss, gradient, effect, score, or diagnostic;
+- non-finite loss, gradient, effect, or score;
 - missing gradients or unequal update counts;
 - score shape differs from its weight;
-- SUM has no signed behavior, or ABS/SQUARE contains a negative value;
-- the three score/mask variants are accidentally identical in the smoke test;
+- ABS/SQUARE contains a negative value;
 - dense weights change before explicit mask application;
 - any pruned row has the wrong prune count;
 - one-state peak allocated or reserved CUDA memory exceeds 30 GiB;
@@ -164,7 +178,12 @@ The runner stops without a full run when any of these occurs:
 
 The one-module tiny-calibration smoke test precedes full score collection. The
 one-state benchmark records allocated/reserved CUDA peaks and projects full
-scoring runtime before 32-block execution.
+scoring runtime before 32-block execution. Real-model score correlations,
+negative-SUM fraction, and exact mask XOR are observations only. Identical or
+nearly identical scores or masks are valid scientific results, including the
+mathematically expected single-state ABS/SQUARE ranking identity.
+Undefined correlations from constant score vectors are recorded with their
+reason rather than treated as a scoring failure.
 
 ## Resource budget
 
@@ -178,8 +197,10 @@ scoring runtime before 32-block execution.
 ## Testing and milestones
 
 Tests cover the exact official loss, deterministic manifest/digest validation,
-same-effect accumulation for all three scores, future scalar state weighting,
-stable row-wise signed pruning, compact mask round-trip/hash, diagnostics,
-resource-accounting metadata, and in-memory evaluator injection. Implementation
-uses red-green cycles and focused commits for scoring/masks, diagnostics,
-evaluation orchestration, and experiment configuration/reporting.
+a hand-constructed mixture of positive and negative effects proving the exact
+SUM/ABS/SQUARE equations, future scalar state weighting, stable row-wise signed
+pruning, valid identical ABS/SQUARE single-state masks, compact mask
+round-trip/hash, diagnostics, resource-accounting metadata, and in-memory
+evaluator injection. Implementation uses red-green cycles and focused commits
+for scoring/masks, diagnostics, evaluation orchestration, and experiment
+configuration/reporting.
