@@ -1,0 +1,15 @@
+{
+  "pruning": {
+    "sparsity": 0.5000015425567443,
+    "total_count": 6979321856,
+    "zero_count": 3489671694
+  },
+  "pruning_seconds": 72.23807757347822,
+  "winogrande": {
+    "accuracy": 0.681136543014996,
+    "correct": 863,
+    "evaluation_seconds": 3993.3667719103396,
+    "sample_count": 1267,
+    "stderr": 0.013097928420088771
+  }
+}
