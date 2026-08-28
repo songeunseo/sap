@@ -1,0 +1,47 @@
+experiment: exp002_gsm8k_aggregation_evaluation
+model:
+  id: GSAI-ML/LLaDA-8B-Base
+  revision: 0f2787f2d87eac5eed8a087d5ecd24277e6255b2
+  dtype: bfloat16
+source_exp001:
+  run_id: 20260828T175010-2484545
+  mask_directory: /dev/shm/dlm_loss_aggregation_20260828T175010-2484545
+  mask_metadata: experiments/dlm_loss_aggregation/masks/hashes.json
+  score_metadata: experiments/dlm_loss_aggregation/scores/metadata.json
+  matrix_count: 224
+  state_count: 80
+  overall_sha256:
+    sum: 20d99801af0e9084aa89c7be951078dd5aaa53e75a3d891b6330725bdbf1824e
+    abs: d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5
+    square: f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99
+pruning:
+  sparsity: 0.5
+  structure: unstructured_rowwise
+  modules: 7_per_block_x_32_blocks
+baselines:
+  dataset: wikitext2
+  calibration_type: clean_8x256
+  calibration_states: 8
+  sequence_length: 256
+  seed: 0
+  wanda_variant: false
+  sparsegpt_percdamp: 0.01
+  sparsegpt_blocksize: 128
+evaluation:
+  order: [Dense, DLM-SUM, DLM-ABS, DLM-SQUARE, Wanda, SparseGPT]
+  task: gsm8k
+  primary_filter: strict-match
+  primary_metric: exact_match,strict-match
+  num_fewshot: 5
+  temperature: 0
+  generation_length: 256
+  block_length: 256
+  denoising_steps: 256
+  timing_examples: 32
+  bootstrap_iters: 0
+  random_seed: 0
+  numpy_seed: 1234
+  torch_seed: 1234
+  fewshot_seed: 1234
+  max_cuda_gib: 30
+  pathological_slowdown_factor: 3.0
