@@ -1,0 +1,45 @@
+{
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "calibration": {
+    "sequence_length": 256,
+    "state_count": 16,
+    "timesteps": [0.2, 0.4, 0.6, 0.8],
+    "seed": 0
+  },
+  "source_experiment": {
+    "states_path": "codex/cgq_sparsegpt_2h/results/states.pt",
+    "results_path": "codex/cgq_sparsegpt_2h/results/results.json"
+  },
+  "dense_winogrande": {
+    "result_path": "codex/controlled_winogrande/results/dense/GSAI-ML__LLaDA-8B-Base/results_2026-08-23T01-11-38.147315.json",
+    "sample_path": "codex/controlled_winogrande/results/dense/GSAI-ML__LLaDA-8B-Base/samples_winogrande_2026-08-23T01-11-38.147315.jsonl"
+  },
+  "pruning": {
+    "sparsity": 0.5,
+    "sparsity_type": "unstructured",
+    "percdamp": 0.01,
+    "blocksize": 128
+  },
+  "evaluation": {
+    "task": "winogrande",
+    "sample_count": 1267,
+    "num_fewshot": 5,
+    "cfg": 0.0,
+    "mc_num": 128,
+    "batch_size": 8,
+    "random_seed": 0,
+    "numpy_seed": 1234,
+    "torch_seed": 1234,
+    "fewshot_seed": 1234
+  },
+  "verification": {
+    "expected_mask_xor_fraction": 0.0805647675509968,
+    "mask_xor_absolute_tolerance": 0.005
+  },
+  "context": {
+    "excluded_prior_plain_accuracy": 0.6890292028413575
+  }
+}
