@@ -4,6 +4,7 @@ import yaml
 
 from experiments.dlm_loss_aggregation.core import (
     EffectAccumulator,
+    analyze_scores,
     mask_sha256,
     pack_mask,
     pairwise_diagnostics,
@@ -20,6 +21,7 @@ from experiments.dlm_loss_aggregation.run import (
     require_historical_digest,
     validate_config,
     validate_smoke_module,
+    weighted_pair_summaries,
 )
 
 
@@ -97,6 +99,37 @@ def test_pairwise_diagnostics_use_signed_ranks_and_exact_full_mask_xor():
     assert diagnostics["negative_sum_fraction"] == 0.5
     assert diagnostics["sign_consistency"]["mean"] == pytest.approx(1.0)
     assert diagnostics["spike_ratio"]["mean"] == pytest.approx(1.0)
+
+
+def test_full_analysis_returns_the_exact_masks_used_for_xor():
+    scores = {
+        "sum": torch.tensor([[-4.0, 1.0, -2.0, 3.0]]),
+        "abs": torch.tensor([[4.0, 1.0, 2.0, 3.0]]),
+        "square": torch.tensor([[16.0, 1.0, 4.0, 9.0]]),
+    }
+
+    diagnostics, masks, distributions = analyze_scores(scores)
+
+    assert torch.equal(masks["sum"], torch.tensor([[True, False, True, False]]))
+    assert diagnostics["pairs"][0]["mask_xor"] == 0.5
+    assert torch.allclose(distributions["sign_consistency"], torch.ones(1, 4))
+    assert torch.allclose(distributions["spike_ratio"], torch.ones(1, 4))
+
+
+def test_pair_summaries_are_weighted_by_matrix_size():
+    rows = [
+        {"module_type": "q", "left": "sum", "right": "abs", "num_weights": 1, "spearman": 1.0, "mask_xor": 0.0},
+        {"module_type": "q", "left": "sum", "right": "abs", "num_weights": 3, "spearman": 0.5, "mask_xor": 0.5},
+        {"module_type": "ff", "left": "sum", "right": "abs", "num_weights": 4, "spearman": 0.0, "mask_xor": 1.0},
+    ]
+
+    summaries = weighted_pair_summaries(rows)
+
+    by_scope = {(row["scope"], row["module_type"]): row for row in summaries}
+    assert by_scope[("module_type", "q")]["spearman"] == pytest.approx(0.625)
+    assert by_scope[("module_type", "q")]["mask_xor"] == pytest.approx(0.375)
+    assert by_scope[("weighted_overall", "all")]["spearman"] == pytest.approx(0.3125)
+    assert by_scope[("weighted_overall", "all")]["mask_xor"] == pytest.approx(0.6875)
 
 
 def test_sampled_spearman_reuses_deterministic_indices_but_xor_stays_exact():

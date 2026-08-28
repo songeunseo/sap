@@ -162,7 +162,7 @@ def _distribution_summary(values, seed):
     }
 
 
-def pairwise_diagnostics(scores, spearman_sample_size=None, seed=0):
+def analyze_scores(scores, spearman_sample_size=None, seed=0):
     if set(scores) != {"sum", "abs", "square"}:
         raise ValueError("scores must contain sum, abs, and square")
     shapes = {tuple(score.shape) for score in scores.values()}
@@ -191,12 +191,21 @@ def pairwise_diagnostics(scores, spearman_sample_size=None, seed=0):
     epsilon = torch.finfo(torch.float32).eps
     sign_consistency = scores["sum"].abs() / (scores["abs"] + epsilon)
     spike_ratio = scores["square"].sqrt() / (scores["abs"] + epsilon)
-    return {
+    diagnostics = {
         "pairs": pairs,
         "negative_sum_fraction": scores["sum"].lt(0).float().mean().item(),
         "sign_consistency": _distribution_summary(sign_consistency, seed),
         "spike_ratio": _distribution_summary(spike_ratio, seed),
     }
+    return diagnostics, masks, {
+        "sign_consistency": sign_consistency,
+        "spike_ratio": spike_ratio,
+    }
+
+
+def pairwise_diagnostics(scores, spearman_sample_size=None, seed=0):
+    diagnostics, _, _ = analyze_scores(scores, spearman_sample_size, seed)
+    return diagnostics
 
 
 def _current_rss_kib():

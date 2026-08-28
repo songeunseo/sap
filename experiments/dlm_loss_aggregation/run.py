@@ -1,18 +1,24 @@
 import argparse
+import csv
 import hashlib
 import json
 import math
 import os
+import resource
 import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
 
+import numpy as np
 import torch
 import yaml
 
 from experiments.dlm_loss_aggregation.core import (
     EffectAccumulator,
+    analyze_scores,
+    mask_sha256,
+    pack_mask,
     pairwise_diagnostics,
     profile_pairwise_spearman,
     rowwise_mask,
@@ -257,6 +263,47 @@ def validate_smoke_module(
     return pairwise_diagnostics(scores, spearman_sample_size=spearman_sample_size)
 
 
+def weighted_pair_summaries(rows):
+    summaries = []
+    pairs = {(row["left"], row["right"]) for row in rows}
+    module_types = {row["module_type"] for row in rows}
+    for left, right in sorted(pairs):
+        pair_rows = [
+            row for row in rows if (row["left"], row["right"]) == (left, right)
+        ]
+        groups = [("weighted_overall", "all", pair_rows)] + [
+            (
+                "module_type",
+                module_type,
+                [row for row in pair_rows if row["module_type"] == module_type],
+            )
+            for module_type in sorted(module_types)
+        ]
+        for scope, module_type, group in groups:
+            weight = sum(row["num_weights"] for row in group)
+            defined = [row for row in group if row["spearman"] is not None]
+            spearman_weight = sum(row["num_weights"] for row in defined)
+            summaries.append(
+                {
+                    "scope": scope,
+                    "module_type": module_type,
+                    "left": left,
+                    "right": right,
+                    "num_weights": weight,
+                    "matrix_count": len(group),
+                    "spearman": None if not defined else sum(
+                        row["spearman"] * row["num_weights"] for row in group
+                        if row["spearman"] is not None
+                    ) / spearman_weight,
+                    "mask_xor": sum(
+                        row["mask_xor"] * row["num_weights"] for row in group
+                    )
+                    / weight,
+                }
+            )
+    return summaries
+
+
 def evaluate_in_memory_sequence(config, dlm_masks, load_dense, prune, evaluate):
     results = []
     labels = config["evaluation"]["calibration_labels"]
@@ -305,6 +352,39 @@ def _atomic_write_json(path, document):
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)
+
+
+def _atomic_write_csv(path, rows, fieldnames):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w", dir=path.parent, encoding="utf-8", newline="", delete=False
+        ) as handle:
+            temporary = Path(handle.name)
+            writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rows)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temporary.replace(path)
+        temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def _rss_peak_kib():
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+
+
+def _available_memory_bytes():
+    with open("/proc/meminfo", encoding="utf-8") as handle:
+        for line in handle:
+            if line.startswith("MemAvailable:"):
+                return int(line.split()[1]) * 1024
+    raise RuntimeError("MemAvailable is unavailable")
 
 
 def _load_clean_calibration(config):
@@ -648,10 +728,472 @@ def run_profile(config, manifest_path, output_path):
     return result
 
 
+@torch.no_grad()
+def _initial_cached_states(model, manifest):
+    cached = []
+    for state in manifest["states"]:
+        noisy_ids, clean_ids, mask = _state_tensors(state)
+        cached.append(
+            {
+                "hidden": _embed_state(model, noisy_ids).detach().cpu(),
+                "clean_ids": clean_ids,
+                "mask": mask,
+                "p_mask": state["p_mask"],
+            }
+        )
+    return cached
+
+
+def _distribution_group():
+    return {"count": 0, "sum": 0.0, "min": math.inf, "max": -math.inf, "samples": []}
+
+
+def _add_distribution(groups, module_type, values, summary, overall_quota, type_quota, seed):
+    flat = values.detach().cpu().reshape(-1)
+    sample_count = min(flat.numel(), max(overall_quota, type_quota))
+    indices = np.random.default_rng(seed).choice(flat.numel(), sample_count, replace=False)
+    sample = flat[torch.from_numpy(indices.astype(np.int64, copy=False))].clone()
+    for key, quota in (("all", overall_quota), (module_type, type_quota)):
+        group = groups.setdefault(key, _distribution_group())
+        group["count"] += flat.numel()
+        group["sum"] += summary["mean"] * flat.numel()
+        group["min"] = min(group["min"], summary["min"])
+        group["max"] = max(group["max"], summary["max"])
+        group["samples"].append(sample[:quota])
+
+
+def _finish_distribution_groups(groups):
+    rows = []
+    for key, group in sorted(groups.items()):
+        sample = torch.cat(group.pop("samples"))
+        quantiles = torch.quantile(sample, torch.tensor([0.5, 0.9, 0.99]))
+        rows.append(
+            {
+                "scope": "weighted_overall" if key == "all" else "module_type",
+                "module_type": key,
+                "num_weights": group["count"],
+                "mean": group["sum"] / group["count"],
+                "min": group["min"],
+                "p50": quantiles[0].item(),
+                "p90": quantiles[1].item(),
+                "p99": quantiles[2].item(),
+                "max": group["max"],
+                "quantile_sample_size": sample.numel(),
+                "sample_indices_sha256": hashlib.sha256(sample.numpy().tobytes()).hexdigest(),
+            }
+        )
+    return rows
+
+
+def _negative_sum_summaries(rows):
+    summaries = []
+    for module_type in ("all", *sorted({row["module_type"] for row in rows})):
+        group = rows if module_type == "all" else [
+            row for row in rows if row["module_type"] == module_type
+        ]
+        count = sum(row["num_weights"] for row in group)
+        negative = sum(row["negative_count"] for row in group)
+        summaries.append(
+            {
+                "scope": "weighted_overall" if module_type == "all" else "module_type",
+                "module_type": module_type,
+                "num_weights": count,
+                "matrix_count": len(group),
+                "negative_count": negative,
+                "negative_sum_fraction": negative / count,
+            }
+        )
+    return summaries
+
+
+def _write_transient_mask(mask_dir, method, block_index, module_name, mask):
+    payload = pack_mask(mask)
+    digest = mask_sha256(payload)
+    destination = mask_dir / method / f"block_{block_index:02d}__{module_name.replace('.', '_')}.bin"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("xb") as handle:
+        handle.write(payload["bits"])
+        handle.flush()
+        os.fsync(handle.fileno())
+    saved = {"shape": payload["shape"], "bits": destination.read_bytes()}
+    if mask_sha256(saved) != digest:
+        raise RuntimeError("transient mask readback failed")
+    return {
+        "method": method,
+        "block_index": block_index,
+        "module": module_name,
+        "shape": list(payload["shape"]),
+        "byte_length": len(payload["bits"]),
+        "sha256": digest,
+        "runtime_path": str(destination),
+    }
+
+
+def _module_specs(model):
+    from lib.prune_llada import find_layers
+
+    specs = []
+    for block_index, block in enumerate(model.model.transformer.blocks):
+        layers = find_layers(block)
+        if len(layers) != 7:
+            raise ValueError(f"block {block_index} has {len(layers)} prunable matrices, expected 7")
+        for name, layer in layers.items():
+            specs.append(
+                {
+                    "block_index": block_index,
+                    "module": name,
+                    "module_type": name.rsplit(".", 1)[-1],
+                    "num_weights": layer.weight.numel(),
+                    "shape": list(layer.weight.shape),
+                }
+            )
+    return specs
+
+
+def run_full_scoring(config, manifest_path, root):
+    from lib.prune_llada import find_layers
+
+    started = time.perf_counter()
+    manifest = _load_verified_manifest(config, manifest_path)
+    profile = json.loads((root / "diagnostics" / "spearman_profile.json").read_text())
+    if profile["spearman_decision"]["mode"] != "exact":
+        spearman_sample_size = profile["spearman_decision"]["sample_size"]
+    else:
+        spearman_sample_size = None
+    model, devices = _load_model(config)
+    specs = _module_specs(model)
+    expected_matrices = config["scoring"]["block_count"] * config["scoring"]["modules_per_block"]
+    if len(specs) != expected_matrices:
+        raise ValueError(f"found {len(specs)} prunable matrices, expected {expected_matrices}")
+
+    total_weights = sum(spec["num_weights"] for spec in specs)
+    weights_by_type = {}
+    for spec in specs:
+        weights_by_type[spec["module_type"]] = weights_by_type.get(spec["module_type"], 0) + spec["num_weights"]
+    mask_bytes_expected = 3 * sum(math.ceil(spec["num_weights"] / 8) for spec in specs)
+    shm = Path("/dev/shm")
+    free_shm = os.statvfs(shm).f_bavail * os.statvfs(shm).f_frsize
+    if free_shm < mask_bytes_expected + 512 * 1024**2:
+        raise RuntimeError(
+            f"insufficient /dev/shm: need {mask_bytes_expected + 512 * 1024**2}, have {free_shm}"
+        )
+    run_id = time.strftime("%Y%m%dT%H%M%S") + f"-{os.getpid()}"
+    mask_dir = shm / f"dlm_loss_aggregation_{run_id}"
+    mask_dir.mkdir()
+    _atomic_write_json(
+        root / "logs" / "full_score_start.json",
+        {
+            "run_id": run_id,
+            "started_unix": time.time(),
+            "manifest_sha256": manifest["historical_state_sha256"],
+            "matrix_count": len(specs),
+            "state_count": len(manifest["states"]),
+            "transient_mask_directory": str(mask_dir),
+            "expected_transient_mask_bytes": mask_bytes_expected,
+            "available_memory_bytes": _available_memory_bytes(),
+            "available_shm_bytes": free_shm,
+        },
+    )
+
+    cached_states = _initial_cached_states(model, manifest)
+    parameters = list(model.parameters())
+    original_flags = [parameter.requires_grad for parameter in parameters]
+    for parameter in parameters:
+        parameter.requires_grad_(False)
+    _reset_cuda_peaks(devices)
+
+    pair_rows = []
+    distribution_rows = {"sign_consistency": [], "spike_ratio": []}
+    distribution_groups = {"sign_consistency": {}, "spike_ratio": {}}
+    negative_rows = []
+    mask_entries = []
+    module_metadata = []
+    block_timings = []
+    loss_sum = 0.0
+    loss_min = math.inf
+    loss_max = -math.inf
+    loss_count = 0
+    mask_bytes_written = 0
+    peak_accounted_cpu_bytes = 0
+
+    try:
+        for block_index, block in enumerate(model.model.transformer.blocks):
+            block_started = time.perf_counter()
+            layers = find_layers(block)
+            for layer in layers.values():
+                layer.weight.requires_grad_(True)
+            collector = BlockEffectCollector(layers)
+            next_hiddens = []
+            model.zero_grad(set_to_none=True)
+            with collector.hooks():
+                for state in cached_states:
+                    parameter = next(block.parameters())
+                    target_output, _ = block(
+                        state["hidden"].to(device=parameter.device, dtype=parameter.dtype),
+                        attention_bias=None,
+                        layer_past=None,
+                        use_cache=False,
+                        replace_position=None,
+                        attn_collector=None,
+                    )
+                    if block_index + 1 < config["scoring"]["block_count"]:
+                        next_hiddens.append(target_output.detach().cpu())
+                    logits = _suffix_logits(model, target_output, block_index + 1)
+                    loss = official_dlm_loss(
+                        logits,
+                        state["clean_ids"].to(logits.device),
+                        state["mask"].to(logits.device),
+                        state["p_mask"],
+                    )
+                    if not torch.isfinite(loss).item():
+                        raise ValueError("DLM loss is non-finite")
+                    loss_value = loss.detach().cpu().item()
+                    loss_sum += loss_value
+                    loss_min = min(loss_min, loss_value)
+                    loss_max = max(loss_max, loss_value)
+                    loss_count += 1
+                    loss.backward()
+                    collector.step()
+                    model.zero_grad(set_to_none=True)
+                    del target_output, logits, loss
+            for layer in layers.values():
+                layer.weight.requires_grad_(False)
+            if next_hiddens:
+                for state, hidden in zip(cached_states, next_hiddens):
+                    state["hidden"] = hidden
+
+            counts = {accumulator.count for accumulator in collector.accumulators.values()}
+            if counts != {len(manifest["states"])}:
+                raise RuntimeError(f"block {block_index} update counts are {sorted(counts)}")
+            for module_position, (name, layer) in enumerate(layers.items()):
+                module_type = name.rsplit(".", 1)[-1]
+                accumulator = collector.accumulators.pop(name)
+                if accumulator.count != len(manifest["states"]):
+                    raise RuntimeError(f"wrong update count: block {block_index} {name}")
+                scores = accumulator.finalize()
+                del accumulator
+                if any(score.shape != layer.weight.shape for score in scores.values()):
+                    raise RuntimeError(f"wrong score shape: block {block_index} {name}")
+                if scores["abs"].lt(0).any().item() or scores["square"].lt(0).any().item():
+                    raise RuntimeError(f"negative magnitude score: block {block_index} {name}")
+                dense_before = collector.weights.pop(name)
+                dense_after = layer.weight.detach().to(device="cpu", dtype=torch.float32)
+                if not torch.equal(dense_before, dense_after):
+                    raise RuntimeError(f"dense weights changed: block {block_index} {name}")
+                del dense_before, dense_after
+                diagnostics, masks, distributions = analyze_scores(
+                    scores,
+                    spearman_sample_size=spearman_sample_size,
+                    seed=config["scoring"]["spearman"]["seed"],
+                )
+                num_weights = layer.weight.numel()
+                expected_per_row = layer.weight.shape[1] // 2
+                for method, mask in masks.items():
+                    if not mask.sum(dim=1).eq(expected_per_row).all().item():
+                        raise RuntimeError(f"wrong row sparsity: block {block_index} {name} {method}")
+                    entry = _write_transient_mask(mask_dir, method, block_index, name, mask)
+                    mask_entries.append(entry)
+                    mask_bytes_written += entry["byte_length"]
+                for pair in diagnostics["pairs"]:
+                    pair_rows.append(
+                        {
+                            "scope": "matrix",
+                            "layer": block_index,
+                            "module": name,
+                            "module_type": module_type,
+                            "num_weights": num_weights,
+                            **pair,
+                        }
+                    )
+                negative_count = int(scores["sum"].lt(0).sum().item())
+                negative_rows.append(
+                    {
+                        "scope": "matrix",
+                        "layer": block_index,
+                        "module": name,
+                        "module_type": module_type,
+                        "num_weights": num_weights,
+                        "negative_count": negative_count,
+                        "negative_sum_fraction": negative_count / num_weights,
+                    }
+                )
+                spec_seed = block_index * config["scoring"]["modules_per_block"] + module_position
+                overall_quota = max(1, round(1_000_000 * num_weights / total_weights))
+                type_quota = max(1, round(1_000_000 * num_weights / weights_by_type[module_type]))
+                for metric, values in distributions.items():
+                    summary = diagnostics[metric]
+                    distribution_rows[metric].append(
+                        {
+                            "scope": "matrix",
+                            "layer": block_index,
+                            "module": name,
+                            "module_type": module_type,
+                            "num_weights": num_weights,
+                            **summary,
+                        }
+                    )
+                    _add_distribution(
+                        distribution_groups[metric],
+                        module_type,
+                        values,
+                        summary,
+                        overall_quota,
+                        type_quota,
+                        config["scoring"]["spearman"]["seed"] + spec_seed,
+                    )
+                module_metadata.append(
+                    {
+                        "layer": block_index,
+                        "module": name,
+                        "module_type": module_type,
+                        "shape": list(layer.weight.shape),
+                        "num_weights": num_weights,
+                        "update_count": len(manifest["states"]),
+                        "finite": True,
+                        "dense_unchanged": True,
+                        "per_row_prune_count": expected_per_row,
+                    }
+                )
+                del scores, masks, distributions, diagnostics
+                peak_accounted_cpu_bytes = max(
+                    peak_accounted_cpu_bytes,
+                    _rss_peak_kib() * 1024 + mask_bytes_written,
+                )
+            del collector
+            for device in devices:
+                torch.cuda.synchronize(device)
+            block_seconds = time.perf_counter() - block_started
+            block_timings.append({"layer": block_index, "seconds": block_seconds})
+            progress = {
+                "run_id": run_id,
+                "completed_blocks": block_index + 1,
+                "completed_matrices": len(module_metadata),
+                "elapsed_seconds": time.perf_counter() - started,
+                "last_block_seconds": block_seconds,
+                "peak_process_rss_kib": _rss_peak_kib(),
+                "transient_mask_bytes": mask_bytes_written,
+                "cuda_peak": _cuda_peaks(devices),
+            }
+            maximum_cuda = config["resources"]["max_cuda_gib"] * 1024**3
+            if (
+                progress["cuda_peak"]["max_allocated_bytes"] > maximum_cuda
+                or progress["cuda_peak"]["max_reserved_bytes"] > maximum_cuda
+            ):
+                raise RuntimeError("full scoring CUDA peak exceeds configured limit")
+            _atomic_write_json(root / "logs" / "full_score_progress.json", progress)
+            print(json.dumps(progress, sort_keys=True), flush=True)
+    finally:
+        model.zero_grad(set_to_none=True)
+        for parameter, requires_grad in zip(parameters, original_flags):
+            parameter.requires_grad_(requires_grad)
+
+    if len(module_metadata) != expected_matrices or any(
+        row["update_count"] != len(manifest["states"]) for row in module_metadata
+    ):
+        raise RuntimeError("not all prunable matrices received every state")
+    if mask_bytes_written != mask_bytes_expected:
+        raise RuntimeError(f"mask byte count mismatch: expected {mask_bytes_expected}, got {mask_bytes_written}")
+
+    pair_summaries = weighted_pair_summaries(pair_rows)
+    spearman_rows = [
+        {**row, "exact": spearman_sample_size is None} for row in pair_rows
+    ] + [{**row, "exact": spearman_sample_size is None} for row in pair_summaries]
+    xor_rows = pair_rows + pair_summaries
+    for metric in distribution_rows:
+        distribution_rows[metric].extend(
+            _finish_distribution_groups(distribution_groups[metric])
+        )
+    negative_rows.extend(_negative_sum_summaries(negative_rows))
+
+    pair_fields = [
+        "scope", "layer", "module", "module_type", "num_weights", "matrix_count",
+        "left", "right", "spearman", "reason", "sample_size",
+        "sample_indices_sha256", "exact", "mask_xor",
+    ]
+    _atomic_write_csv(root / "diagnostics" / "score_spearman.csv", spearman_rows, pair_fields)
+    _atomic_write_csv(root / "diagnostics" / "mask_xor.csv", xor_rows, pair_fields)
+    distribution_fields = [
+        "scope", "layer", "module", "module_type", "num_weights", "mean", "min",
+        "p50", "p90", "p99", "max", "quantile_sample_size", "sample_indices_sha256",
+    ]
+    _atomic_write_csv(
+        root / "diagnostics" / "sign_consistency.csv",
+        distribution_rows["sign_consistency"],
+        distribution_fields,
+    )
+    _atomic_write_csv(
+        root / "diagnostics" / "spike_ratio.csv",
+        distribution_rows["spike_ratio"],
+        distribution_fields,
+    )
+    _atomic_write_csv(
+        root / "diagnostics" / "negative_sum_fraction.csv",
+        negative_rows,
+        [
+            "scope", "layer", "module", "module_type", "num_weights", "matrix_count",
+            "negative_count", "negative_sum_fraction",
+        ],
+    )
+
+    overall_hashes = {}
+    for method in config["scoring"]["methods"]:
+        hasher = hashlib.sha256()
+        for entry in mask_entries:
+            if entry["method"] == method:
+                hasher.update(_canonical_json({key: entry[key] for key in ("block_index", "module", "shape", "sha256")}))
+        overall_hashes[method] = hasher.hexdigest()
+    mask_metadata = {
+        "version": 1,
+        "storage": "transient RAM-backed /dev/shm raw packed bits",
+        "runtime_directory": str(mask_dir),
+        "total_bytes": mask_bytes_written,
+        "overall_sha256": overall_hashes,
+        "entries": mask_entries,
+    }
+    _atomic_write_json(root / "masks" / "hashes.json", mask_metadata)
+    _atomic_write_json(
+        root / "scores" / "metadata.json",
+        {
+            "equations": {
+                "effect": "-weight * grad",
+                "sum": "mean(effect)",
+                "abs": "mean(abs(effect))",
+                "square": "mean(effect ** 2)",
+            },
+            "state_weight": "uniform",
+            "state_count": len(manifest["states"]),
+            "matrix_count": len(module_metadata),
+            "modules": module_metadata,
+        },
+    )
+    total_seconds = time.perf_counter() - started
+    result = {
+        "status": "passed",
+        "run_id": run_id,
+        "total_runtime_seconds": total_seconds,
+        "block_timings": block_timings,
+        "matrix_count": len(module_metadata),
+        "state_count": len(manifest["states"]),
+        "gradient_update_count": sum(row["update_count"] for row in module_metadata),
+        "loss": {"count": loss_count, "mean": loss_sum / loss_count, "min": loss_min, "max": loss_max},
+        "peak_process_rss_kib": _rss_peak_kib(),
+        "transient_mask_bytes": mask_bytes_written,
+        "peak_accounted_cpu_bytes": peak_accounted_cpu_bytes,
+        "available_memory_bytes_after": _available_memory_bytes(),
+        "cuda_peak": _cuda_peaks(devices),
+        "spearman_mode": "exact" if spearman_sample_size is None else "sampled",
+        "transient_mask_directory": str(mask_dir),
+        "mask_overall_sha256": overall_hashes,
+        "evaluation_started": False,
+    }
+    _atomic_write_json(root / "logs" / "full_score.json", result)
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="DLM aggregation ablation")
     parser.add_argument(
-        "command", choices=("manifest", "smoke", "profile")
+        "command", choices=("manifest", "smoke", "profile", "score")
     )
     parser.add_argument("--config", type=Path, required=True)
     args = parser.parse_args(argv)
@@ -667,12 +1209,14 @@ def main(argv=None):
         }
     elif args.command == "smoke":
         summary = run_smoke(config, manifest_path, root / "logs" / "smoke.json")
-    else:
+    elif args.command == "profile":
         summary = run_profile(
             config,
             manifest_path,
             root / "diagnostics" / "spearman_profile.json",
         )
+    else:
+        summary = run_full_scoring(config, manifest_path, root)
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 
