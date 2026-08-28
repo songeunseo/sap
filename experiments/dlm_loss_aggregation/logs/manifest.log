@@ -1,0 +1,4 @@
+command: python -m experiments.dlm_loss_aggregation.run manifest --config experiments/dlm_loss_aggregation/config.yaml
+status: passed
+state_count: 80
+historical_state_sha256: 1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df

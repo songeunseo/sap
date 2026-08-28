@@ -1,0 +1,68 @@
+{
+  "block_index": 31,
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 16473924608,
+        "device": "cuda:0",
+        "reserved_bytes": 16548626432
+      }
+    ],
+    "max_allocated_bytes": 16473924608,
+    "max_reserved_bytes": 16548626432
+  },
+  "exact_spearman": {
+    "elapsed_seconds": 10.285157237201929,
+    "element_count": 50331648,
+    "pairs": [
+      {
+        "left": "sum",
+        "reason": null,
+        "right": "abs",
+        "spearman": -0.00013288133900429607
+      },
+      {
+        "left": "sum",
+        "reason": null,
+        "right": "square",
+        "spearman": -0.00013288133900429607
+      },
+      {
+        "left": "abs",
+        "reason": null,
+        "right": "square",
+        "spearman": 1.0
+      }
+    ],
+    "peak_rss_kib": 5497764,
+    "rss_before_kib": 2743740,
+    "rss_delta_kib": 2754024
+  },
+  "loss": 1.5755308866500854,
+  "module": "ff_out",
+  "prefix_seconds": 0.34514526277780533,
+  "process_memory_after": {
+    "vmrss_kib": 2750940,
+    "vmswap_kib": 0
+  },
+  "process_memory_before": {
+    "vmrss_kib": 1014648,
+    "vmswap_kib": 0
+  },
+  "projected_32_block_80_state_seconds": 834.461498260498,
+  "shape": [
+    4096,
+    12288
+  ],
+  "spearman_decision": {
+    "comfortable": true,
+    "limits": {
+      "max_rss_delta_gib": 8,
+      "max_seconds": 60
+    },
+    "mode": "exact",
+    "sample_size": null
+  },
+  "state_seconds": 0.32596152275800705,
+  "status": "passed"
+}

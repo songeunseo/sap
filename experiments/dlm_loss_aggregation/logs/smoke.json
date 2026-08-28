@@ -1,0 +1,86 @@
+{
+  "block_index": 31,
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 16476021760,
+        "device": "cuda:0",
+        "reserved_bytes": 16548626432
+      }
+    ],
+    "max_allocated_bytes": 16476021760,
+    "max_reserved_bytes": 16548626432
+  },
+  "diagnostics": {
+    "negative_sum_fraction": 0.49977752566337585,
+    "pairs": [
+      {
+        "left": "sum",
+        "mask_xor": 0.5000908970832825,
+        "reason": null,
+        "right": "abs",
+        "sample_indices_sha256": "2416eaf903555bb49df8c6b241c28907b3f0995ad7420289ee59c5aab243f0ee",
+        "sample_size": 1000000,
+        "spearman": 7.058779666008564e-05
+      },
+      {
+        "left": "sum",
+        "mask_xor": 0.5001320838928223,
+        "reason": null,
+        "right": "square",
+        "sample_indices_sha256": "2416eaf903555bb49df8c6b241c28907b3f0995ad7420289ee59c5aab243f0ee",
+        "sample_size": 1000000,
+        "spearman": 0.00010110434141392343
+      },
+      {
+        "left": "abs",
+        "mask_xor": 0.026202121749520302,
+        "reason": null,
+        "right": "square",
+        "sample_indices_sha256": "2416eaf903555bb49df8c6b241c28907b3f0995ad7420289ee59c5aab243f0ee",
+        "sample_size": 1000000,
+        "spearman": 0.9971166518381719
+      }
+    ],
+    "sign_consistency": {
+      "max": 0.999984622001648,
+      "mean": 0.6236243844032288,
+      "min": 0.0,
+      "p50": 0.7052408456802368,
+      "p90": 0.9671915769577026,
+      "p99": 0.9948449730873108,
+      "quantile_sample_size": 1000000,
+      "sample_indices_sha256": "2416eaf903555bb49df8c6b241c28907b3f0995ad7420289ee59c5aab243f0ee"
+    },
+    "spike_ratio": {
+      "max": 1.4136804342269897,
+      "mean": 0.9467193484306335,
+      "min": 9.27824004293143e-08,
+      "p50": 0.9855909943580627,
+      "p90": 1.2576919794082642,
+      "p99": 1.3749406337738037,
+      "quantile_sample_size": 1000000,
+      "sample_indices_sha256": "2416eaf903555bb49df8c6b241c28907b3f0995ad7420289ee59c5aab243f0ee"
+    }
+  },
+  "losses": [
+    1.5755308866500854,
+    0.40882131457328796
+  ],
+  "module": "ff_out",
+  "prefix_seconds": 0.38273413106799126,
+  "process_memory": {
+    "vmrss_kib": 2748768,
+    "vmswap_kib": 0
+  },
+  "shape": [
+    4096,
+    12288
+  ],
+  "state_count": 2,
+  "state_seconds": [
+    0.28219321370124817,
+    0.17301832884550095
+  ],
+  "status": "passed"
+}

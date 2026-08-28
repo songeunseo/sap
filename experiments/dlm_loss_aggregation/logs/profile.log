@@ -1,0 +1,9 @@
+command: python -m experiments.dlm_loss_aggregation.run profile --config experiments/dlm_loss_aggregation/config.yaml
+status: passed
+module: block 31 ff_out [4096, 12288]
+state_seconds: 0.32596152275800705
+cuda_peak_allocated_bytes: 16473924608
+cuda_peak_reserved_bytes: 16548626432
+exact_spearman_seconds: 10.285157237201929
+exact_spearman_rss_delta_kib: 2754024
+spearman_mode: exact
