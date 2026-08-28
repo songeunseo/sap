@@ -43,6 +43,8 @@ class LLaDAEvalHarness(LM):
         block_length=1024,
         remasking='low_confidence',
         device="cuda",
+        model=None,
+        tokenizer=None,
         **kwargs,
     ):
         '''
@@ -74,7 +76,13 @@ class LLaDAEvalHarness(LM):
         if self.accelerator is not None:
             model_kwargs.update({'device_map': {'': f'{self.accelerator.device}'}})
 
-        self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True, torch_dtype=torch.bfloat16, **model_kwargs)
+        injected_model = model is not None
+        self.model = model if injected_model else AutoModel.from_pretrained(
+            model_path,
+            trust_remote_code=True,
+            torch_dtype=torch.bfloat16,
+            **model_kwargs,
+        )
         self.model.eval()
 
         self.device = torch.device(device)
@@ -83,11 +91,13 @@ class LLaDAEvalHarness(LM):
             self.device = torch.device(f'{self.accelerator.device}')
             self._rank = self.accelerator.local_process_index
             self._world_size = self.accelerator.num_processes
-        else: 
+        elif not injected_model:
             self.model = self.model.to(device)
 
         self.mask_id = mask_id
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+        self.tokenizer = tokenizer if tokenizer is not None else AutoTokenizer.from_pretrained(
+            model_path, trust_remote_code=True
+        )
 
         self.mc_num = mc_num
         self.batch_size = int(batch_size)
