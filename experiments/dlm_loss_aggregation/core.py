@@ -1,6 +1,8 @@
-import math
 import hashlib
 import json
+import math
+import resource
+import time
 
 import numpy as np
 import torch
@@ -106,15 +108,31 @@ def _average_ranks(values):
     return ranks
 
 
-def _spearman(left, right):
-    left = _average_ranks(left)
-    right = _average_ranks(right)
+def _rank_correlation(left, right):
+    left = left.clone()
+    right = right.clone()
     left.sub_(left.mean())
     right.sub_(right.mean())
     denominator = torch.sqrt(left.square().sum() * right.square().sum())
     if denominator.item() == 0:
         return None, "constant score"
     return (left * right).sum().div_(denominator).item(), None
+
+
+def _pairwise_spearman(values):
+    ranks = {name: _average_ranks(value) for name, value in values.items()}
+    rows = []
+    for left, right in (("sum", "abs"), ("sum", "square"), ("abs", "square")):
+        correlation, reason = _rank_correlation(ranks[left], ranks[right])
+        rows.append(
+            {
+                "left": left,
+                "right": right,
+                "spearman": correlation,
+                "reason": reason,
+            }
+        )
+    return rows
 
 
 def _sample_indices(count, sample_size, seed):
@@ -162,19 +180,12 @@ def pairwise_diagnostics(scores, spearman_sample_size=None, seed=0):
         for name, values in flattened.items()
     }
     masks = {name: rowwise_mask(score, 0.5) for name, score in scores.items()}
-    pairs = []
-    for left, right in (("sum", "abs"), ("sum", "square"), ("abs", "square")):
-        correlation, reason = _spearman(ranked_values[left], ranked_values[right])
-        pairs.append(
-            {
-                "left": left,
-                "right": right,
-                "spearman": correlation,
-                "reason": reason,
-                "sample_size": sample_size,
-                "sample_indices_sha256": sample_digest,
-                "mask_xor": masks[left].ne(masks[right]).float().mean().item(),
-            }
+    pairs = _pairwise_spearman(ranked_values)
+    for pair in pairs:
+        pair["sample_size"] = sample_size
+        pair["sample_indices_sha256"] = sample_digest
+        pair["mask_xor"] = (
+            masks[pair["left"]].ne(masks[pair["right"]]).float().mean().item()
         )
 
     epsilon = torch.finfo(torch.float32).eps
@@ -185,4 +196,31 @@ def pairwise_diagnostics(scores, spearman_sample_size=None, seed=0):
         "negative_sum_fraction": scores["sum"].lt(0).float().mean().item(),
         "sign_consistency": _distribution_summary(sign_consistency, seed),
         "spike_ratio": _distribution_summary(spike_ratio, seed),
+    }
+
+
+def _current_rss_kib():
+    with open("/proc/self/status", encoding="utf-8") as handle:
+        for line in handle:
+            if line.startswith("VmRSS:"):
+                return int(line.split()[1])
+    raise RuntimeError("VmRSS is unavailable")
+
+
+def profile_pairwise_spearman(scores):
+    flattened = {
+        name: value.detach().cpu().reshape(-1) for name, value in scores.items()
+    }
+    before_rss = _current_rss_kib()
+    started = time.perf_counter()
+    pairs = _pairwise_spearman(flattened)
+    elapsed = time.perf_counter() - started
+    peak_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    return {
+        "pairs": pairs,
+        "elapsed_seconds": elapsed,
+        "rss_before_kib": before_rss,
+        "peak_rss_kib": peak_rss,
+        "rss_delta_kib": max(0, peak_rss - before_rss),
+        "element_count": next(iter(flattened.values())).numel(),
     }

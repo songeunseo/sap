@@ -1,0 +1,46 @@
+experiment: dlm_loss_aggregation_1a
+model:
+  id: GSAI-ML/LLaDA-8B-Base
+  revision: 0f2787f2d87eac5eed8a087d5ecd24277e6255b2
+  dtype: bfloat16
+dataset:
+  id: Salesforce/wikitext
+  configuration: wikitext-2-raw-v1
+  loader_name: wikitext2
+  split: train
+calibration:
+  seed: 0
+  sequence_indices: [0, 1, 2, 3, 4, 5, 6, 7]
+  sequence_count: 8
+  sequence_length: 256
+  epsilon: 0.001
+  timesteps: [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95]
+  mask_id_source: model.config.mask_token_id
+  expected_state_sha256: 1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df
+scoring:
+  methods: [sum, abs, square]
+  state_weight: uniform
+  sparsity: 0.5
+  block_count: 32
+  modules_per_block: 7
+  spearman:
+    seed: 0
+    fallback_sample_size: 1000000
+    comfortable_max_seconds: 60
+    comfortable_max_rss_delta_gib: 8
+resources:
+  max_cuda_gib: 30
+evaluation:
+  order: [dense, dlm_sum, dlm_abs, dlm_square, wanda, sparsegpt]
+  task: gsm8k
+  num_fewshot: 5
+  temperature: 0
+  generation_length: 256
+  block_length: 256
+  denoising_steps: 256
+  timing_examples: 4
+  calibration_labels:
+    dense: none
+    dlm: 8x256 clean spans, 10 timesteps, 80 shared corruption states
+    wanda: standard reference baseline, 8x256 clean spans
+    sparsegpt: standard reference baseline, 8x256 clean spans
