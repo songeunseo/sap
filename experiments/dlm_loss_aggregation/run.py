@@ -363,7 +363,12 @@ def _atomic_write_csv(path, rows, fieldnames):
             "w", dir=path.parent, encoding="utf-8", newline="", delete=False
         ) as handle:
             temporary = Path(handle.name)
-            writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=fieldnames,
+                extrasaction="ignore",
+                lineterminator="\n",
+            )
             writer.writeheader()
             writer.writerows(rows)
             handle.flush()

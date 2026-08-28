@@ -14,6 +14,7 @@ from experiments.dlm_loss_aggregation.core import (
 )
 from experiments.dlm_loss_aggregation.run import (
     BlockEffectCollector,
+    _atomic_write_csv,
     build_calibration_manifest,
     evaluate_in_memory_sequence,
     historical_state_digest,
@@ -130,6 +131,14 @@ def test_pair_summaries_are_weighted_by_matrix_size():
     assert by_scope[("module_type", "q")]["mask_xor"] == pytest.approx(0.375)
     assert by_scope[("weighted_overall", "all")]["spearman"] == pytest.approx(0.3125)
     assert by_scope[("weighted_overall", "all")]["mask_xor"] == pytest.approx(0.6875)
+
+
+def test_csv_artifacts_use_repository_lf_line_endings(tmp_path):
+    path = tmp_path / "diagnostic.csv"
+
+    _atomic_write_csv(path, [{"value": 1}], ["value"])
+
+    assert path.read_bytes() == b"value\n1\n"
 
 
 def test_sampled_spearman_reuses_deterministic_indices_but_xor_stays_exact():
