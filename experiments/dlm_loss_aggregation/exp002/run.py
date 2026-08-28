@@ -121,7 +121,11 @@ def apply_dlm_masks(model, entries, expected_hash, get_modules):
     actual_hash = _overall_mask_hash(applied, method)
     if actual_hash != expected_hash:
         raise ValueError("applied overall mask hash mismatch")
-    return {"mask_hash": actual_hash, "sparsity": zero_count / weight_count}
+    return {
+        "mask_hash": actual_hash,
+        "sparsity": zero_count / weight_count,
+        "rowwise_exact": True,
+    }
 
 
 def _first(value):
@@ -282,13 +286,29 @@ def _clean_calibration_digest(config, tokenizer):
     return hasher.hexdigest()
 
 
-def _zero_mask_summary(model, method):
+def _zero_mask_summary(
+    model,
+    method,
+    require_exact_rowwise=True,
+    get_modules=None,
+):
+    get_modules = get_modules or _module_map
     entries = []
     zero_count = 0
     weight_count = 0
-    for (block_index, name), layer in sorted(_module_map(model).items()):
+    row_prune_min = None
+    row_prune_max = None
+    rowwise_exact = True
+    for (block_index, name), layer in sorted(get_modules(model).items()):
         mask = layer.weight.eq(0).detach().cpu()
-        if not mask.sum(dim=1).eq(mask.shape[1] // 2).all().item():
+        row_counts = mask.sum(dim=1)
+        current_min = int(row_counts.min().item())
+        current_max = int(row_counts.max().item())
+        row_prune_min = current_min if row_prune_min is None else min(row_prune_min, current_min)
+        row_prune_max = current_max if row_prune_max is None else max(row_prune_max, current_max)
+        matrix_rowwise_exact = row_counts.eq(mask.shape[1] // 2).all().item()
+        rowwise_exact = rowwise_exact and matrix_rowwise_exact
+        if require_exact_rowwise and not matrix_rowwise_exact:
             raise ValueError(f"wrong row sparsity after {method}: {(block_index, name)}")
         payload = pack_mask(mask)
         entries.append(
@@ -302,11 +322,17 @@ def _zero_mask_summary(model, method):
         )
         zero_count += int(mask.sum().item())
         weight_count += mask.numel()
-        del mask, payload
+        del mask, payload, row_counts
+    sparsity = zero_count / weight_count
+    if abs(sparsity - 0.5) > 1e-5:
+        raise ValueError(f"wrong global sparsity after {method}: {sparsity}")
     return {
         "mask_hash": _overall_mask_hash(entries, method),
-        "sparsity": zero_count / weight_count,
+        "sparsity": sparsity,
         "matrix_count": len(entries),
+        "rowwise_exact": rowwise_exact,
+        "row_prune_min": row_prune_min,
+        "row_prune_max": row_prune_max,
     }
 
 
@@ -412,7 +438,11 @@ def _prune(model, tokenizer, method, config, mask_metadata):
         prune_sparsegpt(args, model, tokenizer, dev=torch.device("cuda:0"))
     else:
         raise ValueError(f"unsupported pruning method: {method}")
-    return _zero_mask_summary(model, method.lower())
+    return _zero_mask_summary(
+        model,
+        method.lower(),
+        require_exact_rowwise=method != "SparseGPT",
+    )
 
 
 def _release():
@@ -445,12 +475,14 @@ def _method_run(
         "mask_hash": "",
         "sparsity": 0.0,
         "matrix_count": config["source_exp001"]["matrix_count"],
+        "rowwise_exact": None,
     }
     if method != "Dense":
         pruning_started = time.monotonic()
         mask_result = _prune(model, tokenizer, method, config, mask_metadata)
         pruning_seconds = time.monotonic() - pruning_started
-        if mask_result["sparsity"] != config["pruning"]["sparsity"]:
+        tolerance = 1e-5 if method == "SparseGPT" else 0.0
+        if abs(mask_result["sparsity"] - config["pruning"]["sparsity"]) > tolerance:
             raise ValueError(f"wrong achieved sparsity for {method}")
     measured, records = _evaluate_gsm8k(
         model, tokenizer, config, method, limit, config_hash
@@ -465,6 +497,7 @@ def _method_run(
         "model_revision": config["model"]["revision"],
         "dense_fingerprint": actual_dense_hash,
         "mask_hash": mask_result["mask_hash"],
+        "rowwise_exact": mask_result["rowwise_exact"],
         "calibration_type": CALIBRATION[method][0],
         "calibration_states": CALIBRATION[method][1],
         "peak_cuda_allocated_bytes": torch.cuda.max_memory_allocated(),
@@ -486,11 +519,20 @@ def _assert_same_examples(reference, candidate):
         raise ValueError("GSM8K evaluator examples or prompts differ across methods")
 
 
-def _run_phase(config, score_metadata, mask_metadata, tokenizer, dense_hash, config_hash, limit):
+def _run_phase(
+    config,
+    score_metadata,
+    mask_metadata,
+    tokenizer,
+    dense_hash,
+    config_hash,
+    limit,
+    methods=METHOD_ORDER,
+):
     rows = []
     records_by_method = {}
     reference = None
-    for method in METHOD_ORDER:
+    for method in methods:
         print(json.dumps({"event": "method_start", "method": method, "limit": limit}), flush=True)
         row, records = _method_run(
             method, config, score_metadata, mask_metadata, tokenizer, dense_hash, config_hash, limit
@@ -503,6 +545,16 @@ def _run_phase(config, score_metadata, mask_metadata, tokenizer, dense_hash, con
         records_by_method[method] = records
         print(json.dumps({"event": "method_complete", **row}, sort_keys=True), flush=True)
     return rows, records_by_method
+
+
+def _merge_timing_rows(existing, resumed):
+    existing_methods = [row["method"] for row in existing]
+    if existing_methods != list(METHOD_ORDER[: len(existing)]):
+        raise ValueError("partial timing methods are not a frozen-order prefix")
+    combined = [*existing, *resumed]
+    if [row["method"] for row in combined] != list(METHOD_ORDER):
+        raise ValueError("resumed timing methods do not complete the frozen order")
+    return combined
 
 
 def _paired_rows(records):
@@ -564,7 +616,7 @@ Does SUM, ABS, or SQUARE aggregation of the exact same official DLM gradients pr
 - Model: `GSAI-ML/LLaDA-8B-Base` revision `{config['model']['revision']}` in BF16
 - Task: GSM8K, 5-shot, repository `LLaDAEvalHarness` and lm-eval `gsm8k` strict-match exact match
 - Generation: temperature 0, length 256, block length 256, denoising steps 256
-- Pruning: 50% unstructured row-wise over the same 224 Linear matrices
+- Pruning: 50% unstructured over the same 224 Linear matrices. DLM and Wanda masks are exactly 50% per row. SparseGPT reuses the repository's standard intrinsic 128-column-block global threshold, so its overall sparsity is approximately 50% but individual rows need not be exactly 50%.
 - DLM methods: the frozen EXP-001 masks from run `20260828T175010-2484545`
 - Wanda/SparseGPT: standard reference baselines using eight clean WikiText-2 256-token spans, seed 0
 - Baseline caveat: Wanda/SparseGPT are not calibration-compute-matched to the DLM methods' 80 corrupted states.
@@ -602,7 +654,7 @@ No additional experiment is launched automatically.
 """
 
 
-def run_experiment(config_path, output_root):
+def run_experiment(config_path, output_root, resume_timing=False):
     from transformers import AutoTokenizer
 
     config = load_config(config_path)
@@ -630,25 +682,47 @@ def run_experiment(config_path, output_root):
         {"sha256": config_hash, **config_hash_document, "clean_calibration_sha256": calibration_digest},
     )
 
-    model, _ = _load_model({
-        "model": config["model"],
-        "calibration": {"sequence_length": config["baselines"]["sequence_length"]},
-    })
-    dense_hash = _validated_dense_fingerprint(model, config, score_metadata)
-    dense_validation, dense_records = _evaluate_gsm8k(
-        model, tokenizer, config, "Dense", 1, config_hash
-    )
-    _atomic_write_json(
-        output_root / "logs" / "dense_validation.json",
-        {**dense_validation, "dense_fingerprint": dense_hash, "record": dense_records[0]},
-    )
-    del model
-    _release()
+    existing_timing = []
+    if resume_timing:
+        partial = json.loads((output_root / "logs" / "timing_partial.json").read_text())
+        existing_timing = partial["rows"]
+        existing_methods = [row["method"] for row in existing_timing]
+        if existing_methods != list(METHOD_ORDER[: len(existing_timing)]):
+            raise ValueError("partial timing methods are not a frozen-order prefix")
+        if any(row["evaluation_config_hash"] != config_hash for row in existing_timing):
+            raise ValueError("partial timing evaluation config hash mismatch")
+        dense_hashes = {row["dense_fingerprint"] for row in existing_timing}
+        if len(dense_hashes) != 1:
+            raise ValueError("partial timing dense fingerprints differ")
+        dense_hash = dense_hashes.pop()
+    else:
+        model, _ = _load_model({
+            "model": config["model"],
+            "calibration": {"sequence_length": config["baselines"]["sequence_length"]},
+        })
+        dense_hash = _validated_dense_fingerprint(model, config, score_metadata)
+        dense_validation, dense_records = _evaluate_gsm8k(
+            model, tokenizer, config, "Dense", 1, config_hash
+        )
+        _atomic_write_json(
+            output_root / "logs" / "dense_validation.json",
+            {**dense_validation, "dense_fingerprint": dense_hash, "record": dense_records[0]},
+        )
+        del model
+        _release()
 
-    timing_rows, timing_records = _run_phase(
-        config, score_metadata, mask_metadata, tokenizer, dense_hash, config_hash,
+    remaining_methods = METHOD_ORDER[len(existing_timing) :]
+    resumed_rows, timing_records = _run_phase(
+        config,
+        score_metadata,
+        mask_metadata,
+        tokenizer,
+        dense_hash,
+        config_hash,
         config["evaluation"]["timing_examples"],
+        methods=remaining_methods,
     )
+    timing_rows = _merge_timing_rows(existing_timing, resumed_rows)
     _atomic_write_csv(output_root / "results" / "timing.csv", timing_rows, list(timing_rows[0]))
     if len(list(__import__("csv").DictReader((output_root / "results" / "timing.csv").open()))) != len(METHOD_ORDER):
         raise ValueError("timing CSV readback failed")
@@ -720,8 +794,9 @@ def main(argv=None):
         type=Path,
         default=Path("experiments/dlm_loss_aggregation/exp002"),
     )
+    parser.add_argument("--resume-timing", action="store_true")
     args = parser.parse_args(argv)
-    run_experiment(args.config, args.output_root)
+    run_experiment(args.config, args.output_root, resume_timing=args.resume_timing)
 
 
 if __name__ == "__main__":

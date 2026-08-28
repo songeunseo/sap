@@ -7,7 +7,10 @@ import torch
 
 from experiments.dlm_loss_aggregation.core import mask_sha256, pack_mask
 from experiments.dlm_loss_aggregation.exp002.run import (
+    METHOD_ORDER,
+    _merge_timing_rows,
     _validated_dense_fingerprint,
+    _zero_mask_summary,
     apply_dlm_masks,
     dense_fingerprint,
     extract_gsm8k_records,
@@ -214,3 +217,41 @@ def test_timing_gate_requires_every_method_and_rejects_unsafe_or_pathological_ru
     rows[-1]["examples_per_second"] = 0.2
     with pytest.raises(RuntimeError, match="pathological"):
         validate_timing_gate(rows, methods, max_cuda_bytes=20, slowdown_factor=3)
+
+
+def test_standard_sparsegpt_accepts_global_half_without_claiming_rowwise_half():
+    layer = torch.nn.Linear(4, 2, bias=False)
+    with torch.no_grad():
+        layer.weight.copy_(
+            torch.tensor([[0.0, 1.0, 2.0, 3.0], [0.0, 0.0, 0.0, 4.0]])
+        )
+    modules = {(0, "linear"): layer}
+
+    result = _zero_mask_summary(
+        object(),
+        "sparsegpt",
+        require_exact_rowwise=False,
+        get_modules=lambda _: modules,
+    )
+
+    assert result["sparsity"] == 0.5
+    assert result["rowwise_exact"] is False
+    assert result["row_prune_min"] == 1
+    assert result["row_prune_max"] == 3
+    with pytest.raises(ValueError, match="row sparsity"):
+        _zero_mask_summary(
+            object(),
+            "wanda",
+            require_exact_rowwise=True,
+            get_modules=lambda _: modules,
+        )
+
+
+def test_resume_timing_accepts_only_the_missing_suffix_in_frozen_order():
+    existing = [{"method": method} for method in METHOD_ORDER[:-1]]
+    resumed = [{"method": "SparseGPT"}]
+
+    assert _merge_timing_rows(existing, resumed) == existing + resumed
+
+    with pytest.raises(ValueError, match="prefix"):
+        _merge_timing_rows(existing[1:], resumed)
