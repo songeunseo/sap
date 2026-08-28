@@ -7,6 +7,7 @@ import torch
 
 from experiments.dlm_loss_aggregation.core import mask_sha256, pack_mask
 from experiments.dlm_loss_aggregation.exp002.run import (
+    _validated_dense_fingerprint,
     apply_dlm_masks,
     dense_fingerprint,
     extract_gsm8k_records,
@@ -171,6 +172,28 @@ def test_dense_fingerprint_covers_weight_values_and_module_identity():
         second.weight[0, 0] += 1
     assert baseline != dense_fingerprint({(0, "linear"): second})
     assert baseline != dense_fingerprint({(1, "linear"): first})
+
+
+def test_validated_dense_fingerprint_returns_only_the_digest_not_layer_references():
+    model = torch.nn.Module()
+    model.config = type("Config", (), {"_commit_hash": "revision"})()
+    model.model = torch.nn.Module()
+    model.model.transformer = torch.nn.Module()
+    block = torch.nn.Module()
+    block.linear = torch.nn.Linear(4, 2, bias=False)
+    model.model.transformer.blocks = torch.nn.ModuleList([block])
+    config = {
+        "model": {"revision": "revision"},
+        "source_exp001": {"matrix_count": 1},
+    }
+    scores = {
+        "modules": [{"layer": 0, "module": "linear", "shape": [2, 4]}]
+    }
+
+    digest = _validated_dense_fingerprint(model, config, scores)
+
+    assert isinstance(digest, str)
+    assert len(digest) == 64
 
 
 def test_timing_gate_requires_every_method_and_rejects_unsafe_or_pathological_runs():

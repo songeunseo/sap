@@ -249,7 +249,7 @@ def _module_map(model):
     }
 
 
-def _validate_dense_model(model, config, score_metadata):
+def _validated_dense_fingerprint(model, config, score_metadata):
     revision = getattr(model.config, "_commit_hash", None)
     if revision != config["model"]["revision"]:
         raise ValueError(f"model revision mismatch: {revision}")
@@ -261,7 +261,7 @@ def _validate_dense_model(model, config, score_metadata):
     actual = {key: list(layer.weight.shape) for key, layer in modules.items()}
     if len(modules) != config["source_exp001"]["matrix_count"] or actual != expected:
         raise ValueError("dense model module shapes differ from EXP-001")
-    return modules
+    return dense_fingerprint(modules)
 
 
 def _clean_calibration_digest(config, tokenizer):
@@ -437,12 +437,15 @@ def _method_run(
         "model": config["model"],
         "calibration": {"sequence_length": config["baselines"]["sequence_length"]},
     })
-    modules = _validate_dense_model(model, config, score_metadata)
-    actual_dense_hash = dense_fingerprint(modules)
+    actual_dense_hash = _validated_dense_fingerprint(model, config, score_metadata)
     if actual_dense_hash != dense_hash:
         raise ValueError(f"dense fingerprint mismatch before {method}")
     pruning_seconds = 0.0
-    mask_result = {"mask_hash": "", "sparsity": 0.0, "matrix_count": len(modules)}
+    mask_result = {
+        "mask_hash": "",
+        "sparsity": 0.0,
+        "matrix_count": config["source_exp001"]["matrix_count"],
+    }
     if method != "Dense":
         pruning_started = time.monotonic()
         mask_result = _prune(model, tokenizer, method, config, mask_metadata)
@@ -631,8 +634,7 @@ def run_experiment(config_path, output_root):
         "model": config["model"],
         "calibration": {"sequence_length": config["baselines"]["sequence_length"]},
     })
-    modules = _validate_dense_model(model, config, score_metadata)
-    dense_hash = dense_fingerprint(modules)
+    dense_hash = _validated_dense_fingerprint(model, config, score_metadata)
     dense_validation, dense_records = _evaluate_gsm8k(
         model, tokenizer, config, "Dense", 1, config_hash
     )
