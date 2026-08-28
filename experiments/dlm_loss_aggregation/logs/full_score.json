@@ -1,0 +1,167 @@
+{
+  "available_memory_bytes_after": 21463363584,
+  "block_timings": [
+    {
+      "layer": 0,
+      "seconds": 135.3131116963923
+    },
+    {
+      "layer": 1,
+      "seconds": 130.40685552731156
+    },
+    {
+      "layer": 2,
+      "seconds": 131.48714684322476
+    },
+    {
+      "layer": 3,
+      "seconds": 130.74781798571348
+    },
+    {
+      "layer": 4,
+      "seconds": 130.80551447346807
+    },
+    {
+      "layer": 5,
+      "seconds": 131.5954833626747
+    },
+    {
+      "layer": 6,
+      "seconds": 130.22582018375397
+    },
+    {
+      "layer": 7,
+      "seconds": 134.48475663363934
+    },
+    {
+      "layer": 8,
+      "seconds": 133.3808964714408
+    },
+    {
+      "layer": 9,
+      "seconds": 133.39984731003642
+    },
+    {
+      "layer": 10,
+      "seconds": 132.84926385059953
+    },
+    {
+      "layer": 11,
+      "seconds": 132.76307347789407
+    },
+    {
+      "layer": 12,
+      "seconds": 131.9343787059188
+    },
+    {
+      "layer": 13,
+      "seconds": 130.9831292629242
+    },
+    {
+      "layer": 14,
+      "seconds": 130.82813503220677
+    },
+    {
+      "layer": 15,
+      "seconds": 131.1385962627828
+    },
+    {
+      "layer": 16,
+      "seconds": 131.62466172501445
+    },
+    {
+      "layer": 17,
+      "seconds": 132.05697700753808
+    },
+    {
+      "layer": 18,
+      "seconds": 131.82755044475198
+    },
+    {
+      "layer": 19,
+      "seconds": 130.26707884669304
+    },
+    {
+      "layer": 20,
+      "seconds": 130.9917819686234
+    },
+    {
+      "layer": 21,
+      "seconds": 130.0775050446391
+    },
+    {
+      "layer": 22,
+      "seconds": 130.08789904415607
+    },
+    {
+      "layer": 23,
+      "seconds": 130.85690649971366
+    },
+    {
+      "layer": 24,
+      "seconds": 130.4406679943204
+    },
+    {
+      "layer": 25,
+      "seconds": 129.32752723619342
+    },
+    {
+      "layer": 26,
+      "seconds": 131.06863265112042
+    },
+    {
+      "layer": 27,
+      "seconds": 139.21072982996702
+    },
+    {
+      "layer": 28,
+      "seconds": 136.60637948289514
+    },
+    {
+      "layer": 29,
+      "seconds": 130.05758451670408
+    },
+    {
+      "layer": 30,
+      "seconds": 130.3011753410101
+    },
+    {
+      "layer": 31,
+      "seconds": 129.00535044819117
+    }
+  ],
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 17652182528,
+        "device": "cuda:0",
+        "reserved_bytes": 19669188608
+      }
+    ],
+    "max_allocated_bytes": 17652182528,
+    "max_reserved_bytes": 19669188608
+  },
+  "evaluation_started": false,
+  "gradient_update_count": 17920,
+  "loss": {
+    "count": 2560,
+    "max": 7.8615007400512695,
+    "mean": 2.942042525857687,
+    "min": 0.2694058418273926
+  },
+  "mask_overall_sha256": {
+    "abs": "d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5",
+    "square": "f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99",
+    "sum": "20d99801af0e9084aa89c7be951078dd5aaa53e75a3d891b6330725bdbf1824e"
+  },
+  "matrix_count": 224,
+  "peak_accounted_cpu_bytes": 11903340544,
+  "peak_process_rss_kib": 9068452,
+  "run_id": "20260828T175010-2484545",
+  "spearman_mode": "exact",
+  "state_count": 80,
+  "status": "passed",
+  "total_runtime_seconds": 4227.27925657481,
+  "transient_mask_bytes": 2617245696,
+  "transient_mask_directory": "/dev/shm/dlm_loss_aggregation_20260828T175010-2484545"
+}

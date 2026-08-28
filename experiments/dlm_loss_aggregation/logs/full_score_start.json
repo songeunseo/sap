@@ -1,0 +1,11 @@
+{
+  "available_memory_bytes": 25471627264,
+  "available_shm_bytes": 4394803200,
+  "expected_transient_mask_bytes": 2617245696,
+  "manifest_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "matrix_count": 224,
+  "run_id": "20260828T175010-2484545",
+  "started_unix": 1787907010.8375003,
+  "state_count": 80,
+  "transient_mask_directory": "/dev/shm/dlm_loss_aggregation_20260828T175010-2484545"
+}

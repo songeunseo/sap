@@ -1,0 +1,20 @@
+{
+  "completed_blocks": 32,
+  "completed_matrices": 224,
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 17652182528,
+        "device": "cuda:0",
+        "reserved_bytes": 19669188608
+      }
+    ],
+    "max_allocated_bytes": 17652182528,
+    "max_reserved_bytes": 19669188608
+  },
+  "elapsed_seconds": 4226.292792540044,
+  "last_block_seconds": 129.00535044819117,
+  "peak_process_rss_kib": 9068452,
+  "run_id": "20260828T175010-2484545",
+  "transient_mask_bytes": 2617245696
+}

@@ -1,0 +1,201 @@
+The model weights are not tied. Please use the `tie_weights` method before using the `infer_auto_device` function.
+Loading checkpoint shards:   0%|          | 0/6 [00:00<?, ?it/s]Loading checkpoint shards:  17%|█▋        | 1/6 [00:01<00:05,  1.13s/it]Loading checkpoint shards:  33%|███▎      | 2/6 [00:02<00:05,  1.36s/it]Loading checkpoint shards:  50%|█████     | 3/6 [00:04<00:04,  1.43s/it]Loading checkpoint shards:  67%|██████▋   | 4/6 [00:05<00:02,  1.36s/it]Loading checkpoint shards:  83%|████████▎ | 5/6 [00:06<00:01,  1.29s/it]Loading checkpoint shards: 100%|██████████| 6/6 [00:07<00:00,  1.14s/it]Loading checkpoint shards: 100%|██████████| 6/6 [00:07<00:00,  1.24s/it]
+{"completed_blocks": 1, "completed_matrices": 7, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 145.41100556403399, "last_block_seconds": 135.3131116963923, "peak_process_rss_kib": 8945956, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 81788928}
+{"completed_blocks": 2, "completed_matrices": 14, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 275.8198078684509, "last_block_seconds": 130.40685552731156, "peak_process_rss_kib": 9044328, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 163577856}
+{"completed_blocks": 3, "completed_matrices": 21, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 407.3083225041628, "last_block_seconds": 131.48714684322476, "peak_process_rss_kib": 9044328, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 245366784}
+{"completed_blocks": 4, "completed_matrices": 28, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 538.0573368705809, "last_block_seconds": 130.74781798571348, "peak_process_rss_kib": 9044328, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 327155712}
+{"completed_blocks": 5, "completed_matrices": 35, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 668.8639730811119, "last_block_seconds": 130.80551447346807, "peak_process_rss_kib": 9044328, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 408944640}
+{"completed_blocks": 6, "completed_matrices": 42, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 800.4606926105917, "last_block_seconds": 131.5954833626747, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 490733568}
+{"completed_blocks": 7, "completed_matrices": 49, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 930.6879939362407, "last_block_seconds": 130.22582018375397, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 572522496}
+{"completed_blocks": 8, "completed_matrices": 56, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1065.1742364242673, "last_block_seconds": 134.48475663363934, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 654311424}
+{"completed_blocks": 9, "completed_matrices": 63, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1198.5563336908817, "last_block_seconds": 133.3808964714408, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 736100352}
+{"completed_blocks": 10, "completed_matrices": 70, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1331.957419887185, "last_block_seconds": 133.39984731003642, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 817889280}
+{"completed_blocks": 11, "completed_matrices": 77, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1464.8078566677868, "last_block_seconds": 132.84926385059953, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 899678208}
+{"completed_blocks": 12, "completed_matrices": 84, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1597.572743948549, "last_block_seconds": 132.76307347789407, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 981467136}
+{"completed_blocks": 13, "completed_matrices": 91, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1729.5083298049867, "last_block_seconds": 131.9343787059188, "peak_process_rss_kib": 9045996, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1063256064}
+{"completed_blocks": 14, "completed_matrices": 98, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1860.492941468954, "last_block_seconds": 130.9831292629242, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1145044992}
+{"completed_blocks": 15, "completed_matrices": 105, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 1991.322237469256, "last_block_seconds": 130.82813503220677, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1226833920}
+{"completed_blocks": 16, "completed_matrices": 112, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2122.46218489483, "last_block_seconds": 131.1385962627828, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1308622848}
+{"completed_blocks": 17, "completed_matrices": 119, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2254.088138639927, "last_block_seconds": 131.62466172501445, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1390411776}
+{"completed_blocks": 18, "completed_matrices": 126, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2386.146579578519, "last_block_seconds": 132.05697700753808, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1472200704}
+{"completed_blocks": 19, "completed_matrices": 133, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2517.9756027050316, "last_block_seconds": 131.82755044475198, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1553989632}
+{"completed_blocks": 20, "completed_matrices": 140, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2648.243810504675, "last_block_seconds": 130.26707884669304, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1635778560}
+{"completed_blocks": 21, "completed_matrices": 147, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2779.2367610111833, "last_block_seconds": 130.9917819686234, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1717567488}
+{"completed_blocks": 22, "completed_matrices": 154, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 2909.315439119935, "last_block_seconds": 130.0775050446391, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1799356416}
+{"completed_blocks": 23, "completed_matrices": 161, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3039.4044239111245, "last_block_seconds": 130.08789904415607, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1881145344}
+{"completed_blocks": 24, "completed_matrices": 168, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3170.262753840536, "last_block_seconds": 130.85690649971366, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 1962934272}
+{"completed_blocks": 25, "completed_matrices": 175, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3300.7050049453974, "last_block_seconds": 130.4406679943204, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2044723200}
+{"completed_blocks": 26, "completed_matrices": 182, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3430.03382608667, "last_block_seconds": 129.32752723619342, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2126512128}
+{"completed_blocks": 27, "completed_matrices": 189, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3561.10366371274, "last_block_seconds": 131.06863265112042, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2208301056}
+{"completed_blocks": 28, "completed_matrices": 196, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3700.3155774623156, "last_block_seconds": 139.21072982996702, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2290089984}
+{"completed_blocks": 29, "completed_matrices": 203, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3836.924751278013, "last_block_seconds": 136.60637948289514, "peak_process_rss_kib": 9048164, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2371878912}
+{"completed_blocks": 30, "completed_matrices": 210, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 3966.9837385863066, "last_block_seconds": 130.05758451670408, "peak_process_rss_kib": 9068452, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2453667840}
+{"completed_blocks": 31, "completed_matrices": 217, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 4097.286060016602, "last_block_seconds": 130.3011753410101, "peak_process_rss_kib": 9068452, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2535456768}
+{"completed_blocks": 32, "completed_matrices": 224, "cuda_peak": {"devices": [{"allocated_bytes": 17652182528, "device": "cuda:0", "reserved_bytes": 19669188608}], "max_allocated_bytes": 17652182528, "max_reserved_bytes": 19669188608}, "elapsed_seconds": 4226.292792540044, "last_block_seconds": 129.00535044819117, "peak_process_rss_kib": 9068452, "run_id": "20260828T175010-2484545", "transient_mask_bytes": 2617245696}
+{
+  "available_memory_bytes_after": 21463363584,
+  "block_timings": [
+    {
+      "layer": 0,
+      "seconds": 135.3131116963923
+    },
+    {
+      "layer": 1,
+      "seconds": 130.40685552731156
+    },
+    {
+      "layer": 2,
+      "seconds": 131.48714684322476
+    },
+    {
+      "layer": 3,
+      "seconds": 130.74781798571348
+    },
+    {
+      "layer": 4,
+      "seconds": 130.80551447346807
+    },
+    {
+      "layer": 5,
+      "seconds": 131.5954833626747
+    },
+    {
+      "layer": 6,
+      "seconds": 130.22582018375397
+    },
+    {
+      "layer": 7,
+      "seconds": 134.48475663363934
+    },
+    {
+      "layer": 8,
+      "seconds": 133.3808964714408
+    },
+    {
+      "layer": 9,
+      "seconds": 133.39984731003642
+    },
+    {
+      "layer": 10,
+      "seconds": 132.84926385059953
+    },
+    {
+      "layer": 11,
+      "seconds": 132.76307347789407
+    },
+    {
+      "layer": 12,
+      "seconds": 131.9343787059188
+    },
+    {
+      "layer": 13,
+      "seconds": 130.9831292629242
+    },
+    {
+      "layer": 14,
+      "seconds": 130.82813503220677
+    },
+    {
+      "layer": 15,
+      "seconds": 131.1385962627828
+    },
+    {
+      "layer": 16,
+      "seconds": 131.62466172501445
+    },
+    {
+      "layer": 17,
+      "seconds": 132.05697700753808
+    },
+    {
+      "layer": 18,
+      "seconds": 131.82755044475198
+    },
+    {
+      "layer": 19,
+      "seconds": 130.26707884669304
+    },
+    {
+      "layer": 20,
+      "seconds": 130.9917819686234
+    },
+    {
+      "layer": 21,
+      "seconds": 130.0775050446391
+    },
+    {
+      "layer": 22,
+      "seconds": 130.08789904415607
+    },
+    {
+      "layer": 23,
+      "seconds": 130.85690649971366
+    },
+    {
+      "layer": 24,
+      "seconds": 130.4406679943204
+    },
+    {
+      "layer": 25,
+      "seconds": 129.32752723619342
+    },
+    {
+      "layer": 26,
+      "seconds": 131.06863265112042
+    },
+    {
+      "layer": 27,
+      "seconds": 139.21072982996702
+    },
+    {
+      "layer": 28,
+      "seconds": 136.60637948289514
+    },
+    {
+      "layer": 29,
+      "seconds": 130.05758451670408
+    },
+    {
+      "layer": 30,
+      "seconds": 130.3011753410101
+    },
+    {
+      "layer": 31,
+      "seconds": 129.00535044819117
+    }
+  ],
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 17652182528,
+        "device": "cuda:0",
+        "reserved_bytes": 19669188608
+      }
+    ],
+    "max_allocated_bytes": 17652182528,
+    "max_reserved_bytes": 19669188608
+  },
+  "evaluation_started": false,
+  "gradient_update_count": 17920,
+  "loss": {
+    "count": 2560,
+    "max": 7.8615007400512695,
+    "mean": 2.942042525857687,
+    "min": 0.2694058418273926
+  },
+  "mask_overall_sha256": {
+    "abs": "d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5",
+    "square": "f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99",
+    "sum": "20d99801af0e9084aa89c7be951078dd5aaa53e75a3d891b6330725bdbf1824e"
+  },
+  "matrix_count": 224,
+  "peak_accounted_cpu_bytes": 11903340544,
+  "peak_process_rss_kib": 9068452,
+  "run_id": "20260828T175010-2484545",
+  "spearman_mode": "exact",
+  "state_count": 80,
+  "status": "passed",
+  "total_runtime_seconds": 4227.27925657481,
+  "transient_mask_bytes": 2617245696,
+  "transient_mask_directory": "/dev/shm/dlm_loss_aggregation_20260828T175010-2484545"
+}
