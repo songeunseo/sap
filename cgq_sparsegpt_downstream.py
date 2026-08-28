@@ -26,6 +26,40 @@ from eval_llada import LLaDAEvalHarness, set_seed
 from lib.prune_llada import prune_sparsegpt
 
 
+FROZEN_PROTOCOL = {
+    "calibration": {
+        "sequence_length": 256,
+        "state_count": 16,
+        "timesteps": [0.2, 0.4, 0.6, 0.8],
+        "seed": 0,
+    },
+    "pruning": {
+        "sparsity": 0.5,
+        "sparsity_type": "unstructured",
+        "percdamp": 0.01,
+        "blocksize": 128,
+    },
+    "evaluation": {
+        "task": "winogrande",
+        "sample_count": 1267,
+        "num_fewshot": 5,
+        "cfg": 0.0,
+        "mc_num": 128,
+        "batch_size": 8,
+        "random_seed": 0,
+        "numpy_seed": 1234,
+        "torch_seed": 1234,
+        "fewshot_seed": 1234,
+    },
+}
+
+
+def validate_frozen_config(config):
+    for section, expected in FROZEN_PROTOCOL.items():
+        if config.get(section) != expected:
+            raise ValueError(f"{section} differs from the frozen protocol")
+
+
 def make_in_memory_harness(model, tokenizer, device):
     harness = object.__new__(LLaDAEvalHarness)
     LM.__init__(harness)
@@ -209,16 +243,25 @@ def _release():
 
 def run_experiment(config_path, output_dir):
     config = json.loads(Path(config_path).read_text())
+    validate_frozen_config(config)
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     states, calibration_digest = load_cached_calibration_states(
         config["source_experiment"]["states_path"],
         config["source_experiment"]["results_path"],
     )
-    if len(states) != 16:
-        raise ValueError(f"expected 16 cached calibration states, found {len(states)}")
+    expected_state_count = config["calibration"]["state_count"]
+    if len(states) != expected_state_count:
+        raise ValueError(
+            f"expected {expected_state_count} cached calibration states, "
+            f"found {len(states)}"
+        )
     loader = [(state["input_ids"],) for state in states]
-    args = SimpleNamespace(nsamples=len(states), seed=0, sparsity_ratio=0.5)
+    args = SimpleNamespace(
+        nsamples=len(states),
+        seed=config["calibration"]["seed"],
+        sparsity_ratio=config["pruning"]["sparsity"],
+    )
     device = torch.device("cuda:0")
     tokenizer = AutoTokenizer.from_pretrained(
         config["model"]["id"],

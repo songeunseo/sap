@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 import torch
@@ -10,6 +11,7 @@ from cgq_sparsegpt_downstream import (
     load_cached_calibration_states,
     make_in_memory_harness,
     summarize_paired_records,
+    validate_frozen_config,
     validate_mask_reproduction,
 )
 
@@ -103,3 +105,14 @@ def test_mask_reproduction_stops_a_materially_different_run():
 
     with pytest.raises(RuntimeError, match="mask XOR"):
         validate_mask_reproduction(0.070, expected=0.080565, tolerance=0.005)
+
+
+def test_frozen_protocol_rejects_config_drift():
+    config = json.loads(
+        Path("codex/cgq_sparsegpt_downstream_50/config.json").read_text()
+    )
+    validate_frozen_config(config)
+    config["evaluation"]["mc_num"] = 64
+
+    with pytest.raises(ValueError, match="evaluation"):
+        validate_frozen_config(config)
