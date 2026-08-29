@@ -121,6 +121,9 @@ bundles. Plain-only replication is optional screening, not the noise band for
 the method contrast. The existing `-12` result remains a valid conditional
 observation, while its calibration-draw generality is currently unknown.
 
-Obsidian `Research-State.md` could not be consulted because no Obsidian tool is
-available in this session; this note uses the repository's checked-in CGQ
-records instead.
+Obsidian `Research/DLM-Pruning/Research-State.md` (updated 2026-08-28) and
+`HYP-001 Temporal Saliency Instability` were consulted. They leave soft versus
+hard confidence weighting and the value of emphasizing high-confidence tokens
+as open questions, and explicitly distinguish state-dependent activation
+changes from pruning-quality evidence. They contain no prior CGQ downstream or
+calibration-seed result that resolves the variance question here.
