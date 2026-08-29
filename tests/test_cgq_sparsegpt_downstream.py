@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 import torch
 
+import cgq_sparsegpt_downstream as downstream_module
 from cgq_sparsegpt import state_digest
 from cgq_sparsegpt_downstream import (
     assert_same_examples,
@@ -68,6 +69,16 @@ def test_winogrande_records_and_pairing_use_real_scores_and_correctness():
         "plain_correct_cgq_wrong": 1,
         "both_correct": 0,
         "both_wrong": 0,
+    }
+
+    assert downstream_module.summarize_prediction_contrast(plain, cgq) == {
+        "sample_count": 2,
+        "left_correct": 1,
+        "right_correct": 1,
+        "correct_delta": 0,
+        "delta_percentage_points": 0.0,
+        "left_wrong_right_correct": 1,
+        "left_correct_right_wrong": 1,
     }
 
 

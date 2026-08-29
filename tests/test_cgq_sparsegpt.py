@@ -5,6 +5,7 @@ import pytest
 import torch
 from torch import nn
 
+import cgq_sparsegpt as cgq_module
 from cgq_sparsegpt import (
     build_corrupted_states,
     cache_dense_references,
@@ -123,6 +124,77 @@ def test_cgq_token_weights_use_mask_status_and_detached_confidence():
     assert torch.isfinite(weights).all()
 
 
+def test_inverse_weights_reverse_confidence_and_match_original_energy():
+    input_ids = torch.tensor([[99, 99]])
+    logits = torch.tensor(
+        [[[math.log(4), 0.0], [0.0, 0.0]]], requires_grad=True
+    )
+
+    weights, confidence, mask_weight, scale = (
+        cgq_module.energy_normalized_inverse_token_weights(
+            input_ids, logits, mask_id=99
+        )
+    )
+    original = mask_weight + confidence.sqrt()
+
+    assert weights[0, 0] < weights[0, 1]
+    torch.testing.assert_close(weights.square().sum(), original.square().sum())
+    assert scale > 0
+    assert not weights.requires_grad
+
+
+def test_article_span_sampling_skips_reserved_and_reused_articles():
+    spans = cgq_module.sample_disjoint_article_spans(
+        article_ranges=[(0, 10), (10, 20), (20, 30), (30, 40)],
+        total_tokens=40,
+        sequence_length=4,
+        count=2,
+        seed=7,
+        excluded_article_ids={1},
+    )
+
+    assert spans == [
+        {"article_index": 2, "token_start": 20, "token_end": 24},
+        {"article_index": 0, "token_start": 3, "token_end": 7},
+    ]
+
+
+def test_bundle_preparation_uses_new_articles_and_records_clean_inputs():
+    bundles = cgq_module.prepare_calibration_bundles(
+        full_ids=torch.arange(40),
+        article_ranges=[(0, 10), (10, 20), (20, 30), (30, 40)],
+        bundle_specs=[{"name": "seed-1", "content_seed": 7, "mask_seed": 100}],
+        sequence_count=2,
+        sequence_length=4,
+        timesteps=(0.2, 0.8),
+        mask_id=99,
+        excluded_article_ids={1},
+    )
+
+    bundle = bundles[0]
+    assert bundle["name"] == "seed-1"
+    assert [span["article_index"] for span in bundle["spans"]] == [2, 0]
+    assert [ids.tolist() for ids in bundle["clean_ids"]] == [
+        [[20, 21, 22, 23]],
+        [[3, 4, 5, 6]],
+    ]
+    assert len(bundle["clean_hashes"]) == 2
+    assert len(bundle["states"]) == 4
+    assert bundle["state_digest"] == state_digest(bundle["states"])
+
+
+def test_article_ranges_follow_top_level_wikitext_headings():
+    rows = ["= A =\n", "alpha\n", "= B =\n", "beta\n"]
+    text = " ".join(rows)
+    offsets = [(index, index + 1) for index in range(len(text))]
+    second_article = len(rows[0]) + 1 + len(rows[1]) + 1
+
+    assert cgq_module.top_level_article_token_ranges(rows, offsets) == [
+        (0, second_article),
+        (second_article, len(text)),
+    ]
+
+
 def test_corrupted_states_and_digest_are_deterministic():
     clean = [torch.arange(12).reshape(1, 12), torch.arange(12, 24).reshape(1, 12)]
 
@@ -183,6 +255,27 @@ def test_dense_references_cache_only_masked_logits_on_cpu_once():
     assert [reference["logits"].shape for reference in references] == [(2, 2), (1, 2)]
     assert all(reference["logits"].device.type == "cpu" for reference in references)
     assert all(reference["logits"].dtype == torch.float16 for reference in references)
+
+
+def test_weight_cache_builds_original_and_energy_matched_inverse_once_per_state():
+    states = [
+        {"input_ids": torch.tensor([[99, 1, 2]])},
+        {"input_ids": torch.tensor([[3, 99, 4]])},
+    ]
+    model = ReferenceModel()
+
+    original, inverse, confidence = (
+        cgq_module.cache_original_and_inverse_weights(
+            model, states, mask_id=99, device=torch.device("cpu")
+        )
+    )
+
+    assert model.calls == 2
+    assert len(original) == len(inverse) == len(confidence) == 2
+    for left, right in zip(original, inverse):
+        torch.testing.assert_close(
+            left.square().sum(dim=-1), right.square().sum(dim=-1)
+        )
 
 
 def test_masked_logit_sums_compute_dense_to_sparse_kl_in_fp32():

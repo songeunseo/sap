@@ -109,6 +109,26 @@ def assert_same_examples(reference, candidate):
                 raise ValueError(f"WinoGrande {field} differs")
 
 
+def summarize_prediction_contrast(left, right):
+    assert_same_examples(left, right)
+    count = len(left)
+    left_correct = sum(record["correct"] for record in left)
+    right_correct = sum(record["correct"] for record in right)
+    return {
+        "sample_count": count,
+        "left_correct": left_correct,
+        "right_correct": right_correct,
+        "correct_delta": right_correct - left_correct,
+        "delta_percentage_points": (right_correct - left_correct) / count * 100,
+        "left_wrong_right_correct": sum(
+            not a["correct"] and b["correct"] for a, b in zip(left, right)
+        ),
+        "left_correct_right_wrong": sum(
+            a["correct"] and not b["correct"] for a, b in zip(left, right)
+        ),
+    }
+
+
 def summarize_paired_records(plain, cgq):
     assert_same_examples(plain, cgq)
     plain_correct = sum(record["correct"] for record in plain)

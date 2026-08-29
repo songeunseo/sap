@@ -1,7 +1,10 @@
 import argparse
+from bisect import bisect_left, bisect_right
 import gc
 import hashlib
 import json
+import random
+import re
 import shutil
 import tempfile
 import time
@@ -35,6 +38,120 @@ def cgq_token_weights(input_ids, logits, mask_id):
     if not torch.isfinite(weights).all():
         raise ValueError("CGQ weights must be finite")
     return weights.detach(), confidence, mask_weight
+
+
+def energy_normalized_inverse_token_weights(input_ids, logits, mask_id):
+    original, confidence, mask_weight = cgq_token_weights(
+        input_ids, logits, mask_id
+    )
+    inverse = mask_weight + (1 - confidence).clamp_min(0).sqrt()
+    scale = (
+        original.square().sum(dim=-1, keepdim=True)
+        / inverse.square().sum(dim=-1, keepdim=True)
+    ).sqrt()
+    return (inverse * scale).detach(), confidence, mask_weight, scale.detach()
+
+
+def sample_disjoint_article_spans(
+    article_ranges,
+    total_tokens,
+    sequence_length,
+    count,
+    seed,
+    excluded_article_ids=(),
+):
+    starts = [start for start, _ in article_ranges]
+    used = set(excluded_article_ids)
+    rng = random.Random(seed)
+    spans = []
+    for _ in range(max(1000, count * 1000)):
+        token_start = rng.randint(0, total_tokens - sequence_length)
+        article_index = bisect_right(starts, token_start) - 1
+        token_end = token_start + sequence_length
+        if (
+            article_index < 0
+            or article_index in used
+            or token_end > article_ranges[article_index][1]
+        ):
+            continue
+        spans.append(
+            {
+                "article_index": article_index,
+                "token_start": token_start,
+                "token_end": token_end,
+            }
+        )
+        used.add(article_index)
+        if len(spans) == count:
+            return spans
+    raise ValueError("could not sample enough disjoint article spans")
+
+
+def prepare_calibration_bundles(
+    full_ids,
+    article_ranges,
+    bundle_specs,
+    sequence_count,
+    sequence_length,
+    timesteps,
+    mask_id,
+    excluded_article_ids=(),
+):
+    full_ids = full_ids.reshape(-1).cpu()
+    used_articles = set(excluded_article_ids)
+    bundles = []
+    for spec in bundle_specs:
+        spans = sample_disjoint_article_spans(
+            article_ranges,
+            full_ids.numel(),
+            sequence_length,
+            sequence_count,
+            spec["content_seed"],
+            used_articles,
+        )
+        used_articles.update(span["article_index"] for span in spans)
+        clean_ids = [
+            full_ids[span["token_start"] : span["token_end"]]
+            .reshape(1, sequence_length)
+            .clone()
+            for span in spans
+        ]
+        states = build_corrupted_states(
+            clean_ids, timesteps, mask_id, spec["mask_seed"]
+        )
+        bundles.append(
+            {
+                **spec,
+                "spans": spans,
+                "clean_ids": clean_ids,
+                "clean_hashes": [
+                    hashlib.sha256(ids.numpy().tobytes()).hexdigest()
+                    for ids in clean_ids
+                ],
+                "states": states,
+                "state_digest": state_digest(states),
+            }
+        )
+    return bundles
+
+
+def top_level_article_token_ranges(rows, offsets):
+    row_starts = []
+    position = 0
+    for row in rows:
+        row_starts.append(position)
+        position += len(row) + 1
+    boundary_chars = [
+        row_starts[index]
+        for index, row in enumerate(rows)
+        if re.fullmatch(r"= [^=].* =", row.strip())
+    ]
+    token_starts = [start for start, _ in offsets]
+    boundaries = [bisect_left(token_starts, char) for char in boundary_chars]
+    return [
+        (start, boundaries[index + 1] if index + 1 < len(boundaries) else len(offsets))
+        for index, start in enumerate(boundaries)
+    ]
 
 
 def build_corrupted_states(clean_ids, timesteps, mask_id, seed, eps=1e-3):
@@ -404,6 +521,30 @@ def _cache_calibration_weights(model, states, mask_id, device):
         weights.append(state_weights.cpu())
         confidence.append(state_confidence.cpu())
     return weights, confidence
+
+
+@torch.no_grad()
+def cache_original_and_inverse_weights(model, states, mask_id, device):
+    original = []
+    inverse = []
+    confidence = []
+    for state in states:
+        input_ids = state["input_ids"].to(device)
+        state_inverse, state_confidence, mask_weight, _ = (
+            energy_normalized_inverse_token_weights(
+                input_ids, model(input_ids).logits, mask_id
+            )
+        )
+        state_original = mask_weight + state_confidence.sqrt()
+        mask = input_ids.eq(mask_id)
+        if not mask_weight[mask].eq(1.0).all():
+            raise AssertionError("masked token mask_weight is not 1.0")
+        if not mask_weight[~mask].eq(0.7).all():
+            raise AssertionError("unmasked token mask_weight is not 0.7")
+        original.append(state_original.cpu())
+        inverse.append(state_inverse.cpu())
+        confidence.append(state_confidence.cpu())
+    return original, inverse, confidence
 
 
 def _one_block_prune(model, args, loader, weights, hessian_diagonals, mask_dir, compare):
