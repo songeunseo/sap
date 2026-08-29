@@ -87,9 +87,13 @@ Use calibration bundle as the blocking variable:
 1. Keep the existing seed-0 bundle as the **discovery** block. Because its
    result motivated the inverse hypothesis, do not present it as independent
    confirmation.
-2. Predeclare three new independent calibration bundles. Save each bundle's
-   clean token IDs, corrupted states/masks, and digest; a seed alone is not a
-   sufficient audit record.
+2. Predeclare three new independent calibration bundles. Each bundle must use
+   four newly sampled clean WikiText-2 spans, disjoint from the discovery
+   calibration spans, its held-out spans, and the other new bundles. Generate
+   fresh corruptions from those spans; changing only the corruption seed on
+   the original four spans does not count as an independent bundle. Save the
+   clean token IDs, source offsets when available, corrupted states/masks, and
+   digests; seeds alone are not a sufficient audit record.
 3. On every new bundle, prune all three methods from the same dense revision:
    Plain, frozen original CGQ, and energy-normalized inverse CGQ. Keep model,
    timesteps, sequence length, sparsity, pruning range, damping, block size,
