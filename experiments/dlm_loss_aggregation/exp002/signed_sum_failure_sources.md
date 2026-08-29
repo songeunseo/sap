@@ -7,9 +7,19 @@ inferred here.
 
 ## Bottom line
 
-The cancellation hypothesis is well motivated, but it is not yet a causal
-explanation of the LLaDA result. Prior work provides two especially relevant
-observations:
+There were two distinct August 28 experiments, and the cancellation hypothesis
+applies to only one of them:
+
+- **CGQ-SparseGPT (morning):** no loss, backward pass, parameter gradient, or
+  signed-gradient aggregation was used. CGQ applied a positive token weight to
+  SparseGPT activations before accumulating an activation Gram matrix. Signed
+  gradient cancellation therefore cannot explain its WinoGrande result.
+- **DLM loss aggregation (afternoon):** the SUM score averaged the signed
+  parameter-pruning effect \(-w\,\partial L/\partial w\) over states. Cancellation
+  is a well-motivated hypothesis for this experiment, but is not yet a causal
+  explanation of its LLaDA result.
+
+Prior work provides two especially relevant observations for the latter:
 
 1. Molchanov et al. argue that a trained network's signed first-order
    feature-map effect can have expectation near zero while its absolute effect
@@ -21,6 +31,94 @@ observations:
 Neither paper proves that cancellation caused DLM-SUM's 0/1319 GSM8K result.
 The controlled evidence for that claim must come from DLM-ABS and DLM-SQUARE,
 which use the same 80 LLaDA gradients and differ only in aggregation.
+
+## CGQ-SparseGPT applicability audit (separate experiment)
+
+Primary experiment sources: the committed
+[`cgq_token_weights`](https://github.com/songeunseo/sap/blob/3e32ed6b5aa51737a8882f2dd23ae125e53772fb/cgq_sparsegpt.py),
+[`SparseGPT.add_batch`](https://github.com/songeunseo/sap/blob/3e32ed6b5aa51737a8882f2dd23ae125e53772fb/lib/sparsegpt.py),
+[two-hour report](https://github.com/songeunseo/sap/blob/db4c22de9730431e0e4496f40d09ca7a29fb6fc1/codex/cgq_sparsegpt_2h/results/report.md),
+and [WinoGrande report](https://github.com/songeunseo/sap/blob/6790e3efe4e921649b7d8361f8ad69ad112978b7/codex/cgq_sparsegpt_downstream_50/results/report.md).
+
+### What CGQ actually computed
+
+For token \(t\), the implementation computes
+
+\[
+c_t=\max \operatorname{softmax}(\mathrm{logits}_t),\qquad
+m_t=\begin{cases}1.0&\text{masked}\\0.7&\text{visible}\end{cases},\qquad
+r_t=m_t+\sqrt{c_t}.
+\]
+
+It detaches \(r_t\), multiplies the input activation \(x_t\) by it, and then
+uses the existing SparseGPT accumulator. Ignoring the accumulator's common
+normalization constant, this changes the activation statistic to
+
+\[
+H_{\mathrm{CGQ}}=\sum_t(r_tx_t)(r_tx_t)^\top
+                 =\sum_t r_t^2x_tx_t^\top.
+\]
+
+Consequently:
+
+- \(r_t\) is always positive (`0.7` to `2.0` by construction), and its
+  effective contribution to \(H\) is **squared**.
+- Every per-token outer-product contribution is positive semidefinite, and
+  each Hessian diagonal contribution is \(r_t^2x_{t,i}^2\geq0\).
+- Off-diagonal activation products can be negative, but they are not signed
+  loss gradients averaged across samples. Taking
+  `abs(gradient * activation)`, squaring that quantity, or applying GBLM's
+  sample-axis norm is therefore not a modification of the statistic CGQ used.
+
+The signed-cancellation explanation is thus **inapplicable to CGQ-SparseGPT**.
+It addresses the later DLM-SUM estimator, whose implementation explicitly
+forms \(-w\,\partial L/\partial w\), not the earlier CGQ estimator.
+
+### What the masked-diffusion loss does and does not imply here
+
+The primary LLaDA paper, [Nie et al., *Large Language Diffusion
+Models*](https://arxiv.org/abs/2502.09992), defines its Eq. (3) cross-entropy
+with an indicator that includes only masked positions. This supports the
+general statement that visible tokens are not direct prediction targets in the
+training loss. Visible tokens can still influence masked predictions through
+the Transformer context.
+
+It does not support a gradient-based explanation of CGQ because CGQ never
+computes that loss or calls backward: it performs forward passes to obtain
+confidence and then accumulates both masked- and visible-token activations.
+Nor does the LLaDA paper establish that visible-token parameter-gradient paths
+must be smaller or noisier. That claim remains a hypothesis even for the later
+DLM-gradient experiment.
+
+### What the observed CGQ result supports
+
+At 50% sparsity, CGQ changed 8.0565% of mask decisions and improved the
+held-out masked-token proxies (KL `-8.65%`, top-1 agreement `+2.6549` points),
+but WinoGrande fell from `69.06%` to `68.11%` (`-0.95` point, 12 examples).
+The observed result is therefore a **single-task transfer failure**, not
+evidence that signed gradients cancelled and not evidence that CGQ degraded
+every target.
+
+The implementation and evidence leave three plausible, unproven explanations:
+
+1. **Proxy mismatch:** confidence/mask-weighted layer reconstruction and
+   masked-token distribution preservation need not optimize WinoGrande
+   decisions.
+2. **Combined heuristic:** mask state and confidence enter one formula, and
+   pre-multiplication makes the effective coefficient \(r^2\). The run cannot
+   attribute the downstream change to the mask prior, confidence, or their
+   interaction. The relevant ablation is Plain, mask-only, confidence-only,
+   and combined CGQ—not Wanda versus a gradient score.
+3. **Calibration sensitivity:** the run used 4 WikiText-2 sequences across 4
+   timesteps (16 states, 256 tokens). The ICLR 2025 calibration paper below
+   makes source mismatch a plausible concern, but it neither identifies the
+   cause here nor recommends fixing it by merely increasing sample count.
+
+One further caution is visible in the recorded calibration statistics: at
+\(t=0.8\), visible tokens had higher mean \(r\) than masked tokens (`1.5440`
+versus `1.4973`) because their confidence was higher. Thus the combined score
+does not consistently rank all masked tokens above all visible tokens, despite
+the `1.0` versus `0.7` mask prior.
 
 ## 1. Molchanov et al. (ICLR 2017)
 
@@ -152,7 +250,7 @@ Wanda, DSnoT, and OWL, not official DLM-loss gradients or LLaDA. Calibration
 sensitivity is therefore a plausible additional variable, not an explanation
 of SUM versus ABS when the calibration manifest is held exactly fixed.
 
-## Implications for EXP-001/EXP-002
+## Implications for DLM aggregation EXP-001/EXP-002 (not CGQ)
 
 - The present comparison already isolates aggregation more cleanly than the
   proposed 2x2 description: SUM, ABS, and SQUARE use the same official DLM
