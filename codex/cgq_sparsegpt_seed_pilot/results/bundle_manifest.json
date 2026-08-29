@@ -1,0 +1,162 @@
+{
+  "all_20_articles_are_distinct": true,
+  "article_aligned_256_token_capacity": 9689,
+  "article_count": 629,
+  "bundles": [
+    {
+      "clean_hashes": [
+        "a35c0d4705fdf204d5c2519a3cacbbf9d02f09e6717ec1e54782acbe701d4ec2",
+        "9b9dee19aa9a4e82685aa9614eed1221cedf1649652320b6cfe5b510edf0573c",
+        "33ef0d1180ec3af04fb4bddf1647890cb91e7965918f4a359a0cc17881dcf89d",
+        "8f450243eee99d32cce8138935ab32269ac475561d10b11ac990e57469489512"
+      ],
+      "content_seed": 1,
+      "mask_seed": 10001,
+      "name": "seed-1",
+      "spans": [
+        {
+          "article_index": 136,
+          "token_end": 563820,
+          "token_start": 563564
+        },
+        {
+          "article_index": 592,
+          "token_end": 2387670,
+          "token_start": 2387414
+        },
+        {
+          "article_index": 66,
+          "token_end": 264945,
+          "token_start": 264689
+        },
+        {
+          "article_index": 284,
+          "token_end": 1070093,
+          "token_start": 1069837
+        }
+      ],
+      "state_digest": "e5df9e49709ae9115f87808cd07b62810b5edb59ccb6c41b9c75a36fec7e5ffe"
+    },
+    {
+      "clean_hashes": [
+        "a3f40bd7bccbe03f9d7675935c81b9b64d93607c8a5ac0a4442968c5d2dcb907",
+        "47a922e369653e8b43d35be848b32652d9b9f0702cd7a97cce1b8bcbf4a09250",
+        "639658afb1773a7e77892bac4345b5a708f722b302282cf6f13370a8f7e01da4",
+        "5e22ccc6c8b603d4b1adaf87f051d13b2de282ffa9dd8a26c043f2b4dc946ddd"
+      ],
+      "content_seed": 2,
+      "mask_seed": 20001,
+      "name": "seed-2",
+      "spans": [
+        {
+          "article_index": 59,
+          "token_end": 237449,
+          "token_start": 237193
+        },
+        {
+          "article_index": 96,
+          "token_end": 384390,
+          "token_start": 384134
+        },
+        {
+          "article_index": 88,
+          "token_end": 356234,
+          "token_start": 355978
+        },
+        {
+          "article_index": 392,
+          "token_end": 1514640,
+          "token_start": 1514384
+        }
+      ],
+      "state_digest": "20293bd2165809692f5a7041e665d4288dccb80115fb844e82372afb9dd4759e"
+    },
+    {
+      "clean_hashes": [
+        "fddf58aaaacf3976fb0beec42fbf5c7106c10ee4ebf025b67b6af17e1472c478",
+        "ec30540d603eb15d1b99ddfc749318bfea5b836abd6dabb273aded4a8c73ad4c",
+        "317d3d848456872e730e0d4dccb28cfa923b25ef82a5f9a462f7ffc22300f379",
+        "aeabc858251f6787c347b4efec2ab49b6bf8bbf93f663fc2820b5c82130315dd"
+      ],
+      "content_seed": 3,
+      "mask_seed": 30001,
+      "name": "seed-3",
+      "spans": [
+        {
+          "article_index": 267,
+          "token_end": 998351,
+          "token_start": 998095
+        },
+        {
+          "article_index": 615,
+          "token_end": 2485972,
+          "token_start": 2485716
+        },
+        {
+          "article_index": 129,
+          "token_end": 547288,
+          "token_start": 547032
+        },
+        {
+          "article_index": 400,
+          "token_end": 1551960,
+          "token_start": 1551704
+        }
+      ],
+      "state_digest": "1f946f07cf98b1a6a471bd7e1f8b77faa97d5e6026100cdd62905ad75446226c"
+    }
+  ],
+  "corpus_token_count": 2559332,
+  "reference_clean_hashes": [
+    "d95627c4fa58cdefe088f7fa67ab8af44a5ab85a7f2cdcb00c56daaf29459d46",
+    "091b9c7058d03ddc70d59d5ea7a9f2d0237b26a14483686abe94a9af885a1591",
+    "ee791725116d81ecc73ab4ed99f640cfc155a5bda3d10d10a2b630805fd3a439",
+    "07605c36f9798d4bdb9e93f54b20520b7ba4b5f7be126159a1f63c8b5ae4eee3",
+    "1738e6a364fd6c20bf1ef3529e4b5054dbca8663a57d1de3cd2ee6f2056f48ad",
+    "a1b9074294b7a84226b3887cca326df9157b34be84cc23e5eb439dc076e407e5",
+    "78b6ddfb294cb30f36c7a5ba2a18c37556a788c4c70925c51ad1ea92c65411cf",
+    "dbe78f4ebd465df6b18bdb654a4a4b131ca021e9599e684c6860c6ce849597bd"
+  ],
+  "reference_spans": [
+    {
+      "article_index": 413,
+      "token_end": 1616091,
+      "token_start": 1615835
+    },
+    {
+      "article_index": 454,
+      "token_end": 1764261,
+      "token_start": 1764005
+    },
+    {
+      "article_index": 46,
+      "token_end": 170059,
+      "token_start": 169803
+    },
+    {
+      "article_index": 291,
+      "token_end": 1086231,
+      "token_start": 1085975
+    },
+    {
+      "article_index": 542,
+      "token_end": 2144697,
+      "token_start": 2144441
+    },
+    {
+      "article_index": 518,
+      "token_end": 2038384,
+      "token_start": 2038128
+    },
+    {
+      "article_index": 438,
+      "token_end": 1698672,
+      "token_start": 1698416
+    },
+    {
+      "article_index": 328,
+      "token_end": 1272441,
+      "token_start": 1272185
+    }
+  ]
+}
