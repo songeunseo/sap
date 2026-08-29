@@ -65,7 +65,7 @@ def sample_disjoint_article_spans(
     rng = random.Random(seed)
     spans = []
     for _ in range(max(1000, count * 1000)):
-        token_start = rng.randint(0, total_tokens - sequence_length)
+        token_start = rng.randint(0, total_tokens - sequence_length - 1)
         article_index = bisect_right(starts, token_start) - 1
         token_end = token_start + sequence_length
         if (
