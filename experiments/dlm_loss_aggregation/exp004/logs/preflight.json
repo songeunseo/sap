@@ -1,0 +1,23 @@
+{
+  "calibration_state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "checked_at_unix": 1788184910.199365,
+  "disk": {
+    "available_bytes": 5229531136,
+    "required_bytes": 4026531840
+  },
+  "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "mask_bytes_per_method": 872415232,
+  "matrix_count": 224,
+  "state_count": 80,
+  "status": "passed",
+  "uniform_masks": {
+    "abs": "d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5",
+    "square": "f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99",
+    "sum": "20d99801af0e9084aa89c7be951078dd5aaa53e75a3d891b6330725bdbf1824e"
+  },
+  "uniform_reuse": {
+    "count": 1319,
+    "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "passed": true
+  }
+}
