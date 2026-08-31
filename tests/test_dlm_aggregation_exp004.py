@@ -20,7 +20,10 @@ from experiments.dlm_loss_aggregation.exp004.run import (
     validate_uniform_reuse,
     token_weights,
     validate_uniform_reproduction,
+    validate_resumable_evaluation,
+    validate_partition_artifact,
     weighted_dlm_loss,
+    weighted_dlm_losses,
     write_packed_mask,
 )
 
@@ -66,6 +69,18 @@ def test_partition_confidence_matches_generation_softmax_in_logits_dtype():
     assert partition["masked_predictions"][0]["confidence"] == expected
 
 
+def test_partition_topk_matches_full_sequence_generator_tie_breaking():
+    logits = torch.zeros((1, 5, 2))
+    noisy = torch.tensor([[99, 1, 99, 1, 99]])
+
+    partition = freeze_token_partition(logits, noisy, 99, p_mask=1.0)
+    confidence = torch.full((1, 5), 0.5)
+    generator_confidence = torch.where(noisy.eq(99), confidence, -torch.inf)
+    expected = torch.topk(generator_confidence[0], k=1).indices.tolist()
+
+    assert partition["reveal_indices"] == expected
+
+
 def test_token_weights_normalize_each_condition_to_masked_mean_one():
     mask = torch.tensor([[True, True, True, True, False]])
     reveal = torch.tensor([[True, True, False, False, False]])
@@ -94,6 +109,26 @@ def test_weighted_loss_changes_only_token_terms_not_dlm_normalization():
     )
 
     assert loss.item() == pytest.approx((1.5 * token_ce[0] + 0.5 * token_ce[1]).item() / 0.5 / 3)
+
+
+def test_three_weighted_losses_share_one_per_token_ce_vector_semantics():
+    logits = torch.tensor([[[2.0, 0.0], [0.0, 2.0]]], requires_grad=True)
+    clean = torch.tensor([[0, 0]])
+    mask = torch.tensor([[True, True]])
+    alphas = {
+        "uniform": torch.tensor([[1.0, 1.0]]),
+        "reveal": torch.tensor([[4 / 3, 2 / 3]]),
+        "remain": torch.tensor([[2 / 3, 4 / 3]]),
+    }
+
+    losses = weighted_dlm_losses(logits, clean, mask, p_mask=0.5, alphas=alphas)
+    token_ce = torch.nn.functional.cross_entropy(
+        logits[mask].float(), clean[mask], reduction="none"
+    )
+
+    assert losses["uniform"] == (token_ce.sum() / 0.5 / 2)
+    assert losses["reveal"] == ((token_ce * torch.tensor([4 / 3, 2 / 3])).sum() / 0.5 / 2)
+    assert losses["remain"] == ((token_ce * torch.tensor([2 / 3, 4 / 3])).sum() / 0.5 / 2)
 
 
 def test_condition_effects_share_graph_without_accumulating_parameter_gradients():
@@ -272,6 +307,12 @@ def test_exp004_config_rejects_a_changed_weight_ratio(tmp_path):
     with pytest.raises(ValueError, match="raw_ratio"):
         load_config(changed)
 
+    config = load_config(path)
+    config["statistics"]["paired_comparisons"].pop()
+    changed.write_text(json.dumps(config), encoding="utf-8")
+    with pytest.raises(ValueError, match="paired_comparisons"):
+        load_config(changed)
+
 
 def test_packed_mask_writer_checksums_and_reads_back_one_matrix(tmp_path):
     mask = torch.tensor([[True, False, True, False]])
@@ -282,6 +323,72 @@ def test_packed_mask_writer_checksums_and_reads_back_one_matrix(tmp_path):
     assert unpack_mask(payload).equal(mask)
     assert entry["byte_length"] == 1
     assert len(entry["sha256"]) == 64
+
+
+def test_resume_validation_rejects_predictions_from_a_stale_mask():
+    row = {
+        "status": "passed", "method": "REVEAL-ABS", "mask_hash": "old",
+        "evaluation_config_hash": "cfg", "correct": 1, "num_examples": 2,
+        "accuracy": 0.5, "rowwise_exact": True,
+    }
+    records = [
+        {"correct": True, "evaluation_config_hash": "cfg"},
+        {"correct": False, "evaluation_config_hash": "cfg"},
+    ]
+    mask_document = {"overall_sha256": "new"}
+
+    with pytest.raises(ValueError, match="mask hash"):
+        validate_resumable_evaluation(
+            row, records, "REVEAL-ABS", mask_document, "cfg", 2
+        )
+
+    mask_document["overall_sha256"] = "old"
+    assert validate_resumable_evaluation(
+        row, records, "REVEAL-ABS", mask_document, "cfg", 2
+    )
+
+
+def test_partition_artifact_is_bound_to_each_exp001_state_identity():
+    manifest = {
+        "historical_state_sha256": "states",
+        "mask_id": 99,
+        "states": [{
+            "timestep_index": 0, "timestep": 0.5, "sequence_index": 7,
+            "mask_seed": 3, "p_mask": 0.5,
+            "mask": [[True, False, True]],
+        }],
+    }
+    state = {
+        "state_index": 0, "timestep_index": 0, "timestep": 0.5,
+        "sequence_index": 7, "mask_seed": 3, "steps_remaining": 128,
+        "masked_count": 2, "reveal_count": 1, "remain_count": 1,
+        "masked_indices": [0, 2], "reveal_indices": [0], "remain_indices": [2],
+        "masked_predictions": [
+            {"position": 0, "token_id": 1, "confidence": 0.9},
+            {"position": 2, "token_id": 1, "confidence": 0.8},
+        ],
+    }
+    core = {
+        "version": 1, "source_state_sha256": "states",
+        "dense_fingerprint": "d" * 64, "partition_rule": {}, "states": [state],
+    }
+    artifact = {
+        **core,
+        "sha256": __import__("hashlib").sha256(
+            json.dumps(core, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest(),
+        "summary": {"state_count": 1},
+    }
+
+    assert validate_partition_artifact(artifact, manifest, expected_count=1)["passed"]
+
+    artifact["states"][0]["sequence_index"] = 8
+    changed_core = {key: artifact[key] for key in core}
+    artifact["sha256"] = __import__("hashlib").sha256(
+        json.dumps(changed_core, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    with pytest.raises(ValueError, match="state identity"):
+        validate_partition_artifact(artifact, manifest, expected_count=1)
 
 
 def test_token_weight_summary_records_raw_and_normalized_values():

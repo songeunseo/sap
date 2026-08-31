@@ -103,6 +103,7 @@ def load_config(path):
         "source_exp002.evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
         "partition.denoising_steps": 256,
         "partition.remasking": "low_confidence",
+        "partition.confidence": "softmax_probability_of_argmax",
         "weighting.conditions": ["uniform", "reveal", "remain"],
         "weighting.raw_ratio": 2.0,
         "weighting.normalization": "masked_token_mean_one",
@@ -110,8 +111,21 @@ def load_config(path):
         "scoring.sparsity": 0.5,
         "scoring.block_count": 32,
         "scoring.modules_per_block": 7,
+        "uniform_reproduction.global_xor_threshold": 0.000001,
+        "uniform_reproduction.module_xor_threshold": 0.00001,
+        "storage.safety_bytes": 536870912,
         "evaluation.methods": ["REVEAL-ABS", "REVEAL-SQUARE", "REMAIN-ABS", "REMAIN-SQUARE"],
         "statistics.primary_comparison": ["REVEAL-ABS", "REMAIN-ABS"],
+        "statistics.paired_comparisons": [
+            ["REVEAL-ABS", "UNIFORM-ABS"],
+            ["REMAIN-ABS", "UNIFORM-ABS"],
+            ["REVEAL-ABS", "REMAIN-ABS"],
+            ["REVEAL-SQUARE", "UNIFORM-SQUARE"],
+            ["REMAIN-SQUARE", "UNIFORM-SQUARE"],
+            ["REVEAL-SQUARE", "REMAIN-SQUARE"],
+            ["REVEAL-ABS", "REVEAL-SQUARE"],
+            ["REMAIN-ABS", "REMAIN-SQUARE"],
+        ],
     }
     for dotted, wanted in expected.items():
         actual = config
@@ -160,8 +174,10 @@ def freeze_token_partition(logits, noisy_ids, mask_id, p_mask, denoising_steps=2
         -1, prediction.unsqueeze(-1)
     ).squeeze(-1)
     masked_indices = mask[0].nonzero().flatten()
-    selected = torch.topk(confidence[0, masked_indices], k=reveal_count).indices
-    reveal_indices = masked_indices[selected].sort().values
+    generator_confidence = torch.where(mask, confidence, -torch.inf)
+    reveal_indices = torch.topk(
+        generator_confidence[0], k=reveal_count
+    ).indices.sort().values
     remain_indices = masked_indices[
         ~torch.isin(masked_indices, reveal_indices)
     ]
@@ -243,14 +259,23 @@ def summarize_token_weights(partition):
 
 
 def weighted_dlm_loss(logits, clean_ids, mask, p_mask, alpha):
+    return weighted_dlm_losses(
+        logits, clean_ids, mask, p_mask, {"condition": alpha}
+    )["condition"]
+
+
+def weighted_dlm_losses(logits, clean_ids, mask, p_mask, alphas):
     if logits.shape[:-1] != clean_ids.shape or mask.shape != clean_ids.shape:
         raise ValueError("logits, tokens, and mask shapes differ")
-    if alpha.shape != mask.shape or not mask.any().item():
+    if not alphas or any(alpha.shape != mask.shape for alpha in alphas.values()) or not mask.any().item():
         raise ValueError("alpha shape is invalid or the state has no masks")
     token_loss = F.cross_entropy(
         logits[mask].float(), clean_ids[mask], reduction="none"
     )
-    return (token_loss * alpha[mask]).sum() / p_mask / clean_ids.numel()
+    return {
+        condition: (token_loss * alpha[mask]).sum() / p_mask / clean_ids.numel()
+        for condition, alpha in alphas.items()
+    }
 
 
 def independent_weight_effects(losses, parameters, frozen_cpu_weights=None):
@@ -527,6 +552,58 @@ def run_preflight(config_path):
     return result
 
 
+def validate_partition_artifact(artifact, manifest, expected_count=80):
+    core_keys = (
+        "version", "source_state_sha256", "dense_fingerprint",
+        "partition_rule", "states",
+    )
+    core = {key: artifact[key] for key in core_keys}
+    if hashlib.sha256(_canonical_json(core)).hexdigest() != artifact.get("sha256"):
+        raise ValueError("token partition artifact hash mismatch")
+    if (
+        artifact["source_state_sha256"] != manifest["historical_state_sha256"]
+        or not isinstance(artifact["dense_fingerprint"], str)
+        or len(artifact["dense_fingerprint"]) != 64
+        or len(artifact["states"]) != expected_count
+        or len(manifest["states"]) != expected_count
+        or artifact.get("summary", {}).get("state_count") != expected_count
+    ):
+        raise ValueError("token partition source/count/fingerprint mismatch")
+    identity = ("timestep_index", "timestep", "sequence_index", "mask_seed")
+    for index, (partition, source) in enumerate(zip(artifact["states"], manifest["states"])):
+        if partition["state_index"] != index or any(
+            partition[key] != source[key] for key in identity
+        ):
+            raise ValueError("token partition state identity differs from EXP-001")
+        mask = torch.tensor(source["mask"], dtype=torch.bool)
+        masked_indices = mask[0].nonzero().flatten().tolist()
+        reveal = partition["reveal_indices"]
+        remain = partition["remain_indices"]
+        steps = max(1, math.ceil(source["p_mask"] * 256))
+        expected_reveal_count = int(get_num_transfer_tokens(mask, steps)[0, 0].item())
+        if (
+            partition["steps_remaining"] != steps
+            or partition["masked_indices"] != masked_indices
+            or partition["masked_count"] != len(masked_indices)
+            or partition["reveal_count"] != expected_reveal_count
+            or partition["remain_count"] != len(masked_indices) - expected_reveal_count
+            or set(reveal) & set(remain)
+            or sorted(reveal + remain) != masked_indices
+        ):
+            raise ValueError("token partition sets differ from EXP-001 mask/schedule")
+        predictions = partition["masked_predictions"]
+        if [row["position"] for row in predictions] != masked_indices:
+            raise ValueError("token partition prediction positions differ from masks")
+        confidence = torch.full((mask.shape[1],), -torch.inf)
+        confidence[masked_indices] = torch.tensor(
+            [row["confidence"] for row in predictions]
+        )
+        expected_reveal = torch.topk(confidence, k=expected_reveal_count).indices.sort().values.tolist()
+        if reveal != expected_reveal:
+            raise ValueError("token partition reveal indices differ from saved confidence rule")
+    return {"passed": True, "state_count": expected_count, "sha256": artifact["sha256"]}
+
+
 @torch.no_grad()
 def run_partition(config_path):
     config = load_config(config_path)
@@ -536,6 +613,9 @@ def run_partition(config_path):
         raise RuntimeError("EXP-004 preflight has not passed")
     sources = _load_sources(config)
     model, _ = _load_model(sources["exp001_config"])
+    dense_fingerprint = _validated_dense_fingerprint(
+        model, sources["exp002_config"], sources["score_metadata"]
+    )
     embedding_device = model.model.transformer.wte.weight.device
     partitions = []
     weights = []
@@ -572,6 +652,7 @@ def run_partition(config_path):
     partition_document = {
         "version": 1,
         "source_state_sha256": config["source_exp001"]["state_sha256"],
+        "dense_fingerprint": dense_fingerprint,
         "partition_rule": {
             "steps_remaining": "max(1, ceil(p_mask * 256))",
             "transfer_count": "get_num_transfer_tokens(current_mask, steps_remaining)[0]",
@@ -652,16 +733,16 @@ def run_scoring(config_path):
     partition_file = json.loads((root / "token_partition_summary.json").read_text())
     if preflight.get("status") != "passed" or partition_file["summary"]["state_count"] != 80:
         raise RuntimeError("preflight and partition artifacts must pass before scoring")
-    partition_core = {
-        key: partition_file[key] for key in ("version", "source_state_sha256", "partition_rule", "states")
-    }
-    if hashlib.sha256(_canonical_json(partition_core)).hexdigest() != partition_file["sha256"]:
-        raise ValueError("token partition artifact hash mismatch")
     sources = _load_sources(config)
-    if partition_file["source_state_sha256"] != sources["manifest"]["historical_state_sha256"]:
-        raise ValueError("token partition uses different calibration states")
+    validate_partition_artifact(
+        partition_file, sources["manifest"], config["source_exp001"]["state_count"]
+    )
 
     model, devices = _load_model(sources["exp001_config"])
+    if _validated_dense_fingerprint(
+        model, sources["exp002_config"], sources["score_metadata"]
+    ) != partition_file["dense_fingerprint"]:
+        raise ValueError("dense model fingerprint differs from partition phase")
     specs = _module_specs(model)
     expected_matrices = config["scoring"]["block_count"] * config["scoring"]["modules_per_block"]
     if len(specs) != expected_matrices:
@@ -674,6 +755,12 @@ def run_scoring(config_path):
     model.zero_grad(set_to_none=True)
     _reset_cuda_peaks(devices)
     started = time.perf_counter()
+    _atomic_write_json(root / "logs" / "scoring_start.json", {
+        "status": "running",
+        "started_unix": time.time(),
+        "resume_supported": False,
+        "restart_behavior": "recompute all blocks and overwrite per-matrix mask payloads",
+    })
 
     frozen = {
         (entry["method"], entry["block_index"], entry["module"]): entry
@@ -729,6 +816,22 @@ def run_scoring(config_path):
                     next_hiddens.append(target_output.detach().cpu())
                 logits = _suffix_logits(model, target_output, block_index + 1)
                 mask = state["mask"].to(logits.device)
+                if block_index == 0:
+                    marker = torch.zeros(mask.shape, dtype=torch.long, device=mask.device)
+                    marker[mask] = sources["manifest"]["mask_id"]
+                    observed = freeze_token_partition(
+                        logits,
+                        marker,
+                        sources["manifest"]["mask_id"],
+                        state["p_mask"],
+                        config["partition"]["denoising_steps"],
+                    )
+                    for key in (
+                        "masked_indices", "reveal_indices", "remain_indices",
+                        "masked_predictions",
+                    ):
+                        if observed[key] != partition[key]:
+                            raise RuntimeError("dense partition changed between partition and scoring")
                 reveal_mask = torch.zeros_like(mask)
                 reveal_mask[0, partition["reveal_indices"]] = True
                 if (
@@ -741,16 +844,13 @@ def run_scoring(config_path):
                     condition: token_weights(mask, reveal_mask, condition)
                     for condition in ("uniform", "reveal", "remain")
                 }
-                losses = {
-                    condition: weighted_dlm_loss(
-                        logits,
-                        state["clean_ids"].to(logits.device),
-                        mask,
-                        state["p_mask"],
-                        alpha[condition],
-                    )
-                    for condition in ("uniform", "reveal", "remain")
-                }
+                losses = weighted_dlm_losses(
+                    logits,
+                    state["clean_ids"].to(logits.device),
+                    mask,
+                    state["p_mask"],
+                    alpha,
+                )
                 effects = independent_weight_effects(
                     losses,
                     {name: layer.weight for name, layer in layers.items()},
@@ -849,6 +949,7 @@ def run_scoring(config_path):
             del frozen_cpu_weights
             progress = {
                 "status": "running",
+                "resume_supported": False,
                 "completed_blocks": block_index + 1,
                 "elapsed_seconds": time.perf_counter() - started,
                 "cuda_peak": _cuda_peaks(devices),
@@ -930,6 +1031,30 @@ def _method_key(label):
     return label.lower().replace("-", "_")
 
 
+def validate_resumable_evaluation(
+    row, records, label, mask_document, evaluation_config_hash, expected_count
+):
+    if row.get("status") != "passed" or row.get("method") != label:
+        raise ValueError("resumable evaluation method/status mismatch")
+    if row.get("mask_hash") != mask_document["overall_sha256"]:
+        raise ValueError("resumable evaluation mask hash is stale")
+    if row.get("evaluation_config_hash") != evaluation_config_hash or any(
+        record.get("evaluation_config_hash") != evaluation_config_hash
+        for record in records
+    ):
+        raise ValueError("resumable evaluation config hash differs")
+    correct = sum(record["correct"] for record in records)
+    if (
+        len(records) != expected_count
+        or row.get("num_examples") != expected_count
+        or row.get("correct") != correct
+        or row.get("accuracy") != correct / expected_count
+        or row.get("rowwise_exact") is not True
+    ):
+        raise ValueError("resumable evaluation predictions and summary differ")
+    return True
+
+
 def run_evaluation(config_path):
     from transformers import AutoTokenizer
 
@@ -957,21 +1082,27 @@ def run_evaluation(config_path):
         key = _method_key(label)
         result_path = evaluation_root / f"{key}.json"
         prediction_path = prediction_root / f"{key}.jsonl"
-        if result_path.exists() and prediction_path.exists():
-            row = json.loads(result_path.read_text())
-            records = _read_jsonl(prediction_path)
-            if (
-                row.get("status") != "passed"
-                or row["evaluation_config_hash"] != sources["evaluation_config_hash"]
-                or len(records) != config["source_exp002"]["example_count"]
-            ):
-                raise ValueError(f"invalid resumable evaluation artifact: {label}")
-            _assert_same_examples(reference, records)
-            results.append(row)
-            continue
         mask_document = json.loads((root / f"{key}_mask.json").read_text())
         if len(mask_document["entries"]) != config["source_exp001"]["matrix_count"]:
             raise ValueError(f"mask manifest is incomplete: {label}")
+        if result_path.exists() and prediction_path.exists():
+            row = json.loads(result_path.read_text())
+            records = _read_jsonl(prediction_path)
+            try:
+                validate_resumable_evaluation(
+                    row,
+                    records,
+                    label,
+                    mask_document,
+                    sources["evaluation_config_hash"],
+                    config["source_exp002"]["example_count"],
+                )
+                _assert_same_examples(reference, records)
+            except ValueError as error:
+                print(json.dumps({"event": "stale_evaluation_rerun", "method": label, "reason": str(error)}), flush=True)
+            else:
+                results.append(row)
+                continue
         model, _ = _load_model(sources["exp001_config"])
         dense_hash = _validated_dense_fingerprint(
             model, sources["exp002_config"], sources["score_metadata"]
