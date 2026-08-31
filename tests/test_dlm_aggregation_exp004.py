@@ -8,6 +8,7 @@ import torch
 from experiments.dlm_loss_aggregation.exp004.run import (
     MagnitudeAccumulator,
     _report,
+    allow_repeated_compiled_backwards,
     compare_score_masks,
     holm_adjust,
     independent_weight_effects,
@@ -28,6 +29,15 @@ from experiments.dlm_loss_aggregation.exp004.run import (
 )
 
 from experiments.dlm_loss_aggregation.core import unpack_mask
+
+
+def test_shared_compiled_graph_disables_donated_buffers(monkeypatch):
+    import torch._functorch.config as functorch_config
+
+    monkeypatch.setattr(functorch_config, "donated_buffer", True)
+    allow_repeated_compiled_backwards()
+
+    assert functorch_config.donated_buffer is False
 
 
 def test_freeze_partition_uses_remaining_schedule_and_partitions_every_mask():

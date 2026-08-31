@@ -278,6 +278,12 @@ def weighted_dlm_losses(logits, clean_ids, mask, p_mask, alphas):
     }
 
 
+def allow_repeated_compiled_backwards():
+    import torch._functorch.config as functorch_config
+
+    functorch_config.donated_buffer = False
+
+
 def independent_weight_effects(losses, parameters, frozen_cpu_weights=None):
     conditions = ("uniform", "reveal", "remain")
     if tuple(losses) != conditions or not parameters:
@@ -727,6 +733,7 @@ def _ranked_comparisons(scores, masks, pairs):
 def run_scoring(config_path):
     from lib.prune_llada import find_layers
 
+    allow_repeated_compiled_backwards()
     config = load_config(config_path)
     root = Path(config_path).parent
     preflight = json.loads((root / "logs" / "preflight.json").read_text())
