@@ -1,0 +1,17 @@
+{
+  "diagnosis": {
+    "existing_sparsegpt_scope": "50% threshold over all rows within each 128-column block",
+    "required_scope": "exact 50% within every output row",
+    "source": "lib/sparsegpt.py SparseGPT.fasterprune"
+  },
+  "exception": "ValueError",
+  "failed_method": "SparseGPT",
+  "failed_module": {
+    "layer": 0,
+    "module": "attn_out"
+  },
+  "full_evaluation_started": false,
+  "message": "wrong row sparsity after sparsegpt: (0, 'attn_out')",
+  "phase": "timing_subset_32",
+  "status": "stopped_by_correctness_gate"
+}

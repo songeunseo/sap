@@ -1,0 +1,12 @@
+{
+  "calibration_states": 8,
+  "calibration_type": "clean_8x256",
+  "clean_calibration_sha256": "6b125bc2652e4a34bc897e1edab5bd650a011ef737b842771297918d2c1a9642",
+  "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+  "hashes": {
+    "SparseGPT": "e39a092c7876fb928ea09a60d37be3ff13c8f86898138afeabbba20b95fe4f89",
+    "Wanda": "3273fbbe3aaeeb1dc66b0c436e6af7537e07d1bb461667354f3da00a879fc484"
+  },
+  "model_revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "seed": 0
+}

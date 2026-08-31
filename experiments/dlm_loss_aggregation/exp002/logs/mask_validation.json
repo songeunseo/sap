@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "abs": 224,
+    "square": 224,
+    "sum": 224
+  },
+  "overall_sha256": {
+    "abs": "d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5",
+    "square": "f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99",
+    "sum": "20d99801af0e9084aa89c7be951078dd5aaa53e75a3d891b6330725bdbf1824e"
+  },
+  "total_bytes": 2617245696
+}

@@ -1,0 +1,37 @@
+{
+  "clean_calibration_sha256": "6b125bc2652e4a34bc897e1edab5bd650a011ef737b842771297918d2c1a9642",
+  "evaluation": {
+    "block_length": 256,
+    "bootstrap_iters": 0,
+    "denoising_steps": 256,
+    "fewshot_seed": 1234,
+    "generation_length": 256,
+    "max_cuda_gib": 30,
+    "num_fewshot": 5,
+    "numpy_seed": 1234,
+    "order": [
+      "Dense",
+      "DLM-SUM",
+      "DLM-ABS",
+      "DLM-SQUARE",
+      "Wanda",
+      "SparseGPT"
+    ],
+    "pathological_slowdown_factor": 3.0,
+    "primary_filter": "strict-match",
+    "primary_metric": "exact_match,strict-match",
+    "random_seed": 0,
+    "task": "gsm8k",
+    "temperature": 0,
+    "timing_examples": 32,
+    "torch_seed": 1234
+  },
+  "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+  "lm_eval_version": "0.4.8",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "sha256": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+}

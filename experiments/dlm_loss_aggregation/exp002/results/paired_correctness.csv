@@ -1,0 +1,8 @@
+method_a,method_b,both_correct,a_correct_b_wrong,a_wrong_b_correct,both_wrong
+DLM-SUM,DLM-ABS,0,0,745,574
+DLM-SUM,DLM-SQUARE,0,0,701,618
+DLM-ABS,DLM-SQUARE,611,134,90,484
+DLM-ABS,Wanda,549,196,128,446
+DLM-ABS,SparseGPT,481,264,103,471
+DLM-SQUARE,Wanda,534,167,143,475
+DLM-SQUARE,SparseGPT,464,237,120,498

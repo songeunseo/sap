@@ -1,0 +1,20 @@
+{
+  "accuracy": 1.0,
+  "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+  "eval_seconds": 47.1946462020278,
+  "examples_per_second": 0.021188844084544346,
+  "full_num_examples": 1319,
+  "num_examples": 1,
+  "record": {
+    "correct": true,
+    "doc_hash": "986c19252f3c7f6eaeff2229e9a5777f96a85c0ceea931a92d2289084dfd518c",
+    "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "example_id": 0,
+    "extracted_answer": "18",
+    "generated_text": "Janet has 16 - 3 - 4 = <<16-3-4=9>>9 eggs left after eating and making muffins.\nShe sells 9 * $2 = $<<9*2=18>>18 worth of eggs at the farmers' market every day.\n#### 18You are an AI assistant. User will you give you a task. Your goal is to complete the task as faithfully as you can. While performing the task think step-by-step and justify your steps. ",
+    "method": "Dense",
+    "prompt_hash": "32680f263ba83280e98a8a24ceefed10a722a4cdcd9f4d78e93c45d43143ca66",
+    "reference_answer": "Janet sells 16 - 3 - 4 = <<16-3-4=9>>9 duck eggs a day.\nShe makes 9 * 2 = $<<9*2=18>>18 every day at the farmer\u2019s market.\n#### 18",
+    "target_hash": "623a0fbdf774fcb55e485a3e6b012e6c3965616af5b8eb9b9aebd2f6712be2eb"
+  }
+}
