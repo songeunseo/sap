@@ -16,6 +16,7 @@ from experiments.dlm_loss_aggregation.exp004.run import (
     paired_comparison,
     freeze_token_partition,
     require_disk_capacity,
+    run_evaluation,
     summarize_mask_diagnostics,
     summarize_token_weights,
     validate_uniform_reuse,
@@ -336,6 +337,30 @@ def test_uniform_reproduction_thresholds_cover_legacy_rerun_nondeterminism():
     assert gate["module_xor_threshold"] == pytest.approx(
         control["max_module_xor"] * control["safety_factor"]
     )
+
+
+def test_evaluation_accepts_a_passed_nonexact_uniform_reproduction(tmp_path, monkeypatch):
+    config = load_config("experiments/dlm_loss_aggregation/exp004/config.json")
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    (logs / "uniform_reproduction.json").write_text(
+        json.dumps({"status": "passed", "exact": False}), encoding="utf-8"
+    )
+    (logs / "scoring.json").write_text(
+        json.dumps({"status": "passed"}), encoding="utf-8"
+    )
+
+    class GatePassed(Exception):
+        pass
+
+    def stop_after_gate(*args, **kwargs):
+        raise GatePassed
+
+    monkeypatch.setattr("transformers.AutoTokenizer.from_pretrained", stop_after_gate)
+    with pytest.raises(GatePassed):
+        run_evaluation(config_path)
 
 
 def test_packed_mask_writer_checksums_and_reads_back_one_matrix(tmp_path):

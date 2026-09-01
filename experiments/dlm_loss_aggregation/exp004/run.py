@@ -1075,10 +1075,9 @@ def run_evaluation(config_path):
     scoring = json.loads((root / "logs" / "scoring.json").read_text())
     if (
         reproduction.get("status") != "passed"
-        or not reproduction.get("exact")
         or scoring.get("status") != "passed"
     ):
-        raise RuntimeError("exact UNIFORM mask reproduction is required before evaluation")
+        raise RuntimeError("passed UNIFORM reproduction and scoring gates are required before evaluation")
     sources = _load_sources(config)
     tokenizer = AutoTokenizer.from_pretrained(
         config["model"]["id"],
