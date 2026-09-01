@@ -324,6 +324,20 @@ def test_exp004_config_rejects_a_changed_weight_ratio(tmp_path):
         load_config(changed)
 
 
+def test_uniform_reproduction_thresholds_cover_legacy_rerun_nondeterminism():
+    config = load_config("experiments/dlm_loss_aggregation/exp004/config.json")
+    gate = config["uniform_reproduction"]
+    control = gate["legacy_block0_control"]
+
+    assert gate["global_xor_threshold"] == pytest.approx(
+        max(control["abs_global_xor"], control["square_global_xor"])
+        * control["safety_factor"]
+    )
+    assert gate["module_xor_threshold"] == pytest.approx(
+        control["max_module_xor"] * control["safety_factor"]
+    )
+
+
 def test_packed_mask_writer_checksums_and_reads_back_one_matrix(tmp_path):
     mask = torch.tensor([[True, False, True, False]])
 

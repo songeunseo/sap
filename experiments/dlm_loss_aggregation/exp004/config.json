@@ -46,8 +46,14 @@
     "modules_per_block": 7
   },
   "uniform_reproduction": {
-    "global_xor_threshold": 0.000001,
-    "module_xor_threshold": 0.00001
+    "legacy_block0_control": {
+      "abs_global_xor": 0.0008339515099158654,
+      "square_global_xor": 0.0012169801271878756,
+      "max_module_xor": 0.0019975900650024414,
+      "safety_factor": 1.25
+    },
+    "global_xor_threshold": 0.0015212251589848445,
+    "module_xor_threshold": 0.0024969875812530518
   },
   "storage": {
     "safety_bytes": 536870912
