@@ -1276,6 +1276,7 @@ These statements describe observed orderings under the frozen protocol and do no
 ## Implementation Deviations
 
 - Full score tensors were processed module-wise and discarded because only 5 GiB disk was available. `*_scores.json` retains per-module shape, SHA-256, statistics, sparsity, and linked mask hashes.
+- UNIFORM recomputation bit-exact status, global mask XOR, and the calibrated nondeterminism gate result are reported under Sanity Checks; evaluation started only after that gate passed.
 - No permutation/random-token control, confidence-continuous weighting, ratio sweep, or additional benchmark was added.
 
 ## Decision
@@ -1366,6 +1367,11 @@ def run_analysis(config_path):
         "no_parameter_updates": True,
         "exact_rowwise_half": True,
         "uniform_masks_exact": reproduction["exact"],
+        "uniform_reproduction_gate_passed": reproduction["passed"],
+        "uniform_mask_xor": {
+            method: values["xor"]
+            for method, values in reproduction["by_method"].items()
+        },
         "evaluation_config_hash": sources["evaluation_config_hash"],
     }
     report = _report(config, rows, comparisons, diagnostics, sanity)

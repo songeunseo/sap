@@ -505,3 +505,4 @@ def test_final_report_renders_all_required_result_and_statistics_sections():
     assert "## Exact Weighting Equations" in report
     assert "REVEAL-ABS vs REMAIN-ABS" in report
     assert "## Implementation Deviations" in report
+    assert "calibrated nondeterminism gate" in report
