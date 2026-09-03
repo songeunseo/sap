@@ -250,6 +250,49 @@ def token_weights(mask, reveal_mask, condition):
     return raw
 
 
+def symmetric_token_weights(mask, reveal_mask, rho=0.5):
+    if mask.dtype != torch.bool or reveal_mask.shape != mask.shape:
+        raise ValueError("mask and reveal_mask must be matching boolean tensors")
+    if reveal_mask.dtype != torch.bool or (reveal_mask & ~mask).any().item():
+        raise ValueError("reveal positions must be masked")
+    if rho < 0:
+        raise ValueError("rho must be non-negative")
+    masked_count = int(mask.sum().item())
+    reveal_count = int(reveal_mask.sum().item())
+    if reveal_count <= 0 or reveal_count >= masked_count:
+        raise ValueError("symmetric weighting requires both reveal and remain tokens")
+    q = reveal_count / masked_count
+    contrast = torch.zeros(mask.shape, dtype=torch.float32, device=mask.device)
+    contrast[reveal_mask] = 1.0
+    contrast[mask & ~reveal_mask] = -q / (1.0 - q)
+    reveal_alpha = torch.where(mask, 1.0 + rho * contrast, torch.zeros_like(contrast))
+    remain_alpha = torch.where(mask, 1.0 - rho * contrast, torch.zeros_like(contrast))
+    if not torch.isfinite(reveal_alpha[mask]).all().item() or not torch.isfinite(remain_alpha[mask]).all().item():
+        raise RuntimeError("symmetric alpha is non-finite")
+    if (reveal_alpha[mask] <= 0).any().item() or (remain_alpha[mask] <= 0).any().item():
+        raise ValueError("rho produces non-positive masked-token alpha")
+    one = torch.tensor(1.0, dtype=torch.float32, device=mask.device)
+    if not torch.isclose(reveal_alpha[mask].mean(), one, atol=1e-6, rtol=0):
+        raise RuntimeError("symmetric reveal alpha mean is not one")
+    if not torch.isclose(remain_alpha[mask].mean(), one, atol=1e-6, rtol=0):
+        raise RuntimeError("symmetric remain alpha mean is not one")
+    if not torch.allclose(reveal_alpha[mask] + remain_alpha[mask], torch.full_like(reveal_alpha[mask], 2.0), atol=1e-6, rtol=0):
+        raise RuntimeError("symmetric alpha conditions are not mirror images")
+    if not torch.isclose(
+        (reveal_alpha[mask] - 1).abs().mean(),
+        (remain_alpha[mask] - 1).abs().mean(),
+        atol=1e-6,
+        rtol=0,
+    ) or not torch.isclose(
+        (reveal_alpha[mask] - 1).square().mean(),
+        (remain_alpha[mask] - 1).square().mean(),
+        atol=1e-6,
+        rtol=0,
+    ):
+        raise RuntimeError("symmetric alpha perturbation magnitudes differ")
+    return reveal_alpha, remain_alpha
+
+
 def summarize_token_weights(partition):
     masked = partition["masked_count"]
     reveal = partition["reveal_count"]

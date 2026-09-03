@@ -19,6 +19,7 @@ from experiments.dlm_loss_aggregation.exp004.run import (
     run_evaluation,
     summarize_mask_diagnostics,
     summarize_token_weights,
+    symmetric_token_weights,
     validate_uniform_reuse,
     token_weights,
     validate_uniform_reproduction,
@@ -106,6 +107,39 @@ def test_token_weights_normalize_each_condition_to_masked_mean_one():
     assert reveal_up[mask].mean().item() == 1.0
     assert remain_up[mask].mean().item() == 1.0
     assert not uniform[~mask].any().item()
+
+
+def test_symmetric_token_weights_are_mirror_images_with_equal_strength():
+    mask = torch.tensor([[True, True, True, True, False]])
+    reveal = torch.tensor([[True, False, False, False, False]])
+
+    reveal_alpha, remain_alpha = symmetric_token_weights(mask, reveal, rho=0.5)
+
+    assert reveal_alpha[mask].mean().item() == pytest.approx(1.0)
+    assert remain_alpha[mask].mean().item() == pytest.approx(1.0)
+    assert reveal_alpha[0, 0].item() == pytest.approx(1.5)
+    assert reveal_alpha[0, 1].item() == pytest.approx(5 / 6)
+    assert remain_alpha[0, 0].item() == pytest.approx(0.5)
+    assert remain_alpha[0, 1].item() == pytest.approx(7 / 6)
+    assert torch.allclose(reveal_alpha[mask] + remain_alpha[mask], torch.full((4,), 2.0))
+    assert torch.allclose(reveal_alpha[~mask], torch.zeros(1))
+
+
+@pytest.mark.parametrize("reveal_count", [1, 2])
+def test_symmetric_token_weights_match_perturbation_magnitude(reveal_count):
+    mask = torch.ones((1, 4), dtype=torch.bool)
+    reveal = torch.zeros((1, 4), dtype=torch.bool)
+    reveal[0, :reveal_count] = True
+
+    reveal_alpha, remain_alpha = symmetric_token_weights(mask, reveal, rho=0.5)
+    reveal_delta = reveal_alpha[mask] - 1
+    remain_delta = remain_alpha[mask] - 1
+
+    assert reveal_delta.mean().item() == pytest.approx(0.0, abs=1e-6)
+    assert remain_delta.mean().item() == pytest.approx(0.0, abs=1e-6)
+    assert torch.allclose(reveal_delta, -remain_delta)
+    assert reveal_delta.abs().mean().item() == pytest.approx(remain_delta.abs().mean().item())
+    assert reveal_delta.square().mean().item() == pytest.approx(remain_delta.square().mean().item())
 
 
 def test_weighted_loss_changes_only_token_terms_not_dlm_normalization():
