@@ -1,0 +1,6 @@
+{
+  "restart_behavior": "recompute all blocks and overwrite per-matrix mask payloads",
+  "resume_supported": false,
+  "started_unix": 1788237731.0518737,
+  "status": "running"
+}

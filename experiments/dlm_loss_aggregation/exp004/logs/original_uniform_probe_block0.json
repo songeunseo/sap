@@ -1,0 +1,107 @@
+{
+  "donated_buffer": true,
+  "rows": [
+    {
+      "method": "abs",
+      "module": "attn_out",
+      "different": 13948,
+      "num_weights": 16777216,
+      "xor": 0.0008313655853271484
+    },
+    {
+      "method": "square",
+      "module": "attn_out",
+      "different": 20880,
+      "num_weights": 16777216,
+      "xor": 0.0012445449829101562
+    },
+    {
+      "method": "abs",
+      "module": "ff_out",
+      "different": 29788,
+      "num_weights": 50331648,
+      "xor": 0.0005918343861897787
+    },
+    {
+      "method": "square",
+      "module": "ff_out",
+      "different": 43826,
+      "num_weights": 50331648,
+      "xor": 0.0008707443873087565
+    },
+    {
+      "method": "abs",
+      "module": "q_proj",
+      "different": 15012,
+      "num_weights": 16777216,
+      "xor": 0.0008947849273681641
+    },
+    {
+      "method": "square",
+      "module": "q_proj",
+      "different": 23544,
+      "num_weights": 16777216,
+      "xor": 0.0014033317565917969
+    },
+    {
+      "method": "abs",
+      "module": "k_proj",
+      "different": 22804,
+      "num_weights": 16777216,
+      "xor": 0.0013592243194580078
+    },
+    {
+      "method": "square",
+      "module": "k_proj",
+      "different": 33514,
+      "num_weights": 16777216,
+      "xor": 0.0019975900650024414
+    },
+    {
+      "method": "abs",
+      "module": "v_proj",
+      "different": 19676,
+      "num_weights": 16777216,
+      "xor": 0.001172780990600586
+    },
+    {
+      "method": "square",
+      "module": "v_proj",
+      "different": 30564,
+      "num_weights": 16777216,
+      "xor": 0.001821756362915039
+    },
+    {
+      "method": "abs",
+      "module": "ff_proj",
+      "different": 40192,
+      "num_weights": 50331648,
+      "xor": 0.0007985432942708334
+    },
+    {
+      "method": "square",
+      "module": "ff_proj",
+      "different": 56844,
+      "num_weights": 50331648,
+      "xor": 0.0011293888092041016
+    },
+    {
+      "method": "abs",
+      "module": "up_proj",
+      "different": 40468,
+      "num_weights": 50331648,
+      "xor": 0.0008040269215901693
+    },
+    {
+      "method": "square",
+      "module": "up_proj",
+      "different": 56256,
+      "num_weights": 50331648,
+      "xor": 0.001117706298828125
+    }
+  ],
+  "global": {
+    "abs": 0.0008339515099158654,
+    "square": 0.0012169801271878756
+  }
+}

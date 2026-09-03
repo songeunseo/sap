@@ -1,0 +1,193 @@
+{
+  "comparisons": [
+    {
+      "a_only_correct": 82,
+      "accuracy_difference_pp": 1.6679302501895374,
+      "b_only_correct": 60,
+      "both_correct": 685,
+      "both_wrong": 492,
+      "discordant_pairs": 142,
+      "method_a": "REVEAL-ABS",
+      "method_b": "UNIFORM-ABS",
+      "p_exact_two_sided": 0.07765321401762205,
+      "p_holm": 0.38826607008811026,
+      "primary": false
+    },
+    {
+      "a_only_correct": 63,
+      "accuracy_difference_pp": 0.1516300227445034,
+      "b_only_correct": 61,
+      "both_correct": 684,
+      "both_wrong": 511,
+      "discordant_pairs": 124,
+      "method_a": "REMAIN-ABS",
+      "method_b": "UNIFORM-ABS",
+      "p_exact_two_sided": 0.9284921641248501,
+      "p_holm": 1.0,
+      "primary": false
+    },
+    {
+      "a_only_correct": 73,
+      "accuracy_difference_pp": 1.5163002274450341,
+      "b_only_correct": 53,
+      "both_correct": 694,
+      "both_wrong": 499,
+      "discordant_pairs": 126,
+      "method_a": "REVEAL-ABS",
+      "method_b": "REMAIN-ABS",
+      "p_exact_two_sided": 0.09012286584573267,
+      "primary": true
+    },
+    {
+      "a_only_correct": 71,
+      "accuracy_difference_pp": 1.2130401819560273,
+      "b_only_correct": 55,
+      "both_correct": 646,
+      "both_wrong": 547,
+      "discordant_pairs": 126,
+      "method_a": "REVEAL-SQUARE",
+      "method_b": "UNIFORM-SQUARE",
+      "p_exact_two_sided": 0.18122406088142373,
+      "p_holm": 0.7248962435256949,
+      "primary": false
+    },
+    {
+      "a_only_correct": 71,
+      "accuracy_difference_pp": 0.6065200909780136,
+      "b_only_correct": 63,
+      "both_correct": 638,
+      "both_wrong": 547,
+      "discordant_pairs": 134,
+      "method_a": "REMAIN-SQUARE",
+      "method_b": "UNIFORM-SQUARE",
+      "p_exact_two_sided": 0.5455343664798731,
+      "p_holm": 1.0,
+      "primary": false
+    },
+    {
+      "a_only_correct": 76,
+      "accuracy_difference_pp": 0.6065200909780136,
+      "b_only_correct": 68,
+      "both_correct": 641,
+      "both_wrong": 534,
+      "discordant_pairs": 144,
+      "method_a": "REVEAL-SQUARE",
+      "method_b": "REMAIN-SQUARE",
+      "p_exact_two_sided": 0.5598211377107971,
+      "p_holm": 1.0,
+      "primary": false
+    },
+    {
+      "a_only_correct": 134,
+      "accuracy_difference_pp": 3.790750568612585,
+      "b_only_correct": 84,
+      "both_correct": 633,
+      "both_wrong": 468,
+      "discordant_pairs": 218,
+      "method_a": "REVEAL-ABS",
+      "method_b": "REVEAL-SQUARE",
+      "p_exact_two_sided": 0.0008633647470830895,
+      "p_holm": 0.006043553229581626,
+      "primary": false
+    },
+    {
+      "a_only_correct": 132,
+      "accuracy_difference_pp": 2.8809704321455647,
+      "b_only_correct": 94,
+      "both_correct": 615,
+      "both_wrong": 478,
+      "discordant_pairs": 226,
+      "method_a": "REMAIN-ABS",
+      "method_b": "REMAIN-SQUARE",
+      "p_exact_two_sided": 0.013669424259065708,
+      "p_holm": 0.08201654555439425,
+      "primary": false
+    }
+  ],
+  "results": [
+    {
+      "accuracy": 0.5648218347232752,
+      "correct": 745,
+      "method": "UNIFORM-ABS",
+      "num_examples": 1319
+    },
+    {
+      "accuracy": 0.5314632297194845,
+      "correct": 701,
+      "method": "UNIFORM-SQUARE",
+      "num_examples": 1319
+    },
+    {
+      "accuracy": 0.5815011372251706,
+      "correct": 767,
+      "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+      "eval_seconds": 40034.72499511391,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "mask_hash": "7dc0b8e18cb60828505b0fceb2009745ea5751ba555141d36ee7d462d22f4071",
+      "method": "REVEAL-ABS",
+      "num_examples": 1319,
+      "rowwise_exact": true,
+      "sparsity": 0.5,
+      "status": "passed",
+      "total_method_seconds": 40046.749416377395
+    },
+    {
+      "accuracy": 0.5435936315390447,
+      "correct": 717,
+      "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+      "eval_seconds": 40000.972945936024,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "mask_hash": "f08891717b7c19e27f6946acb7c0d19ff02a9f9ea0073e183169a31fb9ee6225",
+      "method": "REVEAL-SQUARE",
+      "num_examples": 1319,
+      "rowwise_exact": true,
+      "sparsity": 0.5,
+      "status": "passed",
+      "total_method_seconds": 40013.553185451776
+    },
+    {
+      "accuracy": 0.5663381349507203,
+      "correct": 747,
+      "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+      "eval_seconds": 40004.90215995535,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "mask_hash": "9f8260cc196a7cd93e340f216113c0419f8741dc693b4f2efcb3d3c76d924430",
+      "method": "REMAIN-ABS",
+      "num_examples": 1319,
+      "rowwise_exact": true,
+      "sparsity": 0.5,
+      "status": "passed",
+      "total_method_seconds": 40017.36582823098
+    },
+    {
+      "accuracy": 0.5375284306292646,
+      "correct": 709,
+      "dense_fingerprint": "a6c065970a8355d60a773fdee3d8fdc34147d4f089caa44e1e9aeecc19b51785",
+      "eval_seconds": 39997.372083209455,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "mask_hash": "d189caaa05cd85a950da1b686a235294c9441aa8277d07de791b2200776fe286",
+      "method": "REMAIN-SQUARE",
+      "num_examples": 1319,
+      "rowwise_exact": true,
+      "sparsity": 0.5,
+      "status": "passed",
+      "total_method_seconds": 40009.85994258523
+    }
+  ],
+  "sanity": {
+    "all_alpha_means_one": true,
+    "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "exact_rowwise_half": true,
+    "gradient_isolation": "torch.autograd.grad with parameter .grad always None",
+    "no_parameter_updates": true,
+    "partition_frozen_across_aggregation": true,
+    "same_80_states": true,
+    "uniform_mask_xor": {
+      "abs": 0.0005331704249748817,
+      "square": 0.0006445480080751273
+    },
+    "uniform_masks_exact": false,
+    "uniform_reproduction_gate_passed": true
+  },
+  "status": "complete"
+}

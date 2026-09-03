@@ -1208,6 +1208,18 @@ def _report(config, rows, comparisons, diagnostics, sanity):
         square = by_method[f"{condition}-SQUARE"]["accuracy"]
         preferred = "ABS" if absolute > square else "SQUARE" if square > absolute else "tie"
         aggregation_lines.append(f"- {condition}: {preferred} had the higher observed exact-match accuracy.")
+    primary = next(row for row in comparisons if row.get("primary"))
+    significant = [
+        f"{row['method_a']} vs {row['method_b']}"
+        for row in comparisons
+        if not row.get("primary") and row["p_holm"] < 0.05
+    ]
+    statistical_summary = (
+        f"The preregistered primary comparison had exact p={primary['p_exact_two_sided']:.6g} "
+        f"and {'did' if primary['p_exact_two_sided'] < 0.05 else 'did not'} reach alpha=0.05. "
+        f"After Holm adjustment of the seven exploratory comparisons, "
+        f"{', '.join(significant) if significant else 'none'} remained significant at alpha=0.05."
+    )
     return f"""# EXP-004 — Decode-Aware Token Importance Direction × Gradient Aggregation
 
 ## Objective
@@ -1270,6 +1282,8 @@ Protocol: full 1,319-example GSM8K, 5-shot, strict exact match, temperature 0, g
 ### Aggregation interaction
 
 {chr(10).join(aggregation_lines)}
+
+{statistical_summary}
 
 These statements describe observed orderings under the frozen protocol and do not establish a universal confidence or causal mechanism.
 

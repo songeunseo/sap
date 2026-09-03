@@ -1,0 +1,2696 @@
+{
+  "entries": [
+    {
+      "block_index": 0,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__attn_out.bin",
+      "sha256": "aec60f1bb1f773fadea9a3b04a7a0cdb9f28d0afff6418407fc02869c02d64a4",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__ff_out.bin",
+      "sha256": "11371e2ae7dc023dacbf5c14b2cbb931914dcdfa7e26551ebd3d180c6374f1a9",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__q_proj.bin",
+      "sha256": "c361085b043ea1ae7ca84261fac9deaad12b8e7131f9b2c74099145416cf27ac",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__k_proj.bin",
+      "sha256": "27801d21aca4fe7fdaef55bd8de6813fd2cb6221db5cf2a65265b2216051540e",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__v_proj.bin",
+      "sha256": "91aee5cd9c36c6e0ed9dd29c3293cb0e0e357d2881013c7ac99405491fd81090",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__ff_proj.bin",
+      "sha256": "34cc304d5b09a3390b058b2696a34c057e200f41064139925ff0555dc86f6b10",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 0,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_00__up_proj.bin",
+      "sha256": "43414964f7edd341e0f4ecba79d8302c9719c8b084eb4ed30e4b4620ca0bd6f2",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__attn_out.bin",
+      "sha256": "9ec630f6021aabb12fb129d56f38218813ad91f2398cd0a721404217b3618f64",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__ff_out.bin",
+      "sha256": "f2c2abaa5deb45f29b43de50dbb54dcc4fd94b9d7a7da16d9f3e9f4edca25f4f",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__q_proj.bin",
+      "sha256": "40c2c396fda9d712438a6562b902587488921b59a2a45d120b9fe16ee4570343",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__k_proj.bin",
+      "sha256": "56063fe31db85afc26418a49ca9918a1b78233ffedc15c99a69d28bc20129537",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__v_proj.bin",
+      "sha256": "e895da6ccb13cc2871a21afdff081ad3d679ff907de482015fb7b3c3b6d0bbf0",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__ff_proj.bin",
+      "sha256": "cb142726b10413fd93d34259a467883f6c1a1e7a532201752361566c7485a7a8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 1,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_01__up_proj.bin",
+      "sha256": "65947f170016791ceca5dd9c47ece8f32ec7c6929c43c064cd1c6aafdecbb3f4",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__attn_out.bin",
+      "sha256": "ef849aa98c59834784f8d243acadfc3ba82b83ec4b0612d2246225b3767a7ea8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__ff_out.bin",
+      "sha256": "ae93d15c01fb7ff4e5bf1520e21efdd1429d91c2ee2f740ec00ca06104348c4e",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__q_proj.bin",
+      "sha256": "f7243d412d55826174f401ffb994e336dda059f00df00e936b0ec2ef7c9a0465",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__k_proj.bin",
+      "sha256": "84153ff789a4c066dd0d880f9a3147e761b3030bed5cefde4289439a690bd9f9",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__v_proj.bin",
+      "sha256": "d111fd4d61eb54368e2f65a3a45c611d83ef119fe5686002495d3a517280925e",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__ff_proj.bin",
+      "sha256": "159153aab0d9ea0ce44935038a6e72f315ab6d0762f2fa07ebf909bb210711fc",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 2,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_02__up_proj.bin",
+      "sha256": "215836588d07ca4f66355898fc13cf47f3552d633f90b4fb8e28341e7766d475",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__attn_out.bin",
+      "sha256": "aac6800336f30a6bac1bebd1f5b7964e9f3c7744b608d381f43091d2638368db",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__ff_out.bin",
+      "sha256": "af8e7f15b39768b18ed5c9a74efdb8db40a48ef7d1467f5b6a74e7e4a8a1ea3b",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__q_proj.bin",
+      "sha256": "18e96c42acf3377540fff144656e1ce14464c1a4c2305c974caa0e8f657bfef2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__k_proj.bin",
+      "sha256": "fcb5766502102df8472130cf13b855b6f0362c1754d9438109bb070aef2cddd0",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__v_proj.bin",
+      "sha256": "7a050cdb6a9caf4239a1623cb636c6501c6a555fc5e2863f8f7fed19c4673428",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__ff_proj.bin",
+      "sha256": "a9a9761e76cdda9f0bbed7edaabd33f258b6b2d5de92d12ea107409146209624",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 3,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_03__up_proj.bin",
+      "sha256": "eb64ce5530c133c38a229b5fae8ad59233bf2c79eb0a6dc43b412c0709ee4634",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__attn_out.bin",
+      "sha256": "7d18d8c3a7e931af9f109d7106aef8dfa265cb0652d52cf084742bfe7883b1b2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__ff_out.bin",
+      "sha256": "342321049e34eab2eb01a41d0ab4b9526738254e1dffd6b79aed1a4b1b125d18",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__q_proj.bin",
+      "sha256": "1e0d33a40102158aea6528747ade36a7b455d7df2c1c78b0bd32e2c64bfa288c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__k_proj.bin",
+      "sha256": "fa50eaeb24478dbd83eb75c5863aedbd5218b0353c435c11bda07bbc09cf703b",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__v_proj.bin",
+      "sha256": "0d2947d51b37920cbd21cb84f9c7a0c7a5f650e81d209604cd0d06f9cd3a7b6d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__ff_proj.bin",
+      "sha256": "936818404036192342a9c45a0cb647356f4cc077ea3f3a4c01987ca96d4e1535",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 4,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_04__up_proj.bin",
+      "sha256": "36bb91f414ad14834a06e70976a5d4d1ee6fcd6a39d37bcbe14d87bae17c80d2",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__attn_out.bin",
+      "sha256": "e44f18459d25f6f48b46d031b54d2fed1cee57a47ab863936352a0b3b4d3f239",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__ff_out.bin",
+      "sha256": "440ce32a0da2bd84b21c29c73ed1c63dd46b7e9c1b26de15ce23de845f76e249",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__q_proj.bin",
+      "sha256": "7430c77e7df4fb061de1cbea0432f48d49a9b38d3b639f62f23423b13e7b2b35",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__k_proj.bin",
+      "sha256": "0d0977038b7875394a4e2eb0f0e11aec8fcf911867df6467045f5f01067059d6",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__v_proj.bin",
+      "sha256": "ca0f5a1a7e2db0da0ad09c037bb5d7f974966ebddfe6ba75ccad79cfcffec8c5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__ff_proj.bin",
+      "sha256": "e4e2f68f94568ae68323fa3a57b4bd657d40d34ddd1d7f7a0f681e92b25030f8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 5,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_05__up_proj.bin",
+      "sha256": "9c7967a107952a6d9da67daa43739c9507a91ebfd2efe022e4df49a8de6ac4c9",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__attn_out.bin",
+      "sha256": "ce3cce3d443f3fa0c5a938947965ba054bc7726ddf965b6d299ead9fbbdd1efd",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__ff_out.bin",
+      "sha256": "706ebb5c66e4f284e1f33b33bd4555aebddc529d9893ca4a40bddb0a0d109ed7",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__q_proj.bin",
+      "sha256": "aa55e0a496d961c13392e1299c10aa18efdd316e3c9a45703bf30010c63be777",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__k_proj.bin",
+      "sha256": "cb55588ddbee4a0b8eab669cb73496932026f9ca292438ab928a049ae9ce90f1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__v_proj.bin",
+      "sha256": "f717df5c90d59b80e00f7a90386dac654ce82d0f7a1d1960c600c8a38c3ba20d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__ff_proj.bin",
+      "sha256": "3f84e23ff314c16c50a73c16ba9e72c60eac0a0fdd942048c9edd83c60e5b27a",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 6,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_06__up_proj.bin",
+      "sha256": "b28545c1a3ca854d5b5bacc0896bdc7484aef268f5f41a1568f4cb9b75facede",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__attn_out.bin",
+      "sha256": "160c24357d2e544a6b69aee086e32af983dc34e79fcc9a4ad6938db5251cf6e6",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__ff_out.bin",
+      "sha256": "b87142e4a00885da7fbd2aa76d2a15f0843a2bf56d166928c4df0bbb8d18928c",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__q_proj.bin",
+      "sha256": "846878bb44cafd560a55f13d6c7403ef8feeb8db1c7db87f6bce10da564ca729",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__k_proj.bin",
+      "sha256": "75b0c31baea572a15176d59e1e09da73b46a97ad8d0fb7021f68ec463930fbc2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__v_proj.bin",
+      "sha256": "dfd52ede44224c58b47d3e83bd84ec0693f15d70198f26bd83a7e26296e5b210",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__ff_proj.bin",
+      "sha256": "79739024bab3c2e041e4c76394fa59f1ac7d94cc2e4a4a8fc3396df3b949d53d",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 7,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_07__up_proj.bin",
+      "sha256": "f98a786608ae7fbbefc0f556bdb8cd942ff71edf38d3c125ed7aea03f8a1a2ad",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__attn_out.bin",
+      "sha256": "014bc7d02b22beffc1b122ce8b02ace48c9546b52ff4296a7d8cd41792a7fe16",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__ff_out.bin",
+      "sha256": "99dfb08dce1ffb257da96472bd4b9c8a4d1ad24df87389178e35bc51db995db8",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__q_proj.bin",
+      "sha256": "2a210b2806bec21f0bd6c3228c09b8821dadf45871f941303793b81ea65dd9b1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__k_proj.bin",
+      "sha256": "c0249d87894dc03965cec9294eb259ff7c6b239880fbcadc715eb4acdcee31f7",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__v_proj.bin",
+      "sha256": "a21813f9553369a97d9c7a2bf8c2bb735a5831c3b3e8d9a46cf6efb4c80d8f15",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__ff_proj.bin",
+      "sha256": "78b0f40efa368c71d70c83e9407e9f251bf98690415312e096a10aa774e65a93",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 8,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_08__up_proj.bin",
+      "sha256": "fcc71363c8381d8a178a279fd975f3331a810c961ebbdee41af77c5852a651cc",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__attn_out.bin",
+      "sha256": "f908e33e9ef7f7a855e61f0e4f64cbf7eb77b23f2eff9874790e615e26f7998f",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__ff_out.bin",
+      "sha256": "e56a0ce8512b054135d4a5628ee2922bc13fb7599f8e37ea32db7bc61c8701ba",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__q_proj.bin",
+      "sha256": "e65569d14ef12bc341e1c6354a74fdc2fdabbb3b3c3c01029132156f29d46e29",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__k_proj.bin",
+      "sha256": "8043b725bf6e4eb4651ac2abdaac1de701aaaa61d2bcc710c67f81028d725864",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__v_proj.bin",
+      "sha256": "80d37d64e07eaa52a44cc1f9232baceb9cd5fd1a04807a8b586ec199f707c988",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__ff_proj.bin",
+      "sha256": "9ee25a7cee23ef45e058828e153f67c5529f2dea37f7722a97e46ce5462ab008",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 9,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_09__up_proj.bin",
+      "sha256": "6c3c37ffd27fad19de6303e4e23145ec872c09283c55540b236d22b1470e2671",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__attn_out.bin",
+      "sha256": "be821571f311c9daa643f92eeb8c4f3192c7713401aa4c94b7124dba91ea582c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__ff_out.bin",
+      "sha256": "89151eedb688a6f237a84821b0dc91ee0c3b9f383d1174f78db5bbfce38fe851",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__q_proj.bin",
+      "sha256": "eb986a1e1f59b353037a3fc5e48f6fb5a82768aec7fc698785b44bcda29be767",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__k_proj.bin",
+      "sha256": "1c29cb892f94afba0692d9260a10667fd1faff04414f21f17eca64bc606ab8ec",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__v_proj.bin",
+      "sha256": "2337f4995760102946899143d2b1afa9a8ccde20297b9fff79335e83d8526f3f",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__ff_proj.bin",
+      "sha256": "fda80a6e902e166cf6da4cdb510743870298dc62f91802727f4d5dd96722f4eb",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 10,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_10__up_proj.bin",
+      "sha256": "53bee6d538d909f2b170f958b06babea6fd0636c4cba080ddf1d9b62f9124d7f",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__attn_out.bin",
+      "sha256": "290b3e7b683e9b1700411274b7f759ac88b109e2d8a51c31628ac00988f7175e",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__ff_out.bin",
+      "sha256": "1ab657845a789b14ec63f60c55b9ab3f9ac8b37698e3bf0b264cb75c39da99f3",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__q_proj.bin",
+      "sha256": "a1b94fa5a5e4eae6749e2fc5075a484f2ae25e182b98d54ce625e1ea07661cde",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__k_proj.bin",
+      "sha256": "564ada1d96db2f0663f7bde550d9e44a8869c0030a90c6dbf77d5b42523e0ea7",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__v_proj.bin",
+      "sha256": "38cdc2366f0ed2aaa135273b37033cb523b0a31c37ed7378ef47cba685913c10",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__ff_proj.bin",
+      "sha256": "f28022e7fab6d74ee42943698d1a54581a7130395f5246f2ebb2f27f76885447",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 11,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_11__up_proj.bin",
+      "sha256": "ee4c31ee4e271dc51f3be099e1ae651b016e471d53e3a9cc276a26e21955f3f3",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__attn_out.bin",
+      "sha256": "c14296d7010a9c323db6beb69f13abf12862a3774184cfd7832817e6ad20433e",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__ff_out.bin",
+      "sha256": "ce4f2f2c490df0f1c58d97937f48c0eb9dca1a06cba35d4d252b3e274c609342",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__q_proj.bin",
+      "sha256": "e8a5714f9eb4479d51dd3337fd87567d555e44fdf31342cc247f859a2a1ae004",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__k_proj.bin",
+      "sha256": "54b2ae55c30ce7ea839419e50756f7a188cca76230ef968a9c0983eaeae4a354",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__v_proj.bin",
+      "sha256": "ea9e4f3b9b4409217453c882dd05ee46624c3216a36f82215962cb0cdc96f075",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__ff_proj.bin",
+      "sha256": "0e292b1a778cbaf82e77bda7983a5c1c8189e402c9dd2c64800c4a396301d1a7",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 12,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_12__up_proj.bin",
+      "sha256": "a7edc8aafad7de59e8a0d324f44c5456b9203f545a1b6df5371a1a36ebdb8aee",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__attn_out.bin",
+      "sha256": "6b0634fbfdac00230a4cf274909b58f59174c075e10afb25a894ba8b16b1f485",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__ff_out.bin",
+      "sha256": "e907002b776fd78e4b3d54c944b65964740b96c0bd96204870aa4d9d0484edb5",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__q_proj.bin",
+      "sha256": "445660c8c6f67b845e6cf12fb814d0ef0ccf6ae476d4e6e5f23061358a836d0d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__k_proj.bin",
+      "sha256": "76abf8e1f78ac1ff6148abaacfc9c36b9a3e91f68d1ae1e9e9516bcd7df7bd10",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__v_proj.bin",
+      "sha256": "9f503b149912494b422aad8a71ee4625532a5a6ca2db3193e507f4ba0bbd6e05",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__ff_proj.bin",
+      "sha256": "14bd0ec8b8ea5ee7847d633583e80c8c040c900e71251bc1e381c3ddf53a0ca8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 13,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_13__up_proj.bin",
+      "sha256": "905fa56b6a8a35fe6004c930bcc0ca75c27469baa1931555feddafefd0ba616c",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__attn_out.bin",
+      "sha256": "32e96d07da8b8b22f5354dfd6bf77a9160b77de24e9d330a9c2d1d527784a367",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__ff_out.bin",
+      "sha256": "a3400e6122c81496f07eb01a9bb2b9a107fb96da53421ded5d657816a4c20cca",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__q_proj.bin",
+      "sha256": "c91f0fe3af38d7f933e4e7f525a175426404f2489dd211cf4c877012a7330c36",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__k_proj.bin",
+      "sha256": "067fab80d96ff0babdded6ad67b61343c78f1b98513bfe58cb09a2bfc9e2cd9c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__v_proj.bin",
+      "sha256": "ae8364c5d2b2a438c115c32d8336baa06cfc7bc1d00a6e6b176461034fe99f40",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__ff_proj.bin",
+      "sha256": "a3b69f6d47e7631523e38f2dbb1cccb9a9dc71920562c776c278735e9fbbcec4",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 14,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_14__up_proj.bin",
+      "sha256": "e715ff20d8a2331f2cb34286716382eb23912237f5c9af25cc4d28a2379a4d42",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__attn_out.bin",
+      "sha256": "28b18a58d908519e13f040b71577a205dde0577a5a60ba4b52aceef07c87776c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__ff_out.bin",
+      "sha256": "a6fb0243bc62932e5425ce0cfbda04634e5d66fb438b354c49ce1488fb1d23f8",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__q_proj.bin",
+      "sha256": "74d6cb0836529524576b670ef70e7b7726a41488f597f5dceb90a6ab714856eb",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__k_proj.bin",
+      "sha256": "bb6813ea325fab46b1950a2d515e62e44e6791b90e4a9800cce02f9dcf274767",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__v_proj.bin",
+      "sha256": "3aca3eeafad702cfd74a13ba5572021dcf8614e228457d7dc29b53d2a64663e8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__ff_proj.bin",
+      "sha256": "6a6ae32ef67f7346600050dab1c55d6b70b6ccd1425a1218456dd99cfd54e66b",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 15,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_15__up_proj.bin",
+      "sha256": "56864500fe300b7a67f668d55ff9ceefaa984052ac863b777b64200e13fd07d2",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__attn_out.bin",
+      "sha256": "d5669f1ed6861cc4c05bbd0566b4163017b510fc0308cce5825622fd30a883a7",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__ff_out.bin",
+      "sha256": "896f0961578933e3ed65b627efa9dcd0219db147d6ef05ffed89d8666f31f329",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__q_proj.bin",
+      "sha256": "bb2a0281ae8e744c40474b3d1f14625dc81f4ed8cc8873c5c6fc9583ddfd3230",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__k_proj.bin",
+      "sha256": "cc33e29e37e1a740bf9967512132da00333c978b81b8d0b4193f96dbe5912f7a",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__v_proj.bin",
+      "sha256": "b114cfb8019f9c0f369150f1d5f35ba79efc7f5bd283709d08e4ac60cc2383cb",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__ff_proj.bin",
+      "sha256": "5f061a172299cd4279de5adfd37eef1f790d8fb33798870da8f857addf530797",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 16,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_16__up_proj.bin",
+      "sha256": "414053ebe174baa158fd65d7825e7a5ca445634c982ef54dd2f30fdf8dc368f1",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__attn_out.bin",
+      "sha256": "8342ba0385bcd5a0576e991793ab56e1d4a2c60e5b76d8b27d2e16373644972b",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__ff_out.bin",
+      "sha256": "3b4f0464f214a68fad62fea2e72d7014c3614317c994624349ea95811e7cf906",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__q_proj.bin",
+      "sha256": "7afa1b975854d8a8bc4938745a59f44e065a7923fe170466b81302be2f36cdf5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__k_proj.bin",
+      "sha256": "77ba7d7c1cb58d7a9e93b6018ecf58bcb2adcdfcd1ae491a18a1c63bda4cddca",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__v_proj.bin",
+      "sha256": "6a550b23ceda61ca4303e007942ec8db4dc9e82953fc979efc8f214b187ebeb8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__ff_proj.bin",
+      "sha256": "d11e9228c67e4b09c0b46404116ff5c8babbd9b36d81068f8870ab3b5a040041",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 17,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_17__up_proj.bin",
+      "sha256": "942f40778809974811f7ce78e746a80fef38f25bc32e82921a5ac0d160968ef5",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__attn_out.bin",
+      "sha256": "2190472b1a371082734d94b499099b542fa9a3b3ba5597cf1f1c39a1da10b9a0",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__ff_out.bin",
+      "sha256": "da9d00993c6d230de866f2191189f07fc2fd3951e95d2696ccdf945bd15597c9",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__q_proj.bin",
+      "sha256": "16ddb9bfa971c4c577ebae35ce7fcb5246295cf600d0894038002a15a931c943",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__k_proj.bin",
+      "sha256": "b0256c44a2d7ef29259f8375b1bb3239e90d0458492aedeaeb873ea3af9c26b2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__v_proj.bin",
+      "sha256": "75c78e0919fd634220b67eba4e9456076f271df81a276b243e9b198dd7ba82d8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__ff_proj.bin",
+      "sha256": "41bf5597b196a6547474b95f16496d5cbc6ed72736949001bbe55dc887c45ae8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 18,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_18__up_proj.bin",
+      "sha256": "86a75b41a2d44983d64eb394e3fd16255cedf2eb92323e04aafaafd4e2f6e10c",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__attn_out.bin",
+      "sha256": "61c45a3d775dec2dc3815582255fd7fe5ff2dcdc2a85da05269f53d368a372a8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__ff_out.bin",
+      "sha256": "202a1923d42dcd295c13079d201182f227aa1597f2d50fb97271ebcd8be17d96",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__q_proj.bin",
+      "sha256": "da9b43de4777eeb333a86cd55f7b09c6b7c9316fa715bddedafa99aac3851a30",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__k_proj.bin",
+      "sha256": "0c4b099b60a1c0919aa11ff35d0601db5ba1ed9dfe49feff282e056e9451606d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__v_proj.bin",
+      "sha256": "cc0fcdd291661d99ba79afde06b570edcacdc02c5e1475b69b3580675ca9ee7c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__ff_proj.bin",
+      "sha256": "3b591046c5a41722da3305301da31ff1cfec1d1127f7f8d1fee128d1534e50c8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 19,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_19__up_proj.bin",
+      "sha256": "d8787e40fd19835c96f8ca02900423994532b5f05ca6ed6309391d50b4b45329",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__attn_out.bin",
+      "sha256": "49f5716835d6657df8a560a4e4c2007bd0f10606fd406e7d3d53ba1d02837c8c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__ff_out.bin",
+      "sha256": "b5a240b95f001acbd4357a42039803b7476ba1d8e10a0782b04ad0307fa8607a",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__q_proj.bin",
+      "sha256": "a8dc5c47b74baae74158e7d44114b502ad066fa3eebed649231848a8a11af5a9",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__k_proj.bin",
+      "sha256": "c30d259bf08e5209949834a2bf3ec7758fa2b5ca93c3cb1b00e03abfdfe47529",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__v_proj.bin",
+      "sha256": "dd92d893e7d7679df7335cfd83cc0ec288ccb92c704b87bd05621052791b148d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__ff_proj.bin",
+      "sha256": "2b63809836bd565c33a36199f7c083087aacf42505b0e3adb65d3ac3306745a6",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 20,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_20__up_proj.bin",
+      "sha256": "e8a1cf812f14ee7cfc290fd9e9f99bf03611679d1a072602c115a93e3a242826",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__attn_out.bin",
+      "sha256": "b78def17f7ef61cd485c255ba15023a7dfae4b12edf516430b767d18ba8e12d0",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__ff_out.bin",
+      "sha256": "36e5152fe21609bde0dfe404a8cc30f8a23ef8f73b83fafdc41a2e7a335aac4c",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__q_proj.bin",
+      "sha256": "683be4de382befef78a606b93c63625689f6bb55bc03a6cc874df70903f22ee1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__k_proj.bin",
+      "sha256": "cef2c0a57f3dec8f7a31d44da3232c8e0aa58fe7813fc3e709d18fbe3b312249",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__v_proj.bin",
+      "sha256": "ca99637237115afd421993b54beaf98602390fb968752ef9d18712696c3809d1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__ff_proj.bin",
+      "sha256": "778e8ebaf07a0a19d3accdf9717d263a4c882d66a9a9177e722b177d986a4b98",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 21,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_21__up_proj.bin",
+      "sha256": "a2c9fa6efaba18cc94b2bb33d18bef1b2777fdfd68726c9e05ed466385a1da6f",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__attn_out.bin",
+      "sha256": "a2a02902c68e113965005cdc8e4aaecb4841dfd51e51d8576ac9a8015d59de7c",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__ff_out.bin",
+      "sha256": "1d6087f1a2c7fc25f01aff73f8dcff038f3ae7b3e4ca26c59ed8230147774b39",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__q_proj.bin",
+      "sha256": "ee72af602dbc2042aae28a9db814bdff139326d6a2d90919152c6fa77b2c705d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__k_proj.bin",
+      "sha256": "c281c6820acb6e48114746b91bdf8c1135c8fb07aae43b6a0040c54517e92540",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__v_proj.bin",
+      "sha256": "452acfe593b03a59501dc6a4304943038aeae56b8518d7318bb8956520cfb431",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__ff_proj.bin",
+      "sha256": "8003bf2803f355622434e138243bbfd356c1f8e6bb6e5a326208d8bc48feb702",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 22,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_22__up_proj.bin",
+      "sha256": "42426099a66c06231999339bab76544405dd7ab573b4e2ea1d7e469520ec83f4",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__attn_out.bin",
+      "sha256": "c7f9eb0b8444b44feddb9ccefd926a5f796c5ea25d0822987fcd975b50dd10f4",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__ff_out.bin",
+      "sha256": "2427b11653b446e59b1ea42e7736e0ce18a41fa72854fbe06e905d84bad870e1",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__q_proj.bin",
+      "sha256": "fa03fb82ec5173b7db8519c7bd3535e516ea5660da61e37f2ed8d7dbc4dcbe44",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__k_proj.bin",
+      "sha256": "207f9f4429263a0fa6b956a13c8699cc578838101002a5f6517adc0b5ea0cee5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__v_proj.bin",
+      "sha256": "09f850bfb24c6bea8fb275947d423901e3a4178bc68430da37ebd216c677e4e2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__ff_proj.bin",
+      "sha256": "fd14e1eb700734498a824204a714531be3ed5bf508789219b14e54604800d26a",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 23,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_23__up_proj.bin",
+      "sha256": "e25beaa73e992f5485bc7be5dfa81f565a6156ff699f2e49cddd91365ceb63c4",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__attn_out.bin",
+      "sha256": "cd7741d54fdae70045a97c3eec5793e32b21fe67c8f4fe13018cf89e3afe6e9e",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__ff_out.bin",
+      "sha256": "2ae2c8e8118784a9e590bdcce4d87b31f39fcbac60cd4e590e3634590fa6036c",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__q_proj.bin",
+      "sha256": "057b1e1181fa0b13fd58930b117b98890019d6b0cab0642ca61da85d4e596eb8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__k_proj.bin",
+      "sha256": "b61ec49f6e119b073754ec60890e5d83ebb11a4aab03b3bf79978c9f11383758",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__v_proj.bin",
+      "sha256": "3231f2551c370454ede6c280de5813b10177fe04abac52b3633535744c0297ce",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__ff_proj.bin",
+      "sha256": "f53fe12951196ee2276cebf4d5160959a930bf4c0b69891d7fd2bfcf59ee7ba3",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 24,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_24__up_proj.bin",
+      "sha256": "bcd06003a0e7ab3f413c61cf50b878c6c020264495d745543ba0d16281f219c2",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__attn_out.bin",
+      "sha256": "af011b2bae178990bd562150003d9244da5e9d277b24ba3297c0a690837daafb",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__ff_out.bin",
+      "sha256": "6eed05f3d1e2963cdb83e17ec244164962ca4bd6bbcb00969d2d8af7ec6ecb7e",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__q_proj.bin",
+      "sha256": "23b9dd3db8555e4e52a32dc48cfdab4448d71777266c1b0a2193f720a7709ca9",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__k_proj.bin",
+      "sha256": "853188520d3bc4a1f609edf57e787c645c91ee6d83518a60af56d9aabbecb6c3",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__v_proj.bin",
+      "sha256": "5a70b285895775381decae7696ae14dca8e62aefe3f5a3c9eaca899109e6edb6",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__ff_proj.bin",
+      "sha256": "477e523cf33a260a9806bdd1aabd618810cbcac21a6ca38ae202274c1022426d",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 25,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_25__up_proj.bin",
+      "sha256": "bb7e9d51989aabd8d9fdb2aaed1fc535e5e2eb37128b77bbfb9007a20355272a",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__attn_out.bin",
+      "sha256": "2f74f5eb6425c972b3e1d21e279f028b0625d6599bc364858b6eb0035956a8f9",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__ff_out.bin",
+      "sha256": "27cf4771603fda4c33eea199ee43073db4a35574e26c18280ee03caca53b30a1",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__q_proj.bin",
+      "sha256": "7e9cc5bd02172cd40bc6e50d8cbe112f1b483eb610abeb3db37e908a372157d6",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__k_proj.bin",
+      "sha256": "f6f81d80cf6041dde27558a9d30f3a36b9efb1e0289f147d483c88cfd6b442c5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__v_proj.bin",
+      "sha256": "70dd5b92d5590c9f798b53d452512e07ec48646e26822c6cee6c2e6b00deb18d",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__ff_proj.bin",
+      "sha256": "a82ba5737810d77aed9f0d2388cfbd9ca3e0451361fee87478890b76b98ac20b",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 26,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_26__up_proj.bin",
+      "sha256": "2ed396d8d3402f66d3f471985d77cd223728ab1b65f1f61a8873d9911006082f",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__attn_out.bin",
+      "sha256": "850c909becd880e85b8e88af74cfc20f251445ee18c000f6379bbd539e44a905",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__ff_out.bin",
+      "sha256": "90d212e4113318676152355708f5391824b25809e3fbbc4abf1b05dc2e152102",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__q_proj.bin",
+      "sha256": "3cc85b6080cc25d2b4d1691a43eb9b1ef5885a8b62db34af0134b5c27a586bed",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__k_proj.bin",
+      "sha256": "72fa26954c971d62f678d2c5c814cce248251f2195ba5aa497c6bec1b0e04355",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__v_proj.bin",
+      "sha256": "de4e242415ea6376db0b97f10117c51c8ad72416c6af7b01a8f4ce67a4d9da11",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__ff_proj.bin",
+      "sha256": "776e53bca6069e03c6c2716ac8389df53ffad86c8f5ba7df66722dda7d2e95c0",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 27,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_27__up_proj.bin",
+      "sha256": "e6e7243e81428b87ef0e1677f04eef6f5c307d3d764e7207c70609040abd9b16",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__attn_out.bin",
+      "sha256": "18fe8c7aaaf462e7a32def568f94c39a1e8bf3ca67bf1d8b48d203df2d13a1d5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__ff_out.bin",
+      "sha256": "1dcdae8b7556fad8b9acec1fe4919af1318b1774a0e38d99a3dcf0b97e7cf0e0",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__q_proj.bin",
+      "sha256": "a10a90e97dd0b449f696fc50de0919833de37b755a01264310f89e9098bedaf5",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__k_proj.bin",
+      "sha256": "c43ff19086c46ea616d88dc5b43713654237e3253eff8562786613ff26706da0",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__v_proj.bin",
+      "sha256": "50c5d95f42a603571ccec32cd9a9d611a84576c7117478c926df4323a6cd92c8",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__ff_proj.bin",
+      "sha256": "7fb3adb597737a07305e49626862408ab996aefd1a46a1de045ede703c148b8f",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 28,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_28__up_proj.bin",
+      "sha256": "3f27d157e7787e0f66b1f65acb32bd79f20f584a2469f0dafdfbba1a8b8045d6",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__attn_out.bin",
+      "sha256": "8c4bc4fe077a02f04afcac0d696e0780a6cfc247463415799c096335529ae429",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__ff_out.bin",
+      "sha256": "e9618269ba53fb1043b700193eff983e4420fea62930de3a016055b493a2c7c7",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__q_proj.bin",
+      "sha256": "cfe1702ca7c8c6fa60ea69c78ab52652d1a6b47ff4b8400e081fdfd2642fef63",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__k_proj.bin",
+      "sha256": "16e093db4807efe21ba56382ef3c76b436c775340f03f3b8a024698c57d43b3a",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__v_proj.bin",
+      "sha256": "364344e5ba752274a8019c7e5894c37c5e46f19f53cc2198f0367acc98dd64d1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__ff_proj.bin",
+      "sha256": "df73da43cf4ba24013fe1f0b9b4fd0aa564f294ba73b5971b7c66a0365c1441a",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 29,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_29__up_proj.bin",
+      "sha256": "f0ca366895b50ac313ac10a093297c89b1c40ec2eb35dc21aad0e8d5f4de0ce8",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__attn_out.bin",
+      "sha256": "b1152f471c43473a5e266cc828ff264500b8ca659f78ee30000c9db106471aff",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__ff_out.bin",
+      "sha256": "1d144dfc5aca57d42943451e926fa2b99a79369683a5d0c7fda586dcef638d51",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__q_proj.bin",
+      "sha256": "6aaac722fddace113d71e70eaa7aacfa5d6296cfec343747b682808a95476a93",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__k_proj.bin",
+      "sha256": "f90b7108e24e12483e889260b3f4af3b7bb4b865d41250520b24c044a8d59562",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__v_proj.bin",
+      "sha256": "ea26f2b75fa03eed1c65b3d03f672ee0f47b9331f9be3e6dd891b66d1bb78aa9",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__ff_proj.bin",
+      "sha256": "3a22a8af5a6cf0c7038e296a69711a42d4982cdd41d6901936cb34cb1633cfe4",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 30,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_30__up_proj.bin",
+      "sha256": "4176a1e10fd498dba96e803d94b2cd262619582ab47c24dad6bd3991fad6117b",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "attn_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__attn_out.bin",
+      "sha256": "96525a5e88c096171954ec68b5dae86d4a4bdb8975bc8ee5203f0ed6147019d1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_out",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__ff_out.bin",
+      "sha256": "eb2f44de61e77cae19061cade79eb91f3fb47250ad6b41e5d945447c6e1e4015",
+      "shape": [
+        4096,
+        12288
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "q_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__q_proj.bin",
+      "sha256": "904dbb88f2dc4f7b5e77e545e3f84e05ecd7a2b7373bceed078a4b941a6c283f",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "k_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__k_proj.bin",
+      "sha256": "747d5be64ed73b87db51a9776c3fd94a6c83ca08bce88184ee177b843cbde9b1",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 2097152,
+      "method": "remain_abs",
+      "module": "v_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__v_proj.bin",
+      "sha256": "447dd2daa60fe21e8eec75795bd6137149955241cd06700d1ed5047a71f1c4b2",
+      "shape": [
+        4096,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "ff_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__ff_proj.bin",
+      "sha256": "e1cde78993434f744b325ff05e3e03ef198db6d31d3dc964916adc16548fd8a0",
+      "shape": [
+        12288,
+        4096
+      ]
+    },
+    {
+      "block_index": 31,
+      "byte_length": 6291456,
+      "method": "remain_abs",
+      "module": "up_proj",
+      "runtime_path": "/home/tmluser1/sap/.worktrees/exp004-decode-aware/experiments/dlm_loss_aggregation/exp004/mask_payloads/remain_abs/block_31__up_proj.bin",
+      "sha256": "ae825a2b3b6815aaeaf51add7591a46913be92f942b44fc8d42887c58804a827",
+      "shape": [
+        12288,
+        4096
+      ]
+    }
+  ],
+  "method": "remain_abs",
+  "overall_sha256": "9f8260cc196a7cd93e340f216113c0419f8741dc693b4f2efcb3d3c76d924430",
+  "total_bytes": 872415232,
+  "version": 1
+}

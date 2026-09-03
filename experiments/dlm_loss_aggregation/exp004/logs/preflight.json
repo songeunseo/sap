@@ -1,8 +1,8 @@
 {
   "calibration_state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
-  "checked_at_unix": 1788184910.199365,
+  "checked_at_unix": 1788193704.4322038,
   "disk": {
-    "available_bytes": 5229531136,
+    "available_bytes": 4880248832,
     "required_bytes": 4026531840
   },
   "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",

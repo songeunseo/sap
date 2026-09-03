@@ -1,0 +1,17 @@
+{
+  "completed_blocks": 32,
+  "cuda_peak": {
+    "devices": [
+      {
+        "allocated_bytes": 18278837760,
+        "device": "cuda:0",
+        "reserved_bytes": 20126367744
+      }
+    ],
+    "max_allocated_bytes": 18278837760,
+    "max_reserved_bytes": 20126367744
+  },
+  "elapsed_seconds": 11239.35906695947,
+  "resume_supported": false,
+  "status": "running"
+}
