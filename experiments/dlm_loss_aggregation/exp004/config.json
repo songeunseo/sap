@@ -27,7 +27,37 @@
     "uniform_square_predictions": "experiments/dlm_loss_aggregation/exp002/results/predictions/dlm_square.jsonl",
     "uniform_abs_correct": 745,
     "uniform_square_correct": 701,
-    "example_count": 1319
+    "example_count": 1319,
+    "reference_results": [
+      {
+        "method": "Dense",
+        "correct": 938,
+        "sparsity": 0.0,
+        "calibration": "none",
+        "eval_seconds": 40134.96577632427
+      },
+      {
+        "method": "Wanda",
+        "correct": 677,
+        "sparsity": 0.5,
+        "calibration": "8 clean WikiText-2 spans",
+        "eval_seconds": 40092.05039740354
+      },
+      {
+        "method": "SparseGPT",
+        "correct": 584,
+        "sparsity": 0.5000015607533547,
+        "calibration": "8 clean WikiText-2 spans",
+        "eval_seconds": 40141.269484363496
+      },
+      {
+        "method": "DLM-SUM",
+        "correct": 0,
+        "sparsity": 0.5,
+        "calibration": "80 frozen corrupted states",
+        "eval_seconds": 40085.526941120625
+      }
+    ]
   },
   "partition": {
     "denoising_steps": 256,

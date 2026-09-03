@@ -479,7 +479,10 @@ def test_mask_diagnostics_add_element_weighted_layer_type_and_global_rows():
 def test_final_report_renders_all_required_result_and_statistics_sections():
     config = load_config("experiments/dlm_loss_aggregation/exp004/config.json")
     rows = [
-        {"method": method, "correct": 1, "num_examples": 2, "accuracy": 0.5}
+        {
+            "method": method, "correct": 1, "num_examples": 2,
+            "accuracy": 0.5, "eval_seconds": 1.0,
+        }
         for method in (
             "UNIFORM-ABS", "UNIFORM-SQUARE", "REVEAL-ABS",
             "REVEAL-SQUARE", "REMAIN-ABS", "REMAIN-SQUARE",
@@ -494,16 +497,30 @@ def test_final_report_renders_all_required_result_and_statistics_sections():
         }
         for index, (left, right) in enumerate(config["statistics"]["paired_comparisons"])
     ]
-    diagnostics = {"rows": [{
-        "scope": "global", "pair": "reveal_abs/remain_abs", "spearman": 1.0,
-        "mask_xor": 0.0, "mask_iou": 1.0, "topk_overlap": 1.0,
-    }]}
+    root = Path("experiments/dlm_loss_aggregation/exp004")
+    diagnostics = json.loads((root / "mask_diagnostics.json").read_text())
+    partition = json.loads((root / "token_partition_summary.json").read_text())
+    weights = json.loads((root / "token_weights_summary.json").read_text())
+    scoring = json.loads((root / "logs" / "scoring.json").read_text())
+    preflight = json.loads((root / "logs" / "preflight.json").read_text())
+    sanity = {
+        "gradient_isolation": scoring["gradient_isolation"],
+        "evaluation_config_hash": config["source_exp002"]["evaluation_config_hash"],
+        "uniform_mask_xor": {
+            method: values["xor"]
+            for method, values in scoring["uniform_reproduction"]["by_method"].items()
+        },
+    }
 
-    report = _report(config, rows, comparisons, diagnostics, {"passed": True})
+    report = _report(
+        config, rows, comparisons, diagnostics, sanity,
+        partition, weights, scoring, preflight,
+    )
 
     assert "# EXP-004" in report
-    assert "## Exact Weighting Equations" in report
+    assert "## 5. Token weighting과 DLM loss" in report
     assert "REVEAL-ABS vs REMAIN-ABS" in report
-    assert "## Implementation Deviations" in report
+    assert "## 10. 전체 성능 비교: Dense, Wanda, SparseGPT 포함" in report
+    assert "## 15. 구현 편차 및 실패 이력" in report
     assert "calibrated nondeterminism gate" in report
-    assert "did not reach alpha=0.05" in report
+    assert "alpha=0.05에 도달하지 않았다" in report

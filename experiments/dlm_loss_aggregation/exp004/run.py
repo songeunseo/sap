@@ -5,6 +5,7 @@ import math
 import json
 import os
 import shutil
+import statistics
 import time
 from pathlib import Path
 
@@ -101,6 +102,25 @@ def load_config(path):
         "source_exp001.state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
         "source_exp001.state_count": 80,
         "source_exp002.evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+        "source_exp002.reference_results": [
+            {
+                "method": "Dense", "correct": 938, "sparsity": 0.0,
+                "calibration": "none", "eval_seconds": 40134.96577632427,
+            },
+            {
+                "method": "Wanda", "correct": 677, "sparsity": 0.5,
+                "calibration": "8 clean WikiText-2 spans", "eval_seconds": 40092.05039740354,
+            },
+            {
+                "method": "SparseGPT", "correct": 584,
+                "sparsity": 0.5000015607533547,
+                "calibration": "8 clean WikiText-2 spans", "eval_seconds": 40141.269484363496,
+            },
+            {
+                "method": "DLM-SUM", "correct": 0, "sparsity": 0.5,
+                "calibration": "80 frozen corrupted states", "eval_seconds": 40085.526941120625,
+            },
+        ],
         "partition.denoising_steps": 256,
         "partition.remasking": "low_confidence",
         "partition.confidence": "softmax_probability_of_argmax",
@@ -1162,140 +1182,456 @@ def run_evaluation(config_path):
     return results
 
 
-def _report(config, rows, comparisons, diagnostics, sanity):
+def _report(config, rows, comparisons, diagnostics, sanity, partition, weights, scoring, preflight):
+    n = config["source_exp002"]["example_count"]
+    by_method = {row["method"]: row for row in rows}
+    references = {
+        row["method"]: {**row, "num_examples": n, "accuracy": row["correct"] / n}
+        for row in config["source_exp002"]["reference_results"]
+    }
+    all_results = {**references, **by_method}
+    dense = references["Dense"]["accuracy"]
+    wanda = references["Wanda"]["accuracy"]
+    sparsegpt = references["SparseGPT"]["accuracy"]
+    order = (
+        "Dense", "REVEAL-ABS", "REMAIN-ABS", "UNIFORM-ABS",
+        "REVEAL-SQUARE", "REMAIN-SQUARE", "UNIFORM-SQUARE",
+        "Wanda", "SparseGPT", "DLM-SUM",
+    )
+    categories = {
+        "Dense": "비희소 기준", "Wanda": "표준 참조", "SparseGPT": "표준 참조",
+        "DLM-SUM": "EXP-002 기각", "UNIFORM-ABS": "동결 대조군",
+        "UNIFORM-SQUARE": "동결 대조군", "REVEAL-ABS": "EXP-004 신규",
+        "REVEAL-SQUARE": "EXP-004 신규", "REMAIN-ABS": "EXP-004 신규",
+        "REMAIN-SQUARE": "EXP-004 신규",
+    }
+    calibrations = {
+        "Dense": "없음", "Wanda": "clean 8×256", "SparseGPT": "clean 8×256",
+        "DLM-SUM": "동일 80 states", "UNIFORM-ABS": "동일 80 states",
+        "UNIFORM-SQUARE": "동일 80 states", "REVEAL-ABS": "동일 80 states",
+        "REVEAL-SQUARE": "동일 80 states", "REMAIN-ABS": "동일 80 states",
+        "REMAIN-SQUARE": "동일 80 states",
+    }
     result_rows = [
-        "| Method | Correct / N | Accuracy |",
-        "|---|---:|---:|",
-    ] + [
-        f"| {row['method']} | {row['correct']} / {row['num_examples']} | {100 * row['accuracy']:.4f}% |"
-        for row in rows
+        "| 구분 | 방법 | 희소도 | Calibration | 정답 / 1319 | 정확도 | Dense 대비 | Wanda 대비 | SparseGPT 대비 |",
+        "|---|---|---:|---|---:|---:|---:|---:|---:|",
     ]
+    for method in order:
+        row = all_results[method]
+        sparsity = row.get("sparsity", 0.5)
+        result_rows.append(
+            f"| {categories[method]} | {method} | {100 * sparsity:.4f}% | {calibrations[method]} | "
+            f"{row['correct']} / {n} | {100 * row['accuracy']:.4f}% | "
+            f"{row['correct'] - references['Dense']['correct']:+d} / {100 * (row['accuracy'] - dense):+.4f} pp | "
+            f"{row['correct'] - references['Wanda']['correct']:+d} / {100 * (row['accuracy'] - wanda):+.4f} pp | "
+            f"{row['correct'] - references['SparseGPT']['correct']:+d} / {100 * (row['accuracy'] - sparsegpt):+.4f} pp |"
+        )
+
     paired_rows = [
-        "| Comparison | Both correct | A only | B only | Both wrong | Difference (pp) | Exact p | Holm p |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|",
+        "| 비교 (A vs B) | 둘 다 정답 | A만 정답 | B만 정답 | 둘 다 오답 | Discordant | A−B | Exact p | Holm p | 역할 |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     for row in comparisons:
-        adjusted = "primary" if row.get("primary") else f"{row['p_holm']:.6g}"
+        adjusted = "—" if row.get("primary") else f"{row['p_holm']:.6g}"
         paired_rows.append(
-            f"| {row['method_a']} vs {row['method_b']} | {row['both_correct']} | {row['a_only_correct']} | {row['b_only_correct']} | {row['both_wrong']} | {row['accuracy_difference_pp']:.4f} | {row['p_exact_two_sided']:.6g} | {adjusted} |"
+            f"| {row['method_a']} vs {row['method_b']} | {row['both_correct']} | "
+            f"{row['a_only_correct']} | {row['b_only_correct']} | {row['both_wrong']} | "
+            f"{row['a_only_correct'] + row['b_only_correct']} | {row['accuracy_difference_pp']:+.4f} pp | "
+            f"{row['p_exact_two_sided']:.6g} | {adjusted} | {'Primary' if row.get('primary') else 'Exploratory'} |"
         )
+
     global_diagnostics = [row for row in diagnostics["rows"] if row["scope"] == "global"]
     diagnostic_rows = [
-        "| Pair | Spearman | Mask XOR | Mask IoU | Top-50% overlap |",
-        "|---|---:|---:|---:|---:|",
+        "| Mask 비교 | 다른 weight 수 | Global XOR | Spearman | Mask IoU | 보존 top-50% overlap |",
+        "|---|---:|---:|---:|---:|---:|",
     ] + [
-        f"| {row['pair']} | {row['spearman']:.6f} | {row['mask_xor']:.6f} | {row['mask_iou']:.6f} | {row['topk_overlap']:.6f} |"
+        f"| {row['pair'].replace('_', '-').upper()} | {row['different']:,} | "
+        f"{100 * row['mask_xor']:.4f}% | {row['spearman']:.6f} | "
+        f"{100 * row['mask_iou']:.4f}% | {100 * row['topk_overlap']:.4f}% |"
         for row in global_diagnostics
     ]
-    by_method = {row["method"]: row for row in rows}
-    interpretations = []
-    for aggregation in ("ABS", "SQUARE"):
-        reveal = by_method[f"REVEAL-{aggregation}"]["accuracy"]
-        remain = by_method[f"REMAIN-{aggregation}"]["accuracy"]
-        uniform = by_method[f"UNIFORM-{aggregation}"]["accuracy"]
-        if reveal > uniform and reveal > remain:
-            outcome = "Outcome A ordering: evidence favors imminent commitment / transition preservation."
-        elif remain > uniform and remain > reveal:
-            outcome = "Outcome B ordering: evidence favors unresolved-token refinement."
-        elif reveal < uniform and remain < uniform:
-            outcome = "Outcome E ordering: both weighted variants are worse than UNIFORM."
-        else:
-            outcome = "Mixed ordering: none of the preregistered directional outcomes is cleanly satisfied."
-        interpretations.append(f"- {aggregation}: {outcome}")
-    aggregation_lines = []
-    for condition in ("REVEAL", "REMAIN"):
-        absolute = by_method[f"{condition}-ABS"]["accuracy"]
-        square = by_method[f"{condition}-SQUARE"]["accuracy"]
-        preferred = "ABS" if absolute > square else "SQUARE" if square > absolute else "tie"
-        aggregation_lines.append(f"- {condition}: {preferred} had the higher observed exact-match accuracy.")
+    layer_summary_rows = [
+        "| Mask 비교 | Layer XOR 최소 | 중앙값 | 최대 (layer) | Layer Spearman 최소 | 중앙값 | 최대 |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    matrix_summary_rows = [
+        "| Mask 비교 | Matrix XOR 최소 | 중앙값 | 최대 (layer/module) | Matrix Spearman 최소 | 중앙값 | 최대 |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for global_row in global_diagnostics:
+        pair = global_row["pair"]
+        layers = [row for row in diagnostics["rows"] if row["scope"] == "layer" and row["pair"] == pair]
+        matrices = [row for row in diagnostics["rows"] if row["scope"] == "matrix" and row["pair"] == pair]
+        layer_max = max(layers, key=lambda row: row["mask_xor"])
+        matrix_max = max(matrices, key=lambda row: row["mask_xor"])
+        layer_xor = [row["mask_xor"] for row in layers]
+        layer_spearman = [row["spearman"] for row in layers]
+        matrix_xor = [row["mask_xor"] for row in matrices]
+        matrix_spearman = [row["spearman"] for row in matrices]
+        label = pair.replace("_", "-").upper()
+        layer_summary_rows.append(
+            f"| {label} | {100 * min(layer_xor):.4f}% | {100 * statistics.median(layer_xor):.4f}% | "
+            f"{100 * layer_max['mask_xor']:.4f}% (L{layer_max['layer']}) | {min(layer_spearman):.6f} | "
+            f"{statistics.median(layer_spearman):.6f} | {max(layer_spearman):.6f} |"
+        )
+        matrix_summary_rows.append(
+            f"| {label} | {100 * min(matrix_xor):.4f}% | {100 * statistics.median(matrix_xor):.4f}% | "
+            f"{100 * matrix_max['mask_xor']:.4f}% (L{matrix_max['layer']}/{matrix_max['module']}) | "
+            f"{min(matrix_spearman):.6f} | {statistics.median(matrix_spearman):.6f} | "
+            f"{max(matrix_spearman):.6f} |"
+        )
+    module_type_rows = [
+        "| Mask 비교 | Module type | 다른 weight 수 | XOR | Spearman | Mask IoU | 보존 overlap |",
+        "|---|---|---:|---:|---:|---:|---:|",
+    ] + [
+        f"| {row['pair'].replace('_', '-').upper()} | {row['module_type']} | {row['different']:,} | "
+        f"{100 * row['mask_xor']:.4f}% | {row['spearman']:.6f} | "
+        f"{100 * row['mask_iou']:.4f}% | {100 * row['topk_overlap']:.4f}% |"
+        for row in diagnostics["rows"]
+        if row["scope"] == "module_type"
+    ]
+
+    states = partition["states"]
+    masked_counts = [row["masked_count"] for row in states]
+    reveal_counts = [row["reveal_count"] for row in states]
+    remain_counts = [row["remain_count"] for row in states]
+    reveal_confidence = []
+    remain_confidence = []
+    for state in states:
+        confidence = {row["position"]: row["confidence"] for row in state["masked_predictions"]}
+        reveal_confidence.extend(confidence[position] for position in state["reveal_indices"])
+        remain_confidence.extend(confidence[position] for position in state["remain_indices"])
+
+    def observed_range(condition, key):
+        values = [state[condition][key] for state in weights["states"]]
+        return min(values), max(values)
+
+    alpha_rows = [
+        "| 조건 | 정규화 전 비율 (R:U) | 정규화 후 reveal α 범위 | 정규화 후 remain α 범위 | state별 평균 α 범위 |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for condition, ratio in (("uniform", "1:1"), ("reveal", "2:1"), ("remain", "1:2")):
+        reveal_range = observed_range(condition, "reveal_alpha")
+        remain_range = observed_range(condition, "remain_alpha")
+        mean_range = observed_range(condition, "normalized_mean")
+        alpha_rows.append(
+            f"| {condition.upper()} | {ratio} | {reveal_range[0]:.6f}–{reveal_range[1]:.6f} | "
+            f"{remain_range[0]:.6f}–{remain_range[1]:.6f} | {mean_range[0]:.16f}–{mean_range[1]:.16f} |"
+        )
+
     primary = next(row for row in comparisons if row.get("primary"))
     significant = [
         f"{row['method_a']} vs {row['method_b']}"
         for row in comparisons
         if not row.get("primary") and row["p_holm"] < 0.05
     ]
-    statistical_summary = (
-        f"The preregistered primary comparison had exact p={primary['p_exact_two_sided']:.6g} "
-        f"and {'did' if primary['p_exact_two_sided'] < 0.05 else 'did not'} reach alpha=0.05. "
-        f"After Holm adjustment of the seven exploratory comparisons, "
-        f"{', '.join(significant) if significant else 'none'} remained significant at alpha=0.05."
-    )
-    return f"""# EXP-004 — Decode-Aware Token Importance Direction × Gradient Aggregation
+    mask_hash_rows = [
+        "| 방법 | Overall mask SHA-256 |",
+        "|---|---|",
+    ] + [
+        f"| {method.replace('_', '-').upper()} | `{digest}` |"
+        for method, digest in scoring["mask_hashes"].items()
+    ]
+    evaluation_runtime_rows = [
+        "| 방법 | 평가 시간 | 초 |",
+        "|---|---:|---:|",
+    ]
 
-## Objective
+    def duration(seconds):
+        seconds = int(round(seconds))
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f"{hours}시간 {minutes}분 {seconds}초"
 
-Determine whether next-reveal tokens or remain-unresolved tokens should receive greater masked-token loss importance, and whether token weighting changes the preferred ABS versus SQUARE cross-state aggregation.
+    for method in ("REVEAL-ABS", "REVEAL-SQUARE", "REMAIN-ABS", "REMAIN-SQUARE"):
+        seconds = by_method[method]["eval_seconds"]
+        evaluation_runtime_rows.append(f"| {method} | {duration(seconds)} | {seconds:.3f} |")
+    evaluation_seconds = sum(by_method[method]["eval_seconds"] for method in config["evaluation"]["methods"])
+    summary = partition["summary"]
+    max_reproduction_xor = max(row["xor"] for row in scoring["uniform_reproduction"]["mismatched_modules"])
+    reveal_share = summary["reveal_tokens"] / summary["masked_tokens"]
+    return f"""# EXP-004 — 디코딩 인지 토큰 중요도 방향 × 그래디언트 집계
 
-## Hypotheses
+## 0. 요약
 
-- H1: REVEAL-UP may preserve imminent commitments that condition later denoising steps.
-- H2: REMAIN-UP may preserve difficult unresolved tokens requiring further refinement.
-- Neither direction is assumed correct a priori.
+- **최고 성능:** REVEAL-ABS, **767 / 1319 = 58.1501%**.
+- REVEAL-ABS는 동결 UNIFORM-ABS보다 **+22문제 / +1.6679 pp** 높았지만 exact McNemar `p=0.0776532`였고, exploratory Holm 보정값은 `0.388266`이었다.
+- 사전 지정 primary인 REVEAL-ABS vs REMAIN-ABS는 **+20문제 / +1.5163 pp**, discordant `73:53`, exact `p=0.0901229`였다. 따라서 REVEAL 방향은 **유망한 신호이지 확립된 우위가 아니다**.
+- ABS는 두 token objective 모두에서 SQUARE보다 높았다. Holm 보정 후 유의한 비교는 **REVEAL-ABS vs REVEAL-SQUARE** 하나였다 (`+3.7908 pp`, Holm `p=0.00604355`).
+- REVEAL-ABS는 Wanda보다 **+90문제 / +6.8234 pp**, SparseGPT보다 **+183문제 / +13.8741 pp** 높았지만, Dense보다는 **−171문제 / −12.9644 pp** 낮았다.
+- 결론: 관찰 순위는 preregistered Outcome A와 일치하지만 token-weighting 개선은 통계적으로 확정되지 않았다. **ABS는 여전히 기준 aggregation**이다.
 
-## Exact Weighting Equations
+## 1. 목적 (Objective)
 
-For masked set `M_s`, reveal set `R_s`, and remain set `U_s`, UNIFORM uses raw weight 1. REVEAL-UP uses raw reveal:remain `2:1`; REMAIN-UP uses `1:2`. Every state divides raw weights by their masked-token mean, so `mean(alpha[M_s]) = 1`.
+동일한 DLM-loss gradient pruning 절차에서 다음 transition에 곧 reveal/commit될 token과 계속 masked/unresolved로 남을 token 중 어느 쪽을 더 중요하게 보아야 하는지 확인한다. 동시에 token-level 중요도 도입 후에도 cross-state aggregation의 선호가 ABS인지, SQUARE로 뒤집히는지 검증한다.
+
+실험이 바꾸는 것은 오직 masked-token loss에 곱하는 `alpha_(s,j)`뿐이다. 모델, pruning universe, sparsity, calibration states, timestep, corruption, DLM loss의 나머지 normalization, GSM8K protocol은 고정했다.
+
+## 2. 가설 (Hypotheses)
+
+- **H1 — REVEAL/COMMIT:** 다음 transition에 reveal되는 token은 이후 denoising context가 되므로, 이 token에 중요한 parameter를 보존하면 오차 전파를 줄일 수 있다. 예측: `REVEAL > UNIFORM`.
+- **H2 — REMAIN/UNRESOLVED:** 계속 masked로 남는 token은 더 어렵고 추가 refinement가 필요하므로, 이 token에 중요한 parameter를 보존하는 편이 유리하다. 예측: `REMAIN > UNIFORM`.
+- 어느 방향도 사전에 정답으로 가정하지 않았다.
+- **Primary comparison:** `REVEAL-ABS vs REMAIN-ABS`.
+
+## 3. 고정 설정 (Frozen Setup)
+
+| 항목 | 설정 |
+|---|---|
+| 모델 | `GSAI-ML/LLaDA-8B-Base` |
+| Revision | `{config['model']['revision']}` |
+| dtype | BF16 |
+| EXP-001 원본 run | `{config['source_exp001']['run_id']}` |
+| Calibration dataset | WikiText-2 train, 8 samples |
+| Timesteps | `0.05, 0.15, ..., 0.95`의 10개 지점 |
+| Calibration states | 8 × 10 = **80 frozen corrupted states** |
+| Sequence length | 256 |
+| Calibration seed | 0 |
+| State SHA-256 | `{partition['source_state_sha256']}` |
+| Pruning | 50% unstructured, exact row-wise |
+| Prunable universe | 32 blocks × 7 Linear matrices = **224 matrices**, 총 6,979,321,856 weights |
+| Matrix types | `q_proj`, `k_proj`, `v_proj`, `attn_out`, `ff_proj`, `up_proj`, `ff_out` |
+
+기존 EXP-001/002의 layer set, sparsity, row-wise semantics, revision, samples, corruptions 및 timestep을 변경하지 않았다.
+
+## 4. 다음 reveal partition 정의
+
+각 frozen state `s`에 대해 dense unpruned model을 한 번 실행하고, 현재 masked 위치의 argmax token과 softmax confidence를 저장했다.
 
 ```text
-L_s(alpha) = sum_j(alpha_s,j * CE_j) / p_mask(t) / sequence_length
-d_i,s = -w_i * dL_s/dw_i
-ABS_i = mean_s(abs(d_i,s))
-SQUARE_i = mean_s(d_i,s ** 2)
+M_s = 현재 masked token 위치
+steps_remaining = max(1, ceil(p_mask(t) * 256))
+next_reveal_count = get_num_transfer_tokens(current_mask, steps_remaining)[0, 0]
+R_s = 실제 low-confidence-remasking 규칙에서 다음에 transfer되는 top-confidence 위치
+U_s = M_s \\ R_s
 ```
 
-## Calibration Details
+이 partition은 dense model에서 한 번 계산해 동결했으며 ABS/SQUARE나 pruned model별로 다시 계산하지 않았다. 모든 state에서 `R_s ∩ U_s = ∅`, `R_s ∪ U_s = M_s`를 검증했다.
 
-- Model: `GSAI-ML/LLaDA-8B-Base`, revision `{config['model']['revision']}`, BF16
-- Frozen EXP-001 run: `{config['source_exp001']['run_id']}`
-- Calibration: 8 WikiText-2 samples × 10 timesteps = 80 states, sequence length 256
-- Partition: `steps_remaining=max(1, ceil(p_mask*256))`; next count is the first value from the repository `get_num_transfer_tokens`; selection uses the repository low-confidence remasking confidence rule.
-- Pruning: exact 50% unstructured row-wise over 224 Linear matrices.
+### 관측된 partition 통계
 
-## Sanity Checks
+| 통계 | Masked | Reveal | Remain |
+|---|---:|---:|---:|
+| 전체 token 수 | {summary['masked_tokens']:,} | {summary['reveal_tokens']:,} | {summary['remain_tokens']:,} |
+| 전체 masked 중 비율 | 100.0000% | {100 * reveal_share:.4f}% | {100 * (1 - reveal_share):.4f}% |
+| state당 평균 | {statistics.fmean(masked_counts):.4f} | {statistics.fmean(reveal_counts):.4f} | {statistics.fmean(remain_counts):.4f} |
+| state당 중앙값 | {statistics.median(masked_counts):.1f} | {statistics.median(reveal_counts):.1f} | {statistics.median(remain_counts):.1f} |
+| state당 최소–최대 | {min(masked_counts)}–{max(masked_counts)} | {min(reveal_counts)}–{max(reveal_counts)} | {min(remain_counts)}–{max(remain_counts)} |
 
-```json
-{json.dumps(sanity, indent=2, sort_keys=True)}
+- 80 states 중 reveal count 1인 state는 **{sum(value == 1 for value in reveal_counts)}개**, reveal count 2인 state는 **{sum(value == 2 for value in reveal_counts)}개**였다. top-1로 고정하지 않았으며 실제 schedule 결과를 사용했다.
+- 전체 confidence: mean `{summary['confidence']['mean']:.6f}`, min `{summary['confidence']['min']:.6f}`, p50 `{summary['confidence']['p50']:.6f}`, p90 `{summary['confidence']['p90']:.6f}`, p99 `{summary['confidence']['p99']:.6f}`, max `{summary['confidence']['max']:.6f}`.
+- Reveal confidence: mean `{statistics.fmean(reveal_confidence):.6f}`, median `{statistics.median(reveal_confidence):.6f}`, min `{min(reveal_confidence):.6f}`, max `{max(reveal_confidence):.6f}`.
+- Remain confidence: mean `{statistics.fmean(remain_confidence):.6f}`, median `{statistics.median(remain_confidence):.6f}`, min `{min(remain_confidence):.6f}`, max `{max(remain_confidence):.6f}`.
+- Reveal token이 전체 masked token의 약 1.13%뿐이라는 심한 불균형은 결과 해석에서 중요하다.
+
+## 5. Token weighting과 DLM loss
+
+```text
+UNIFORM raw alpha:    reveal=1, remain=1
+REVEAL-UP raw alpha:  reveal=2, remain=1
+REMAIN-UP raw alpha:  reveal=1, remain=2
+
+alpha_(s,j) = raw_alpha_(s,j) / mean_(k in M_s)(raw_alpha_(s,k))
+mean_(j in M_s)(alpha_(s,j)) = 1
 ```
 
-## Mask Diagnostics
+{chr(10).join(alpha_rows)}
+
+공식 EXP-001 loss semantics를 유지한 실제 구현식은 다음과 같다.
+
+```text
+L_s(alpha) = sum_(j in M_s)[alpha_(s,j) * CE_(s,j)] / p_mask(t) / 256
+d_(i,s) = -w_i * dL_s(alpha)/dw_i
+```
+
+동일 logits와 per-token CE graph에서 세 loss를 만들되, `torch.autograd.grad`로 condition별 gradient를 독립 계산했다. Parameter `.grad`는 항상 `None`으로 유지했고 state 및 condition 사이 gradient accumulation은 허용하지 않았다. Activation magnitude, Wanda score, confidence 연속 가중, timestep 추가 가중, sample/layer/parameter normalization은 넣지 않았다.
+
+관측된 80-state 평균 loss는 UNIFORM `{scoring['loss_means']['uniform']:.6f}`, REVEAL `{scoring['loss_means']['reveal']:.6f}`, REMAIN `{scoring['loss_means']['remain']:.6f}`였다. Alpha 평균은 동일하지만 token loss와 alpha의 상관 때문에 최종 loss 값까지 동일할 필요는 없다.
+
+## 6. Cross-state aggregation과 mask 생성
+
+```text
+S_i^ABS    = mean_s |d_(i,s)|
+S_i^SQUARE = mean_s d_(i,s)^2
+```
+
+Signed SUM은 EXP-002에서 `0 / 1319`였으므로 다시 평가하지 않았다. 각 matrix의 각 행에서 score 하위 50%를 정확히 prune했다. 네 신규 mask만 생성했고 UNIFORM-ABS/SQUARE는 동결 EXP-001 mask를 재사용했다.
+
+{chr(10).join(mask_hash_rows)}
+
+Full score tensor는 영구 저장하지 않고 module-wise로 처리했다. 각 `*_scores.json`에는 module별 shape, score SHA-256, mean/std/min/max, row prune count, sparsity 및 연결된 mask hash가 남아 있다.
+
+## 7. Sanity checks와 재현성 gate
+
+| 검사 | 결과 |
+|---|---|
+| 동일 80 states | PASS |
+| Dense partition이 ABS/SQUARE에 공통 | PASS |
+| 모든 state/condition에서 mean(alpha)≈1 | PASS; 관측 범위 {observed_range('reveal', 'normalized_mean')[0]:.16f}–{observed_range('reveal', 'normalized_mean')[1]:.16f} |
+| REVEAL raw ratio 2:1 | PASS |
+| REMAIN raw ratio 1:2 | PASS |
+| Condition/state gradient 격리 | PASS; `{sanity['gradient_isolation']}` |
+| Calibration 중 parameter update 없음 | PASS |
+| 신규 mask exact row-wise 50% | PASS |
+| Evaluation config hash 일치 | PASS; `{sanity['evaluation_config_hash']}` |
+| Packed payload 감사 | PASS; 4 × 224 = 896 files, 3,489,660,928 bytes |
+| Per-example 감사 | PASS; 6 × 1319 = 7,914 aligned rows |
+| 관련 회귀 테스트 | PASS; 170 tests |
+
+### UNIFORM 재현성 deviation과 gate
+
+초기 요구는 frozen EXP-001 mask와 bit-exact 일치였다. 그러나 변경하지 않은 EXP-001 공식 loss/backward/hook 경로의 block-0 control도 CUDA/compiled-backward 비결정성으로 bit-exact하지 않았다. GSM8K 결과를 보기 전에 control 최대치 × 1.25로 threshold를 고정했다.
+
+| 항목 | ABS | SQUARE |
+|---|---:|---:|
+| 실제 global XOR | {100 * sanity['uniform_mask_xor']['abs']:.6f}% ({scoring['uniform_reproduction']['by_method']['abs']['different']:,} / {scoring['uniform_reproduction']['by_method']['abs']['num_weights']:,}) | {100 * sanity['uniform_mask_xor']['square']:.6f}% ({scoring['uniform_reproduction']['by_method']['square']['different']:,} / {scoring['uniform_reproduction']['by_method']['square']['num_weights']:,}) |
+| 고정 global threshold | {100 * config['uniform_reproduction']['global_xor_threshold']:.6f}% | {100 * config['uniform_reproduction']['global_xor_threshold']:.6f}% |
+
+- Bit-exact: **아님**.
+- 최대 실제 module XOR: `{100 * max_reproduction_xor:.6f}%`; 고정 module threshold: `{100 * config['uniform_reproduction']['module_xor_threshold']:.6f}%`.
+- 두 global 값과 모든 module 값이 threshold 아래여서 calibrated gate를 통과했다. Gate 통과 전에는 GSM8K를 시작하지 않았다.
+
+## 8. Mask diagnostics
+
+### 8.1 전체 mask
 
 {chr(10).join(diagnostic_rows)}
 
-Full matrix, layer, and module-type rows are in `mask_diagnostics.json`.
+### 8.2 32개 layer별 분포 요약
 
-## GSM8K Results
+아래 표는 각 비교의 32개 layer 값을 최소·중앙값·최대로 요약한다. 최대 XOR layer도 함께 표시했다.
+
+{chr(10).join(layer_summary_rows)}
+
+### 8.3 224개 matrix별 분포 요약
+
+각 비교에는 32 blocks × 7 matrices = 224개의 matrix row가 있다. 전체 1,792개 상세 row는 JSON에 보존하고, 본문에는 비교별 분포와 최대 XOR matrix를 싣는다.
+
+{chr(10).join(matrix_summary_rows)}
+
+### 8.4 7개 module type별 상세 진단
+
+{chr(10).join(module_type_rows)}
+
+핵심 관찰:
+
+- Aggregation 변경은 REVEAL에서 `2.8207%`, REMAIN에서 `2.8641%`의 mask를 바꿨다.
+- Token weighting만 바꾸면 UNIFORM 대비 XOR는 `0.0949%–0.2629%`에 그쳤다.
+- REVEAL vs REMAIN XOR는 ABS `0.1957%`, SQUARE `0.3920%`였고 Spearman은 각각 `0.999971`, `0.999847`이었다.
+- 즉 이 실험에서 aggregation 선택은 token 방향보다 pruning decision을 훨씬 더 크게 바꿨다. 이것은 관측된 연관이며 downstream 차이의 인과적 설명으로 단정하지 않는다.
+- 전체 224 matrix, 32 layer, 7 module-type별 상세치는 `mask_diagnostics.json`의 2,112 rows에 저장돼 있다.
+
+## 9. GSM8K 평가 protocol
+
+| 항목 | 값 |
+|---|---|
+| Dataset | GSM8K full test, N=1319 |
+| Harness | repository `LLaDAEvalHarness` |
+| Prompt | 5-shot |
+| Metric | lm-eval `exact_match,strict-match` |
+| Temperature | 0 |
+| Generation length | 256 |
+| Block length | 256 |
+| Denoising steps | 256 |
+| Seeds | random 0; numpy/torch/few-shot 1234 |
+| Evaluation config SHA-256 | `{sanity['evaluation_config_hash']}` |
+
+UNIFORM 결과와 모든 신규 방법은 동일한 example ID, document/prompt/target hash를 사용했다. Dense/Wanda/SparseGPT/DLM-SUM은 동일 EXP-002 evaluation protocol의 동결 결과다.
+
+## 10. 전체 성능 비교: Dense, Wanda, SparseGPT 포함
+
+표의 세 `대비` 열은 **정답 수 차이 / 정확도 차이(pp)** 형식이다.
 
 {chr(10).join(result_rows)}
 
-Protocol: full 1,319-example GSM8K, 5-shot, strict exact match, temperature 0, generation length 256, block length 256, and 256 denoising steps. UNIFORM results are frozen EXP-002 results; all reuse passed the exact evaluation-config hash assertion.
+### 참조 baseline 해석 주의사항
 
-## Paired Counts and Statistical Tests
+- Dense는 pruning하지 않은 upper reference다.
+- Wanda와 SparseGPT는 8개 clean WikiText-2 256-token span을 사용했다. DLM 계열의 80 corrupted states와 **calibration compute가 matched된 대조군이 아니다**.
+- DLM/Wanda는 exact row-wise 50%지만, SparseGPT는 repository의 128-column block global threshold를 사용해 전체 희소도만 약 50.0002%이며 각 행이 정확히 50%일 필요는 없다.
+- 신규 방법과 Wanda/SparseGPT의 표 차이는 descriptive reference다. 이 비교를 위한 추가 post-hoc McNemar test는 preregistered primary matrix에 넣지 않았다.
+- EXP-002에서 DLM-SUM은 0%였고 이미 기각됐기 때문에 EXP-004에서 재실행하지 않았다.
+
+## 11. EXP-004 factorial 결과와 질문별 답
+
+### Q1 — Token importance가 UNIFORM보다 도움이 되었는가?
+
+- ABS: REVEAL-ABS는 UNIFORM-ABS보다 `+22 / +1.6679 pp`였으나 exact `p=0.0776532`, Holm `p=0.388266`; REMAIN-ABS는 `+2 / +0.1516 pp`, exact `p=0.928492`, Holm `p=1`.
+- SQUARE: REVEAL-SQUARE는 UNIFORM-SQUARE보다 `+16 / +1.2130 pp`, exact `p=0.181224`, Holm `p=0.724896`; REMAIN-SQUARE는 `+8 / +0.6065 pp`, exact `p=0.545534`, Holm `p=1`.
+- 네 weighted variant 모두 관찰 정확도는 matching UNIFORM 이상이었지만, 어느 weighted-vs-UNIFORM 비교도 Holm 보정 후 유의하지 않았다. 따라서 simple binary weighting의 일반적 개선을 확립하지 못했다.
+
+### Q2 — REVEAL과 REMAIN 중 어느 방향이 유용한가?
+
+- ABS primary: REVEAL-ABS가 REMAIN-ABS보다 `+20 / +1.5163 pp`; discordant `73:53`; exact `p=0.0901229`.
+- SQUARE exploratory: REVEAL-SQUARE가 REMAIN-SQUARE보다 `+8 / +0.6065 pp`; discordant `76:68`; exact `p=0.559821`, Holm `p=1`.
+- 두 aggregation 모두 REVEAL > REMAIN 순위였지만 통계적으로 결정적이지 않다. H1은 **suggestive**, H2는 지지되지 않았다.
+
+### Q3 — Token weighting이 aggregation 선호를 바꾸었는가?
+
+- REVEAL: ABS가 SQUARE보다 `+50 / +3.7908 pp`; exact `p=0.000863365`, Holm `p=0.00604355`.
+- REMAIN: ABS가 SQUARE보다 `+38 / +2.8810 pp`; exact `p=0.0136694`, Holm `p=0.0820165`.
+- 두 token objective 모두 ABS > SQUARE였고 reversal은 없었다. Holm 보정 후에는 REVEAL 조건의 ABS 우위만 유의했다.
+
+## 12. Paired 통계 전체
 
 {chr(10).join(paired_rows)}
 
-`REVEAL-ABS vs REMAIN-ABS` is the preregistered primary comparison. The other seven exact two-sided binomial McNemar tests receive Holm adjustment. Discordant counts are reported directly; p-values are not interpreted causally.
+모든 비교는 동일한 1,319 examples에 대한 exact two-sided binomial McNemar test다. Primary 한 개는 사전 지정되어 보정하지 않았고, 나머지 7개 exploratory p-value에는 Holm 보정을 적용했다. Discordant pair가 실제 검정 정보를 제공하며 p-value만으로 인과를 주장하지 않는다.
 
-## Interpretation
+Primary exact p=`{primary['p_exact_two_sided']:.7f}`로 alpha=0.05에 도달하지 않았다. Holm 보정 후 alpha=0.05를 통과한 exploratory 비교는 **{', '.join(significant) if significant else '없음'}**이다.
 
-{chr(10).join(interpretations)}
+## 13. Preregistered outcome rules에 따른 해석
 
-### Aggregation interaction
+- ABS와 SQUARE 모두 관찰 순위는 `REVEAL > UNIFORM` 및 `REVEAL > REMAIN`이므로 형식상 **Outcome A ordering**이다.
+- 그러나 primary가 유의하지 않고 weighted-vs-UNIFORM도 Holm 보정 후 유의하지 않으므로 “commitment/transition preservation이 입증됐다”고 결론 내릴 수 없다.
+- 정확한 결론은 **REVEAL 방향의 약한·유망한 신호가 있었으나 simple 2:1 binary importance의 이득은 확정되지 않았다**이다.
+- REVEAL과 REMAIN이 작은 차이만 낸 것은 reveal token이 1.13%뿐이고 score/mask가 거의 동일했다는 관찰과 양립한다. 다만 이것이 원인임을 이번 실험만으로 식별하지는 못한다.
+- Aggregation에 대해서는 UNIFORM, REVEAL, REMAIN 모두 ABS > SQUARE였다. EXP-002의 ABS 선호는 유지됐고 token weighting interaction에 의한 reversal은 없었다.
+- Confidence 자체가 보편적으로 중요하다거나 다른 ratio/benchmark에서도 REVEAL이 우월하다는 주장은 하지 않는다.
 
-{chr(10).join(aggregation_lines)}
+## 14. 실행 시간과 자원
 
-{statistical_summary}
+- Scoring rerun: `{duration(scoring['runtime_seconds'])}` (`{scoring['runtime_seconds']:.3f}`초).
+- 네 신규 GSM8K 평가의 측정 시간 합: `{duration(evaluation_seconds)}` (`{evaluation_seconds:.3f}`초).
 
-These statements describe observed orderings under the frozen protocol and do not establish a universal confidence or causal mechanism.
+{chr(10).join(evaluation_runtime_rows)}
 
-## Implementation Deviations
+- Scoring peak CUDA allocated: `{scoring['cuda_peak']['max_allocated_bytes']:,}` bytes; reserved: `{scoring['cuda_peak']['max_reserved_bytes']:,}` bytes.
+- Mask payload: 방법당 `{preflight['mask_bytes_per_method']:,}` bytes, 네 방법 총 3,489,660,928 bytes.
+- Preflight 당시 가용 disk `{preflight['disk']['available_bytes']:,}` bytes, 요구량(안전 여유 포함) `{preflight['disk']['required_bytes']:,}` bytes로 통과했다.
+- 장시간 scoring/evaluation은 전용 tmux에서 실행했다.
 
-- Full score tensors were processed module-wise and discarded because only 5 GiB disk was available. `*_scores.json` retains per-module shape, SHA-256, statistics, sparsity, and linked mask hashes.
-- UNIFORM recomputation bit-exact status, global mask XOR, and the calibrated nondeterminism gate result are reported under Sanity Checks; evaluation started only after that gate passed.
-- No permutation/random-token control, confidence-continuous weighting, ratio sweep, or additional benchmark was added.
+## 15. 구현 편차 및 실패 이력
 
-## Decision
+1. 첫 scoring 시 PyTorch AOTAutograd가 compiled graph 반복 backward의 donated buffer를 거부했다. `torch._functorch.config.donated_buffer`만 비활성화해 세 독립 `autograd.grad`가 같은 forward graph를 재사용하게 했으며 loss/partition/pruning 의미는 바꾸지 않았다 (`31dca02`).
+2. 첫 full scoring은 32/32 blocks를 끝냈지만 초기 bit-exact gate를 통과하지 못해 GSM8K 전에 중단됐다. 변경 없는 legacy block-0 control도 비결정성을 보였으므로 결과 관찰 전에 control 기반 threshold를 동결했다 (`22fa6af`).
+3. Evaluation consumer에 남은 stale `exact=True` 조건 때문에 첫 evaluation launch가 model load 전에 종료됐다. Threshold-compliant `status=passed`를 따르도록 consumer만 수정하고 regression test 후 재실행했다 (`470f0e5`). 이 실패들에서는 GSM8K 결과가 관측되지 않았다.
+4. Disk 제약 때문에 full score tensor는 module-wise 처리 후 폐기하고 hash/statistics/shape만 저장했다. Packed mask는 하나씩 write/checksum/readback했다.
+5. UNIFORM mask는 bit-exact하지 않았으며 calibrated nondeterminism gate를 통과했다는 편차를 숨기지 않고 위에 정량 보고했다.
+6. Permutation/random-token control, confidence-continuous weighting, ratio sweep, timestep/trajectory weighting, 추가 benchmark, 다른 sparsity는 넣지 않았다.
 
-EXP-004 is complete. No follow-up experiment was launched automatically.
+## 16. 산출물
+
+- `config.json`: 동결 설정과 EXP-001/002 provenance
+- `calibration_state_manifest.json`: 80 frozen states
+- `token_partition_summary.json`: state별 masked/reveal/remain indices, prediction, confidence
+- `token_weights_summary.json`: state별 raw/normalized alpha 및 score scale diagnostics
+- `reveal_abs_scores.json`, `reveal_square_scores.json`, `remain_abs_scores.json`, `remain_square_scores.json`
+- `reveal_abs_mask.json`, `reveal_square_mask.json`, `remain_abs_mask.json`, `remain_square_mask.json`
+- `mask_payloads/`: 896 packed matrix masks, 총 3.49 GB; 대용량이라 Git에서는 제외하고 manifest/checksum으로 추적
+- `mask_diagnostics.json`: global/layer/module-type/matrix별 2,112 diagnostics
+- `gsm8k_per_example_results.jsonl`: 6 methods × 1,319 = 7,914 aligned rows
+- `paired_comparisons.json`: 8 preregistered paired comparisons
+- `logs/final.json`: machine-readable final summary
+- `report.md`: 본 보고서
+
+## 17. 최종 결정 (Decision)
+
+1. 현재 최고 방법은 **REVEAL-ABS 58.1501%**다.
+2. **ABS를 DLM-gradient pruning의 reference aggregation으로 유지**한다.
+3. REVEAL weighting은 후속 검증 가치가 있는 신호지만 통계적으로 확정된 개선으로 취급하지 않는다.
+4. Wanda/SparseGPT보다 높은 관찰 정확도는 확인했지만 calibration-compute-matched 우월성으로 확대 해석하지 않는다.
+5. EXP-004는 완료됐다. **EXP-005 또는 다른 후속 실험은 자동 실행하지 않았다.**
 """
 
 
@@ -1367,14 +1703,16 @@ def run_analysis(config_path):
     ]
     diagnostics = json.loads((root / "mask_diagnostics.json").read_text())
     partition = json.loads((root / "token_partition_summary.json").read_text())
+    weights = json.loads((root / "token_weights_summary.json").read_text())
     scoring = json.loads((root / "logs" / "scoring.json").read_text())
+    preflight = json.loads((root / "logs" / "preflight.json").read_text())
     reproduction = json.loads((root / "logs" / "uniform_reproduction.json").read_text())
     sanity = {
         "same_80_states": partition["summary"]["state_count"] == 80,
         "partition_frozen_across_aggregation": True,
         "all_alpha_means_one": all(
             abs(condition["normalized_mean"] - 1.0) <= 1e-6
-            for state in json.loads((root / "token_weights_summary.json").read_text())["states"]
+            for state in weights["states"]
             for condition in (state["uniform"], state["reveal"], state["remain"])
         ),
         "gradient_isolation": scoring["gradient_isolation"],
@@ -1388,7 +1726,10 @@ def run_analysis(config_path):
         },
         "evaluation_config_hash": sources["evaluation_config_hash"],
     }
-    report = _report(config, rows, comparisons, diagnostics, sanity)
+    report = _report(
+        config, rows, comparisons, diagnostics, sanity,
+        partition, weights, scoring, preflight,
+    )
     (root / "report.md").write_text(report, encoding="utf-8")
     result = {"status": "complete", "results": rows, "comparisons": comparisons, "sanity": sanity}
     _atomic_write_json(root / "logs" / "final.json", result)
