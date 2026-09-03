@@ -1,0 +1,77 @@
+{
+  "experiment": "EXP-005",
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+    "dtype": "bfloat16"
+  },
+  "source_exp001": {
+    "run_id": "20260828T175010-2484545",
+    "config": "experiments/dlm_loss_aggregation/config.yaml",
+    "calibration_manifest": "experiments/dlm_loss_aggregation/calibration_manifest.json",
+    "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "score_metadata": "experiments/dlm_loss_aggregation/scores/metadata.json",
+    "mask_metadata": "experiments/dlm_loss_aggregation/masks/hashes.json",
+    "mask_directory": "/dev/shm/dlm_loss_aggregation_20260828T175010-2484545",
+    "overall_sha256": {
+      "abs": "d98be9921671394b6e67689fda3e9268d798df2ffb6d7881d3f63f3c962c25e5",
+      "square": "f369df64126d2782db8075b49045906c30a1bfccacc9287e635c853a70bbbd99"
+    },
+    "matrix_count": 224,
+    "state_count": 80
+  },
+  "source_exp002": {
+    "config": "experiments/dlm_loss_aggregation/exp002/config.yaml",
+    "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "uniform_abs_predictions": "experiments/dlm_loss_aggregation/exp002/results/predictions/dlm_abs.jsonl",
+    "uniform_square_predictions": "experiments/dlm_loss_aggregation/exp002/results/predictions/dlm_square.jsonl",
+    "uniform_abs_correct": 745,
+    "uniform_square_correct": 701,
+    "example_count": 1319
+  },
+  "source_exp004": {
+    "partition_summary": "experiments/dlm_loss_aggregation/exp004/token_partition_summary.json"
+  },
+  "partition": {
+    "denoising_steps": 256,
+    "remasking": "low_confidence",
+    "confidence": "softmax_probability_of_argmax"
+  },
+  "weighting": {
+    "conditions": ["uniform", "symmetric_reveal", "symmetric_remain"],
+    "rho": 0.5,
+    "contrast": "reveal=1; remain=-q/(1-q)",
+    "normalization": "masked_token_mean_one",
+    "mirror": "alpha_reveal + alpha_remain = 2 on masked positions"
+  },
+  "scoring": {
+    "aggregations": ["abs"],
+    "sparsity": 0.5,
+    "block_count": 32,
+    "modules_per_block": 7
+  },
+  "uniform_reproduction": {
+    "legacy_block0_control": {
+      "abs_global_xor": 0.0008339515099158654,
+      "max_module_xor": 0.0019975900650024414,
+      "safety_factor": 1.25
+    },
+    "global_xor_threshold": 0.0015212251589848445,
+    "module_xor_threshold": 0.0024969875812530518
+  },
+  "storage": {
+    "safety_bytes": 536870912
+  },
+  "evaluation": {
+    "methods": ["SYM-REVEAL-ABS", "SYM-REMAIN-ABS"]
+  },
+  "statistics": {
+    "primary_comparison": ["SYM-REVEAL-ABS", "SYM-REMAIN-ABS"],
+    "paired_comparisons": [
+      ["SYM-REVEAL-ABS", "SYM-REMAIN-ABS"],
+      ["SYM-REVEAL-ABS", "UNIFORM-ABS"],
+      ["SYM-REMAIN-ABS", "UNIFORM-ABS"]
+    ],
+    "holm_adjustment": "all three comparisons"
+  }
+}
