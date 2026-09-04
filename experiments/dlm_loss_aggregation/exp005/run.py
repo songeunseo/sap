@@ -1863,8 +1863,8 @@ Dense model의 EXP-004 partition을 그대로 재사용했다. `R_s`와 `U_s`는
 
 | 조건 | reveal α 범위 | remain α 범위 | state 평균 α | perturbation mean abs | perturbation mean square |
 |---|---:|---:|---:|---:|---:|
-| SYM-REVEAL | `{min(reveal_alpha):.6f}–{max(reveal_alpha):.6f}` | `{min(remain_alpha):.6f}–{max(remain_alpha):.6f}` | 1.000000 | `{statistics.fmean(state['symmetric_reveal']['perturbation']['mean_abs'] for state in weights['states']):.6f}` | `{statistics.fmean(state['symmetric_reveal']['perturbation']['mean_square'] for state in weights['states']):.6f}` |
-| SYM-REMAIN | `{min(remain_reveal_alpha):.6f}–{max(remain_reveal_alpha):.6f}` | `{min(remain_up_alpha):.6f}–{max(remain_up_alpha):.6f}` | 1.000000 | `{statistics.fmean(state['symmetric_remain']['perturbation']['mean_abs'] for state in weights['states']):.6f}` | `{statistics.fmean(state['symmetric_remain']['perturbation']['mean_square'] for state in weights['states']):.6f}` |
+| SYM-REVEAL | `{min(reveal_alpha):.6f}–{max(reveal_alpha):.6f}` | `{min(remain_alpha):.6f}–{max(remain_alpha):.6f}` | 1.000000 | `{statistics.fmean(state['perturbation']['mean_abs'] for state in weights['states']):.6f}` | `{statistics.fmean(state['perturbation']['mean_square'] for state in weights['states']):.6f}` |
+| SYM-REMAIN | `{min(remain_reveal_alpha):.6f}–{max(remain_reveal_alpha):.6f}` | `{min(remain_up_alpha):.6f}–{max(remain_up_alpha):.6f}` | 1.000000 | `{statistics.fmean(state['perturbation']['mean_abs'] for state in weights['states']):.6f}` | `{statistics.fmean(state['perturbation']['mean_square'] for state in weights['states']):.6f}` |
 
 위 두 perturbation 통계는 수치 오차 범위에서 동일해야 하며, 원본 2:1/1:2 정규화는 사용하지 않았다.
 
