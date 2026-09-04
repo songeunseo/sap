@@ -2001,7 +2001,11 @@ def run_analysis(config_path):
         "all_alpha_means_one": all(
             abs(condition["normalized_mean"] - 1.0) <= 1e-6
             for state in weights["states"]
-            for condition in (state["uniform"], state["reveal"], state["remain"])
+            for condition in (
+                state["uniform"],
+                state["symmetric_reveal"],
+                state["symmetric_remain"],
+            )
         ),
         "gradient_isolation": scoring["gradient_isolation"],
         "no_parameter_updates": True,
