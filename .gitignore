@@ -321,6 +321,7 @@ experiments/**/timestep_features.json
 experiments/**/static_structure.json
 experiments/**/collection.json
 experiments/**/spectral_concentration.json
+experiments/**/prelaunch_revision_*/
 experiments/dlm_ppl50/alpha/
 experiments/dlm_ppl50/dlp/
 experiments/dlm_ppl50/dsa/
