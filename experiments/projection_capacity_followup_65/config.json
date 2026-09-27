@@ -1,0 +1,25 @@
+{
+  "eis_type_control": "preserve each projection type's oracle sparsity multiset; assign larger levels to earlier layers",
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "reconstruction_allocation": "raw next-increment all-token normalized Linear reconstruction error / (0.05*N)",
+  "selector": "unchanged Standard Wanda candidate masks from source experiment",
+  "source_hashes": {
+    "allocation_sha256": "e7514c31f7488ac418d01e1c2627b184518dc11fa61c82ae75efbbc2fcf64257",
+    "candidate_mask_manifest_sha256": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "capacity_curves_raw_sha256": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1"
+  },
+  "status": "frozen_before_new_model_evaluation",
+  "target_pruned": 4536008704
+}

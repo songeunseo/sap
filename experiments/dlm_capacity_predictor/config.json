@@ -1,0 +1,119 @@
+{
+  "anchor_level": 0.65,
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 0
+  },
+  "calibration_sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+  "cost_policy": "historical curve lookup is not deployment measurement",
+  "dense_features": [
+    "variation_ratio",
+    "feature_use_variability",
+    "log_pr_ratio"
+  ],
+  "fresh_split": {
+    "seed": 3,
+    "sequences": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "timesteps": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ]
+  },
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "layer_folds": [
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ]
+  ],
+  "model": "GSAI-ML/LLaDA-8B-Base",
+  "plan_sha256": "a259031a168262ec677d472e23a6103d5348e0d57467b7004bcfee5529316f37",
+  "predictor_selection": "must beat reconstruction in all 8 crossed folds; minimum mean test additive damage; feature declaration order tie-break",
+  "probe_states": 16,
+  "probe_timesteps": [
+    0.15,
+    0.85
+  ],
+  "regression": "train-standardized univariate OLS log alpha",
+  "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "selector": "historical unweighted Standard Wanda; existing candidate masks",
+  "sequence_folds": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6,
+      7
+    ]
+  ],
+  "sketch_seed": 20260910,
+  "sketch_size": 64,
+  "source_sha256": {
+    "experiments/projection_capacity_allocation_65/allocation.json": "e7514c31f7488ac418d01e1c2627b184518dc11fa61c82ae75efbbc2fcf64257",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "experiments/projection_capacity_allocation_65/config.json": "b313d7506b8fd4f8311e348a636c939ea9ace5fd26c92ce8afc0b1ff2091689d"
+  },
+  "target_pruned": 4536008704,
+  "total_weights": 6979321856
+}

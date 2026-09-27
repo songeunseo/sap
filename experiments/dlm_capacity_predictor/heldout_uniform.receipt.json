@@ -1,0 +1,9 @@
+{
+  "fingerprint": {
+    "config_sha256": "d62ad6462a299357218d85f596dd55a876019b5cfbbf2faf96a923001823f298",
+    "mask_manifest_sha256": "76f77622e2c1e414a22c44c2f567ddba1ee57c44a9488ded017f9ee47b5d9b0a",
+    "state_sha256": "311dc029fb4bee42b9dcee49126c57aef579feab9ab39534d1c1d4bf17a51454"
+  },
+  "model_sha256": "3686976ae32b30b43a6862081adb919670345a89ad7d2776814f17ed68b9e4bc",
+  "result_sha256": "a6ebdaa16a20bd049cba85b65513bb1f2ba0f5cc1feb2597dae19c0ae410dbee"
+}

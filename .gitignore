@@ -315,6 +315,12 @@ experiments/**/manifest_*.json
 experiments/**/*preparation.json
 experiments/**/search.json
 experiments/**/*.html
+experiments/**/marginal_costs.json
+experiments/**/dense_features.json
+experiments/**/timestep_features.json
+experiments/**/static_structure.json
+experiments/**/collection.json
+experiments/**/spectral_concentration.json
 experiments/dlm_ppl50/alpha/
 experiments/dlm_ppl50/dlp/
 experiments/dlm_ppl50/dsa/

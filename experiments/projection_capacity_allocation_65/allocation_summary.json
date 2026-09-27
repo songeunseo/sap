@@ -1,0 +1,734 @@
+{
+  "budget_error": 0,
+  "by_layer": {
+    "0": {
+      "assigned_sparsities": {
+        "block_00.attn_out": 0.7,
+        "block_00.ff_out": 0.75,
+        "block_00.ff_proj": 0.75,
+        "block_00.k_proj": 0.6,
+        "block_00.q_proj": 0.7,
+        "block_00.up_proj": 0.75,
+        "block_00.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6785714285714286,
+      "parameter_weighted_sparsity": 0.7115196814903846
+    },
+    "1": {
+      "assigned_sparsities": {
+        "block_01.attn_out": 0.75,
+        "block_01.ff_out": 0.75,
+        "block_01.ff_proj": 0.75,
+        "block_01.k_proj": 0.75,
+        "block_01.q_proj": 0.75,
+        "block_01.up_proj": 0.75,
+        "block_01.v_proj": 0.75
+      },
+      "mean_nominal_sparsity": 0.75,
+      "parameter_weighted_sparsity": 0.75
+    },
+    "10": {
+      "assigned_sparsities": {
+        "block_10.attn_out": 0.6,
+        "block_10.ff_out": 0.7,
+        "block_10.ff_proj": 0.65,
+        "block_10.k_proj": 0.65,
+        "block_10.q_proj": 0.6,
+        "block_10.up_proj": 0.65,
+        "block_10.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6357142857142858,
+      "parameter_weighted_sparsity": 0.64990234375
+    },
+    "11": {
+      "assigned_sparsities": {
+        "block_11.attn_out": 0.6,
+        "block_11.ff_out": 0.7,
+        "block_11.ff_proj": 0.6,
+        "block_11.k_proj": 0.7,
+        "block_11.q_proj": 0.65,
+        "block_11.up_proj": 0.65,
+        "block_11.v_proj": 0.65
+      },
+      "mean_nominal_sparsity": 0.65,
+      "parameter_weighted_sparsity": 0.64990234375
+    },
+    "12": {
+      "assigned_sparsities": {
+        "block_12.attn_out": 0.65,
+        "block_12.ff_out": 0.65,
+        "block_12.ff_proj": 0.6,
+        "block_12.k_proj": 0.65,
+        "block_12.q_proj": 0.65,
+        "block_12.up_proj": 0.65,
+        "block_12.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6357142857142858,
+      "parameter_weighted_sparsity": 0.634521484375
+    },
+    "13": {
+      "assigned_sparsities": {
+        "block_13.attn_out": 0.55,
+        "block_13.ff_out": 0.7,
+        "block_13.ff_proj": 0.6,
+        "block_13.k_proj": 0.55,
+        "block_13.q_proj": 0.55,
+        "block_13.up_proj": 0.65,
+        "block_13.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6,
+      "parameter_weighted_sparsity": 0.6229529747596154
+    },
+    "14": {
+      "assigned_sparsities": {
+        "block_14.attn_out": 0.6,
+        "block_14.ff_out": 0.7,
+        "block_14.ff_proj": 0.6,
+        "block_14.k_proj": 0.65,
+        "block_14.q_proj": 0.6,
+        "block_14.up_proj": 0.65,
+        "block_14.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6285714285714287,
+      "parameter_weighted_sparsity": 0.6383526141826923
+    },
+    "15": {
+      "assigned_sparsities": {
+        "block_15.attn_out": 0.55,
+        "block_15.ff_out": 0.7,
+        "block_15.ff_proj": 0.6,
+        "block_15.k_proj": 0.65,
+        "block_15.q_proj": 0.6,
+        "block_15.up_proj": 0.65,
+        "block_15.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6214285714285716,
+      "parameter_weighted_sparsity": 0.6345027043269231
+    },
+    "16": {
+      "assigned_sparsities": {
+        "block_16.attn_out": 0.55,
+        "block_16.ff_out": 0.7,
+        "block_16.ff_proj": 0.6,
+        "block_16.k_proj": 0.6,
+        "block_16.q_proj": 0.6,
+        "block_16.up_proj": 0.65,
+        "block_16.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6142857142857144,
+      "parameter_weighted_sparsity": 0.6306527944711539
+    },
+    "17": {
+      "assigned_sparsities": {
+        "block_17.attn_out": 0.55,
+        "block_17.ff_out": 0.7,
+        "block_17.ff_proj": 0.65,
+        "block_17.k_proj": 0.6,
+        "block_17.q_proj": 0.6,
+        "block_17.up_proj": 0.65,
+        "block_17.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6214285714285716,
+      "parameter_weighted_sparsity": 0.6422025240384616
+    },
+    "18": {
+      "assigned_sparsities": {
+        "block_18.attn_out": 0.55,
+        "block_18.ff_out": 0.7,
+        "block_18.ff_proj": 0.65,
+        "block_18.k_proj": 0.65,
+        "block_18.q_proj": 0.65,
+        "block_18.up_proj": 0.65,
+        "block_18.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6357142857142858,
+      "parameter_weighted_sparsity": 0.64990234375
+    },
+    "19": {
+      "assigned_sparsities": {
+        "block_19.attn_out": 0.55,
+        "block_19.ff_out": 0.7,
+        "block_19.ff_proj": 0.65,
+        "block_19.k_proj": 0.6,
+        "block_19.q_proj": 0.6,
+        "block_19.up_proj": 0.65,
+        "block_19.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6214285714285716,
+      "parameter_weighted_sparsity": 0.6422025240384616
+    },
+    "2": {
+      "assigned_sparsities": {
+        "block_02.attn_out": 0.75,
+        "block_02.ff_out": 0.75,
+        "block_02.ff_proj": 0.75,
+        "block_02.k_proj": 0.75,
+        "block_02.q_proj": 0.75,
+        "block_02.up_proj": 0.75,
+        "block_02.v_proj": 0.75
+      },
+      "mean_nominal_sparsity": 0.75,
+      "parameter_weighted_sparsity": 0.75
+    },
+    "20": {
+      "assigned_sparsities": {
+        "block_20.attn_out": 0.5,
+        "block_20.ff_out": 0.7,
+        "block_20.ff_proj": 0.65,
+        "block_20.k_proj": 0.65,
+        "block_20.q_proj": 0.65,
+        "block_20.up_proj": 0.7,
+        "block_20.v_proj": 0.55
+      },
+      "mean_nominal_sparsity": 0.6285714285714284,
+      "parameter_weighted_sparsity": 0.6537710336538461
+    },
+    "21": {
+      "assigned_sparsities": {
+        "block_21.attn_out": 0.5,
+        "block_21.ff_out": 0.7,
+        "block_21.ff_proj": 0.65,
+        "block_21.k_proj": 0.6,
+        "block_21.q_proj": 0.6,
+        "block_21.up_proj": 0.7,
+        "block_21.v_proj": 0.55
+      },
+      "mean_nominal_sparsity": 0.6142857142857142,
+      "parameter_weighted_sparsity": 0.6460712139423077
+    },
+    "22": {
+      "assigned_sparsities": {
+        "block_22.attn_out": 0.55,
+        "block_22.ff_out": 0.7,
+        "block_22.ff_proj": 0.65,
+        "block_22.k_proj": 0.6,
+        "block_22.q_proj": 0.6,
+        "block_22.up_proj": 0.65,
+        "block_22.v_proj": 0.55
+      },
+      "mean_nominal_sparsity": 0.6142857142857142,
+      "parameter_weighted_sparsity": 0.6383526141826923
+    },
+    "23": {
+      "assigned_sparsities": {
+        "block_23.attn_out": 0.5,
+        "block_23.ff_out": 0.7,
+        "block_23.ff_proj": 0.65,
+        "block_23.k_proj": 0.6,
+        "block_23.q_proj": 0.6,
+        "block_23.up_proj": 0.65,
+        "block_23.v_proj": 0.55
+      },
+      "mean_nominal_sparsity": 0.6071428571428571,
+      "parameter_weighted_sparsity": 0.634521484375
+    },
+    "24": {
+      "assigned_sparsities": {
+        "block_24.attn_out": 0.5,
+        "block_24.ff_out": 0.65,
+        "block_24.ff_proj": 0.65,
+        "block_24.k_proj": 0.6,
+        "block_24.q_proj": 0.65,
+        "block_24.up_proj": 0.65,
+        "block_24.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6,
+      "parameter_weighted_sparsity": 0.6230093149038461
+    },
+    "25": {
+      "assigned_sparsities": {
+        "block_25.attn_out": 0.5,
+        "block_25.ff_out": 0.65,
+        "block_25.ff_proj": 0.6,
+        "block_25.k_proj": 0.65,
+        "block_25.q_proj": 0.65,
+        "block_25.up_proj": 0.65,
+        "block_25.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6,
+      "parameter_weighted_sparsity": 0.6153094951923077
+    },
+    "26": {
+      "assigned_sparsities": {
+        "block_26.attn_out": 0.5,
+        "block_26.ff_out": 0.7,
+        "block_26.ff_proj": 0.6,
+        "block_26.k_proj": 0.6,
+        "block_26.q_proj": 0.6,
+        "block_26.up_proj": 0.6,
+        "block_26.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.5857142857142856,
+      "parameter_weighted_sparsity": 0.6075908954326923
+    },
+    "27": {
+      "assigned_sparsities": {
+        "block_27.attn_out": 0.5,
+        "block_27.ff_out": 0.65,
+        "block_27.ff_proj": 0.6,
+        "block_27.k_proj": 0.65,
+        "block_27.q_proj": 0.65,
+        "block_27.up_proj": 0.65,
+        "block_27.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6,
+      "parameter_weighted_sparsity": 0.6153094951923077
+    },
+    "28": {
+      "assigned_sparsities": {
+        "block_28.attn_out": 0.55,
+        "block_28.ff_out": 0.7,
+        "block_28.ff_proj": 0.6,
+        "block_28.k_proj": 0.65,
+        "block_28.q_proj": 0.7,
+        "block_28.up_proj": 0.6,
+        "block_28.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6142857142857142,
+      "parameter_weighted_sparsity": 0.6229717548076923
+    },
+    "29": {
+      "assigned_sparsities": {
+        "block_29.attn_out": 0.6,
+        "block_29.ff_out": 0.7,
+        "block_29.ff_proj": 0.6,
+        "block_29.k_proj": 0.65,
+        "block_29.q_proj": 0.65,
+        "block_29.up_proj": 0.6,
+        "block_29.v_proj": 0.55
+      },
+      "mean_nominal_sparsity": 0.6214285714285713,
+      "parameter_weighted_sparsity": 0.6268028846153846
+    },
+    "3": {
+      "assigned_sparsities": {
+        "block_03.attn_out": 0.75,
+        "block_03.ff_out": 0.75,
+        "block_03.ff_proj": 0.7,
+        "block_03.k_proj": 0.75,
+        "block_03.q_proj": 0.75,
+        "block_03.up_proj": 0.7,
+        "block_03.v_proj": 0.75
+      },
+      "mean_nominal_sparsity": 0.7357142857142858,
+      "parameter_weighted_sparsity": 0.7269005408653846
+    },
+    "30": {
+      "assigned_sparsities": {
+        "block_30.attn_out": 0.5,
+        "block_30.ff_out": 0.65,
+        "block_30.ff_proj": 0.55,
+        "block_30.k_proj": 0.6,
+        "block_30.q_proj": 0.7,
+        "block_30.up_proj": 0.55,
+        "block_30.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.5785714285714285,
+      "parameter_weighted_sparsity": 0.5806603064903846
+    },
+    "31": {
+      "assigned_sparsities": {
+        "block_31.attn_out": 0.5,
+        "block_31.ff_out": 0.5,
+        "block_31.ff_proj": 0.5,
+        "block_31.k_proj": 0.6,
+        "block_31.q_proj": 0.65,
+        "block_31.up_proj": 0.5,
+        "block_31.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.5357142857142857,
+      "parameter_weighted_sparsity": 0.5192119891826923
+    },
+    "4": {
+      "assigned_sparsities": {
+        "block_04.attn_out": 0.75,
+        "block_04.ff_out": 0.75,
+        "block_04.ff_proj": 0.7,
+        "block_04.k_proj": 0.75,
+        "block_04.q_proj": 0.75,
+        "block_04.up_proj": 0.7,
+        "block_04.v_proj": 0.65
+      },
+      "mean_nominal_sparsity": 0.7214285714285714,
+      "parameter_weighted_sparsity": 0.7192007211538461
+    },
+    "5": {
+      "assigned_sparsities": {
+        "block_05.attn_out": 0.65,
+        "block_05.ff_out": 0.75,
+        "block_05.ff_proj": 0.7,
+        "block_05.k_proj": 0.7,
+        "block_05.q_proj": 0.75,
+        "block_05.up_proj": 0.7,
+        "block_05.v_proj": 0.65
+      },
+      "mean_nominal_sparsity": 0.7,
+      "parameter_weighted_sparsity": 0.7076509915865384
+    },
+    "6": {
+      "assigned_sparsities": {
+        "block_06.attn_out": 0.6,
+        "block_06.ff_out": 0.7,
+        "block_06.ff_proj": 0.65,
+        "block_06.k_proj": 0.7,
+        "block_06.q_proj": 0.75,
+        "block_06.up_proj": 0.7,
+        "block_06.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6714285714285715,
+      "parameter_weighted_sparsity": 0.6768517127403846
+    },
+    "7": {
+      "assigned_sparsities": {
+        "block_07.attn_out": 0.65,
+        "block_07.ff_out": 0.7,
+        "block_07.ff_proj": 0.65,
+        "block_07.k_proj": 0.7,
+        "block_07.q_proj": 0.7,
+        "block_07.up_proj": 0.65,
+        "block_07.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6642857142857144,
+      "parameter_weighted_sparsity": 0.6653019831730769
+    },
+    "8": {
+      "assigned_sparsities": {
+        "block_08.attn_out": 0.65,
+        "block_08.ff_out": 0.7,
+        "block_08.ff_proj": 0.65,
+        "block_08.k_proj": 0.7,
+        "block_08.q_proj": 0.65,
+        "block_08.up_proj": 0.65,
+        "block_08.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6571428571428573,
+      "parameter_weighted_sparsity": 0.6614520733173077
+    },
+    "9": {
+      "assigned_sparsities": {
+        "block_09.attn_out": 0.6,
+        "block_09.ff_out": 0.65,
+        "block_09.ff_proj": 0.65,
+        "block_09.k_proj": 0.7,
+        "block_09.q_proj": 0.7,
+        "block_09.up_proj": 0.65,
+        "block_09.v_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.65,
+      "parameter_weighted_sparsity": 0.6499211237980769
+    }
+  },
+  "by_type": {
+    "attn_out": {
+      "assigned_sparsities": {
+        "block_00.attn_out": 0.7,
+        "block_01.attn_out": 0.75,
+        "block_02.attn_out": 0.75,
+        "block_03.attn_out": 0.75,
+        "block_04.attn_out": 0.75,
+        "block_05.attn_out": 0.65,
+        "block_06.attn_out": 0.6,
+        "block_07.attn_out": 0.65,
+        "block_08.attn_out": 0.65,
+        "block_09.attn_out": 0.6,
+        "block_10.attn_out": 0.6,
+        "block_11.attn_out": 0.6,
+        "block_12.attn_out": 0.65,
+        "block_13.attn_out": 0.55,
+        "block_14.attn_out": 0.6,
+        "block_15.attn_out": 0.55,
+        "block_16.attn_out": 0.55,
+        "block_17.attn_out": 0.55,
+        "block_18.attn_out": 0.55,
+        "block_19.attn_out": 0.55,
+        "block_20.attn_out": 0.5,
+        "block_21.attn_out": 0.5,
+        "block_22.attn_out": 0.55,
+        "block_23.attn_out": 0.5,
+        "block_24.attn_out": 0.5,
+        "block_25.attn_out": 0.5,
+        "block_26.attn_out": 0.5,
+        "block_27.attn_out": 0.5,
+        "block_28.attn_out": 0.55,
+        "block_29.attn_out": 0.6,
+        "block_30.attn_out": 0.5,
+        "block_31.attn_out": 0.5
+      },
+      "mean_nominal_sparsity": 0.5875,
+      "parameter_weighted_sparsity": 0.5874099731445312
+    },
+    "ff_out": {
+      "assigned_sparsities": {
+        "block_00.ff_out": 0.75,
+        "block_01.ff_out": 0.75,
+        "block_02.ff_out": 0.75,
+        "block_03.ff_out": 0.75,
+        "block_04.ff_out": 0.75,
+        "block_05.ff_out": 0.75,
+        "block_06.ff_out": 0.7,
+        "block_07.ff_out": 0.7,
+        "block_08.ff_out": 0.7,
+        "block_09.ff_out": 0.65,
+        "block_10.ff_out": 0.7,
+        "block_11.ff_out": 0.7,
+        "block_12.ff_out": 0.65,
+        "block_13.ff_out": 0.7,
+        "block_14.ff_out": 0.7,
+        "block_15.ff_out": 0.7,
+        "block_16.ff_out": 0.7,
+        "block_17.ff_out": 0.7,
+        "block_18.ff_out": 0.7,
+        "block_19.ff_out": 0.7,
+        "block_20.ff_out": 0.7,
+        "block_21.ff_out": 0.7,
+        "block_22.ff_out": 0.7,
+        "block_23.ff_out": 0.7,
+        "block_24.ff_out": 0.65,
+        "block_25.ff_out": 0.65,
+        "block_26.ff_out": 0.7,
+        "block_27.ff_out": 0.65,
+        "block_28.ff_out": 0.7,
+        "block_29.ff_out": 0.7,
+        "block_30.ff_out": 0.65,
+        "block_31.ff_out": 0.5
+      },
+      "mean_nominal_sparsity": 0.69375,
+      "parameter_weighted_sparsity": 0.6937179565429688
+    },
+    "ff_proj": {
+      "assigned_sparsities": {
+        "block_00.ff_proj": 0.75,
+        "block_01.ff_proj": 0.75,
+        "block_02.ff_proj": 0.75,
+        "block_03.ff_proj": 0.7,
+        "block_04.ff_proj": 0.7,
+        "block_05.ff_proj": 0.7,
+        "block_06.ff_proj": 0.65,
+        "block_07.ff_proj": 0.65,
+        "block_08.ff_proj": 0.65,
+        "block_09.ff_proj": 0.65,
+        "block_10.ff_proj": 0.65,
+        "block_11.ff_proj": 0.6,
+        "block_12.ff_proj": 0.6,
+        "block_13.ff_proj": 0.6,
+        "block_14.ff_proj": 0.6,
+        "block_15.ff_proj": 0.6,
+        "block_16.ff_proj": 0.6,
+        "block_17.ff_proj": 0.65,
+        "block_18.ff_proj": 0.65,
+        "block_19.ff_proj": 0.65,
+        "block_20.ff_proj": 0.65,
+        "block_21.ff_proj": 0.65,
+        "block_22.ff_proj": 0.65,
+        "block_23.ff_proj": 0.65,
+        "block_24.ff_proj": 0.65,
+        "block_25.ff_proj": 0.6,
+        "block_26.ff_proj": 0.6,
+        "block_27.ff_proj": 0.6,
+        "block_28.ff_proj": 0.6,
+        "block_29.ff_proj": 0.6,
+        "block_30.ff_proj": 0.55,
+        "block_31.ff_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.6390625,
+      "parameter_weighted_sparsity": 0.6389617919921875
+    },
+    "k_proj": {
+      "assigned_sparsities": {
+        "block_00.k_proj": 0.6,
+        "block_01.k_proj": 0.75,
+        "block_02.k_proj": 0.75,
+        "block_03.k_proj": 0.75,
+        "block_04.k_proj": 0.75,
+        "block_05.k_proj": 0.7,
+        "block_06.k_proj": 0.7,
+        "block_07.k_proj": 0.7,
+        "block_08.k_proj": 0.7,
+        "block_09.k_proj": 0.7,
+        "block_10.k_proj": 0.65,
+        "block_11.k_proj": 0.7,
+        "block_12.k_proj": 0.65,
+        "block_13.k_proj": 0.55,
+        "block_14.k_proj": 0.65,
+        "block_15.k_proj": 0.65,
+        "block_16.k_proj": 0.6,
+        "block_17.k_proj": 0.6,
+        "block_18.k_proj": 0.65,
+        "block_19.k_proj": 0.6,
+        "block_20.k_proj": 0.65,
+        "block_21.k_proj": 0.6,
+        "block_22.k_proj": 0.6,
+        "block_23.k_proj": 0.6,
+        "block_24.k_proj": 0.6,
+        "block_25.k_proj": 0.65,
+        "block_26.k_proj": 0.6,
+        "block_27.k_proj": 0.65,
+        "block_28.k_proj": 0.65,
+        "block_29.k_proj": 0.65,
+        "block_30.k_proj": 0.6,
+        "block_31.k_proj": 0.6
+      },
+      "mean_nominal_sparsity": 0.6515625,
+      "parameter_weighted_sparsity": 0.6514663696289062
+    },
+    "q_proj": {
+      "assigned_sparsities": {
+        "block_00.q_proj": 0.7,
+        "block_01.q_proj": 0.75,
+        "block_02.q_proj": 0.75,
+        "block_03.q_proj": 0.75,
+        "block_04.q_proj": 0.75,
+        "block_05.q_proj": 0.75,
+        "block_06.q_proj": 0.75,
+        "block_07.q_proj": 0.7,
+        "block_08.q_proj": 0.65,
+        "block_09.q_proj": 0.7,
+        "block_10.q_proj": 0.6,
+        "block_11.q_proj": 0.65,
+        "block_12.q_proj": 0.65,
+        "block_13.q_proj": 0.55,
+        "block_14.q_proj": 0.6,
+        "block_15.q_proj": 0.6,
+        "block_16.q_proj": 0.6,
+        "block_17.q_proj": 0.6,
+        "block_18.q_proj": 0.65,
+        "block_19.q_proj": 0.6,
+        "block_20.q_proj": 0.65,
+        "block_21.q_proj": 0.6,
+        "block_22.q_proj": 0.6,
+        "block_23.q_proj": 0.6,
+        "block_24.q_proj": 0.65,
+        "block_25.q_proj": 0.65,
+        "block_26.q_proj": 0.6,
+        "block_27.q_proj": 0.65,
+        "block_28.q_proj": 0.7,
+        "block_29.q_proj": 0.65,
+        "block_30.q_proj": 0.7,
+        "block_31.q_proj": 0.65
+      },
+      "mean_nominal_sparsity": 0.6578125,
+      "parameter_weighted_sparsity": 0.6577224731445312
+    },
+    "up_proj": {
+      "assigned_sparsities": {
+        "block_00.up_proj": 0.75,
+        "block_01.up_proj": 0.75,
+        "block_02.up_proj": 0.75,
+        "block_03.up_proj": 0.7,
+        "block_04.up_proj": 0.7,
+        "block_05.up_proj": 0.7,
+        "block_06.up_proj": 0.7,
+        "block_07.up_proj": 0.65,
+        "block_08.up_proj": 0.65,
+        "block_09.up_proj": 0.65,
+        "block_10.up_proj": 0.65,
+        "block_11.up_proj": 0.65,
+        "block_12.up_proj": 0.65,
+        "block_13.up_proj": 0.65,
+        "block_14.up_proj": 0.65,
+        "block_15.up_proj": 0.65,
+        "block_16.up_proj": 0.65,
+        "block_17.up_proj": 0.65,
+        "block_18.up_proj": 0.65,
+        "block_19.up_proj": 0.65,
+        "block_20.up_proj": 0.7,
+        "block_21.up_proj": 0.7,
+        "block_22.up_proj": 0.65,
+        "block_23.up_proj": 0.65,
+        "block_24.up_proj": 0.65,
+        "block_25.up_proj": 0.65,
+        "block_26.up_proj": 0.6,
+        "block_27.up_proj": 0.65,
+        "block_28.up_proj": 0.6,
+        "block_29.up_proj": 0.6,
+        "block_30.up_proj": 0.55,
+        "block_31.up_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.65625,
+      "parameter_weighted_sparsity": 0.6561660766601562
+    },
+    "v_proj": {
+      "assigned_sparsities": {
+        "block_00.v_proj": 0.5,
+        "block_01.v_proj": 0.75,
+        "block_02.v_proj": 0.75,
+        "block_03.v_proj": 0.75,
+        "block_04.v_proj": 0.65,
+        "block_05.v_proj": 0.65,
+        "block_06.v_proj": 0.6,
+        "block_07.v_proj": 0.6,
+        "block_08.v_proj": 0.6,
+        "block_09.v_proj": 0.6,
+        "block_10.v_proj": 0.6,
+        "block_11.v_proj": 0.65,
+        "block_12.v_proj": 0.6,
+        "block_13.v_proj": 0.6,
+        "block_14.v_proj": 0.6,
+        "block_15.v_proj": 0.6,
+        "block_16.v_proj": 0.6,
+        "block_17.v_proj": 0.6,
+        "block_18.v_proj": 0.6,
+        "block_19.v_proj": 0.6,
+        "block_20.v_proj": 0.55,
+        "block_21.v_proj": 0.55,
+        "block_22.v_proj": 0.55,
+        "block_23.v_proj": 0.55,
+        "block_24.v_proj": 0.5,
+        "block_25.v_proj": 0.5,
+        "block_26.v_proj": 0.5,
+        "block_27.v_proj": 0.5,
+        "block_28.v_proj": 0.5,
+        "block_29.v_proj": 0.55,
+        "block_30.v_proj": 0.5,
+        "block_31.v_proj": 0.5
+      },
+      "mean_nominal_sparsity": 0.5859375,
+      "parameter_weighted_sparsity": 0.5858383178710938
+    }
+  },
+  "correlation_D65_assigned_density": {
+    "pearson": 0.30366680296623433,
+    "spearman": 0.41532831737321807
+  },
+  "correlation_layer_sparsity": {
+    "pearson": -0.6025121239601077,
+    "spearman": -0.5835120714973884
+  },
+  "correlation_mean_marginal_assigned_sparsity": {
+    "pearson": -0.2803749742388538,
+    "spearman": -0.46384700991539596
+  },
+  "correlation_mean_marginal_per_parameter_assigned_sparsity": {
+    "pearson": -0.49690431958210013,
+    "spearman": -0.9574858254323197
+  },
+  "counts": {
+    "0.5": 20,
+    "0.55": 17,
+    "0.6": 54,
+    "0.65": 64,
+    "0.7": 40,
+    "0.75": 29
+  },
+  "feasibility_skip_count": 28,
+  "global_parameter_weighted_sparsity": 0.6499211237980769,
+  "nominal_projection_sparsity": {
+    "coefficient_of_variation": 0.11054269648766223,
+    "max": 0.75,
+    "mean": 0.6388392857142857,
+    "median": 0.65,
+    "min": 0.5,
+    "p10": 0.55,
+    "p25": 0.6,
+    "p75": 0.7,
+    "p90": 0.75,
+    "std": 0.07061901726510922
+  },
+  "quartile_mean_sparsity": [
+    0.7089285714285715,
+    0.6348214285714285,
+    0.6196428571428572,
+    0.5919642857142857
+  ],
+  "uniform_parameter_weighted_sparsity": 0.6499211237980769
+}

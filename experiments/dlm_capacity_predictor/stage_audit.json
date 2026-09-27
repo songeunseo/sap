@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-m",
+    "experiments.dlm_capacity_predictor.audit_existing",
+    "--output-dir",
+    "/home/tmluser1/sap/experiments/dlm_capacity_predictor"
+  ],
+  "finished_utc": "2026-09-10T04:07:01.093193+00:00",
+  "log": "/home/tmluser1/sap/experiments/dlm_capacity_predictor/logs/audit.log",
+  "returncode": 0,
+  "stage": "audit",
+  "status": "complete",
+  "wall_seconds": 0.1293217029888183
+}

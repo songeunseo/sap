@@ -1,0 +1,12 @@
+{
+  "audit_exit_code": 0,
+  "completed_projection_curves": 224,
+  "last_event": {
+    "event": "experiment_complete",
+    "supported": true
+  },
+  "pid": 398825,
+  "status": "complete_and_audited",
+  "total_projection_curves": 224,
+  "updated_unix_time": 1788915154.0474775
+}

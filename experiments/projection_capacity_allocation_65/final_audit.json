@@ -1,0 +1,16 @@
+{
+  "artifact_sha256": {
+    "allocation.json": "e7514c31f7488ac418d01e1c2627b184518dc11fa61c82ae75efbbc2fcf64257",
+    "allocation_summary.json": "e2d8c20c22a1671ed06f43deea873de5c686c919816ed240233579ed232da85c",
+    "capacity65_mask_manifest.json": "79543b1005fd727df094bea9bc246ea5a096bbb694c3b65b708168887c8d0786",
+    "capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "config.json": "b313d7506b8fd4f8311e348a636c939ea9ace5fd26c92ce8afc0b1ff2091689d",
+    "heldout_dlm_results.json": "507a3b103f385a0304e5564900628aa6c9f4fe3b1d00c1293535fa841dff7539",
+    "marginal_costs.json": "ed9f1bfb9091c2fd96872431072ef10a91d76e1abb1b6e28aac7a749d6aa0c99",
+    "report.md": "77d325b2540be20b67bb3cf4978401a9e3dae7240053386f3d3ee14754afeb6b",
+    "state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969",
+    "uniform65_mask_manifest.json": "76f77622e2c1e414a22c44c2f567ddba1ee57c44a9488ded017f9ee47b5d9b0a"
+  },
+  "status": "verified",
+  "supported": true
+}

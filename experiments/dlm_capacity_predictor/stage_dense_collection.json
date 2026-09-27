@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-m",
+    "experiments.dlm_capacity_predictor.collect_dense"
+  ],
+  "finished_utc": "2026-09-10T04:08:19.551949+00:00",
+  "log": "/home/tmluser1/sap/experiments/dlm_capacity_predictor/logs/dense_collection.log",
+  "returncode": 0,
+  "stage": "dense_collection",
+  "status": "complete",
+  "wall_seconds": 78.40975059499033
+}

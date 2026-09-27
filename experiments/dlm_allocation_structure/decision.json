@@ -1,0 +1,17 @@
+{
+  "dlm_state_structure_supported": false,
+  "interpretation": "diagnostic priority only; not a pruning-method or downstream gate",
+  "projection_beats_depth_type_both_folds": true,
+  "projection_minus_depth_type_sequence_damage": {
+    "bootstrap_95_ci": [
+      -0.023025269718777937,
+      -0.016965999935518977
+    ],
+    "count": 8,
+    "mean": -0.019838242563741892,
+    "resamples": 20000,
+    "seed": 0
+  },
+  "recommended_followup": "freeze independent cheap static baselines before any new DLM-state predictor; full-model/downstream comparison requires a separate preregistered plan",
+  "status": "complete"
+}

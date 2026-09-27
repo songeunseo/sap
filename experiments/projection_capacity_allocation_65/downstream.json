@@ -1,0 +1,97 @@
+{
+  "evaluations": [
+    {
+      "capacity": {
+        "correct": 20,
+        "limit": 100,
+        "metrics": {
+          "accuracy": 0.2,
+          "eval_seconds": 2390.733841650188,
+          "examples_per_second": 0.041828160984652175,
+          "full_num_examples": 1319,
+          "num_examples": 100
+        },
+        "predictions": "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/gsm8k/capacity_100_predictions.jsonl",
+        "sha256": "f7c04baf8c3922067d9778e8656fef66afaadb1de80b231dfc929285e906101b"
+      },
+      "uniform": {
+        "correct": 12,
+        "limit": 100,
+        "metrics": {
+          "accuracy": 0.12,
+          "eval_seconds": 3787.4957195350435,
+          "examples_per_second": 0.02640267010315621,
+          "full_num_examples": 1319,
+          "num_examples": 100
+        },
+        "predictions": "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/gsm8k/uniform_100_predictions.jsonl",
+        "sha256": "2517601bf8e6aafd3caf11af1d21f33faed4ce4f8ce1473a68d1f074deb2a706"
+      }
+    },
+    {
+      "capacity": {
+        "correct": 250,
+        "limit": 1319,
+        "metrics": {
+          "accuracy": 0.18953752843062927,
+          "eval_seconds": 27934.030428440077,
+          "examples_per_second": 0.04721839203902009,
+          "full_num_examples": 1319,
+          "num_examples": 1319
+        },
+        "predictions": "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/gsm8k/capacity_1319_predictions.jsonl",
+        "sha256": "b36f46d0524b1faa9435090535a5f08b06bfc912d8123fb92ae6071cb92e5d4a"
+      },
+      "uniform": {
+        "correct": 139,
+        "limit": 1319,
+        "metrics": {
+          "accuracy": 0.10538286580742987,
+          "eval_seconds": 38156.98698827019,
+          "examples_per_second": 0.03456771889262307,
+          "full_num_examples": 1319,
+          "num_examples": 1319
+        },
+        "predictions": "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/gsm8k/uniform_1319_predictions.jsonl",
+        "sha256": "9f9fee4f951173f118db6e191c7b793d40402d5c880cf01b3e2daea0bb656897"
+      }
+    }
+  ],
+  "mini_directionally_better": true,
+  "protocol": {
+    "evaluation": {
+      "block_length": 256,
+      "bootstrap_iters": 0,
+      "denoising_steps": 256,
+      "fewshot_seed": 1234,
+      "generation_length": 256,
+      "max_cuda_gib": 30,
+      "num_fewshot": 5,
+      "numpy_seed": 1234,
+      "order": [
+        "Dense",
+        "DLM-SUM",
+        "DLM-ABS",
+        "DLM-SQUARE",
+        "Wanda",
+        "SparseGPT"
+      ],
+      "pathological_slowdown_factor": 3.0,
+      "primary_filter": "strict-match",
+      "primary_metric": "exact_match,strict-match",
+      "random_seed": 0,
+      "task": "gsm8k",
+      "temperature": 0,
+      "timing_examples": 32,
+      "torch_seed": 1234
+    },
+    "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+    "lm_eval_version": "0.4.8",
+    "model": {
+      "dtype": "bfloat16",
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    }
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+}

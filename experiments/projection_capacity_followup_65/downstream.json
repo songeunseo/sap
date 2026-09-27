@@ -1,0 +1,195 @@
+{
+  "evaluations": [
+    {
+      "historical": {
+        "capacity_correct": 20,
+        "capacity_predictions_sha256": "f7c04baf8c3922067d9778e8656fef66afaadb1de80b231dfc929285e906101b",
+        "uniform_correct": 12,
+        "uniform_predictions_sha256": "2517601bf8e6aafd3caf11af1d21f33faed4ce4f8ce1473a68d1f074deb2a706"
+      },
+      "limit": 100,
+      "new_methods": {
+        "eis_type": {
+          "correct": 22,
+          "limit": 100,
+          "metrics": {
+            "accuracy": 0.22,
+            "eval_seconds": 2140.185610934859,
+            "examples_per_second": 0.04672491931964667,
+            "full_num_examples": 1319,
+            "num_examples": 100
+          },
+          "predictions": "experiments/projection_capacity_followup_65/gsm8k/eis_type_100_predictions.jsonl",
+          "sha256": "e6da1d076d4c4e6e0f88599f491c90292705eeb18a1a3047b4c913eeca7aa63d"
+        },
+        "reconstruction": {
+          "correct": 19,
+          "limit": 100,
+          "metrics": {
+            "accuracy": 0.19,
+            "eval_seconds": 2132.704328303924,
+            "examples_per_second": 0.046888824987534494,
+            "full_num_examples": 1319,
+            "num_examples": 100
+          },
+          "predictions": "experiments/projection_capacity_followup_65/gsm8k/reconstruction_100_predictions.jsonl",
+          "sha256": "4a22b69dd67127babe7b839fec765fb1723adf0bdc7f4b7fea11eb5b895961e5"
+        }
+      },
+      "paired_comparisons": {
+        "capacity_minus_eis_type": {
+          "both_correct": 11,
+          "both_wrong": 69,
+          "discordant": 20,
+          "exact_mcnemar_p": 0.8238029479980469,
+          "net_correct": -2,
+          "reference_correct_candidate_wrong": 11,
+          "reference_wrong_candidate_correct": 9
+        },
+        "capacity_minus_reconstruction": {
+          "both_correct": 11,
+          "both_wrong": 72,
+          "discordant": 17,
+          "exact_mcnemar_p": 1.0,
+          "net_correct": 1,
+          "reference_correct_candidate_wrong": 8,
+          "reference_wrong_candidate_correct": 9
+        },
+        "eis_type_minus_uniform": {
+          "both_correct": 11,
+          "both_wrong": 77,
+          "discordant": 12,
+          "exact_mcnemar_p": 0.00634765625,
+          "net_correct": 10,
+          "reference_correct_candidate_wrong": 1,
+          "reference_wrong_candidate_correct": 11
+        },
+        "reconstruction_minus_uniform": {
+          "both_correct": 8,
+          "both_wrong": 77,
+          "discordant": 15,
+          "exact_mcnemar_p": 0.11846923828124999,
+          "net_correct": 7,
+          "reference_correct_candidate_wrong": 4,
+          "reference_wrong_candidate_correct": 11
+        }
+      }
+    },
+    {
+      "historical": {
+        "capacity_correct": 250,
+        "capacity_predictions_sha256": "b36f46d0524b1faa9435090535a5f08b06bfc912d8123fb92ae6071cb92e5d4a",
+        "uniform_correct": 139,
+        "uniform_predictions_sha256": "9f9fee4f951173f118db6e191c7b793d40402d5c880cf01b3e2daea0bb656897"
+      },
+      "limit": 1319,
+      "new_methods": {
+        "eis_type": {
+          "correct": 263,
+          "limit": 1319,
+          "metrics": {
+            "accuracy": 0.19939347990902198,
+            "eval_seconds": 30594.155784551054,
+            "examples_per_second": 0.04311280916814993,
+            "full_num_examples": 1319,
+            "num_examples": 1319
+          },
+          "predictions": "experiments/projection_capacity_followup_65/gsm8k/eis_type_1319_predictions.jsonl",
+          "sha256": "81804d0a8efe07b40cdcd8a64f474b908b164e8dc19ce02e9e437b195e219c58"
+        },
+        "reconstruction": {
+          "correct": 255,
+          "limit": 1319,
+          "metrics": {
+            "accuracy": 0.19332827899924185,
+            "eval_seconds": 27674.918942452874,
+            "examples_per_second": 0.047660482863300296,
+            "full_num_examples": 1319,
+            "num_examples": 1319
+          },
+          "predictions": "experiments/projection_capacity_followup_65/gsm8k/reconstruction_1319_predictions.jsonl",
+          "sha256": "77228e359890e0c59c4a96c4a0c38d25a77ad476696c3e06870a448312fc30c8"
+        }
+      },
+      "paired_comparisons": {
+        "capacity_minus_eis_type": {
+          "both_correct": 154,
+          "both_wrong": 960,
+          "discordant": 205,
+          "exact_mcnemar_p": 0.40202361223750865,
+          "net_correct": -13,
+          "reference_correct_candidate_wrong": 109,
+          "reference_wrong_candidate_correct": 96
+        },
+        "capacity_minus_reconstruction": {
+          "both_correct": 139,
+          "both_wrong": 953,
+          "discordant": 227,
+          "exact_mcnemar_p": 0.7907027887267075,
+          "net_correct": -5,
+          "reference_correct_candidate_wrong": 116,
+          "reference_wrong_candidate_correct": 111
+        },
+        "eis_type_minus_uniform": {
+          "both_correct": 82,
+          "both_wrong": 999,
+          "discordant": 238,
+          "exact_mcnemar_p": 3.1580745327771436e-16,
+          "net_correct": 124,
+          "reference_correct_candidate_wrong": 57,
+          "reference_wrong_candidate_correct": 181
+        },
+        "reconstruction_minus_uniform": {
+          "both_correct": 89,
+          "both_wrong": 1014,
+          "discordant": 216,
+          "exact_mcnemar_p": 9.874113568725639e-16,
+          "net_correct": 116,
+          "reference_correct_candidate_wrong": 50,
+          "reference_wrong_candidate_correct": 166
+        }
+      }
+    }
+  ],
+  "method_manifest_sha256": {
+    "eis_type": "e4dc57478a4236ed77c376af878d8cfd86bca6bc1aa150687f6e951b968c4175",
+    "reconstruction": "24b3a7670ad3f03b1fd107a1901d1e052126dc51531c9abe499f3f7cc51f1f46"
+  },
+  "protocol": {
+    "evaluation": {
+      "block_length": 256,
+      "bootstrap_iters": 0,
+      "denoising_steps": 256,
+      "fewshot_seed": 1234,
+      "generation_length": 256,
+      "max_cuda_gib": 30,
+      "num_fewshot": 5,
+      "numpy_seed": 1234,
+      "order": [
+        "Dense",
+        "DLM-SUM",
+        "DLM-ABS",
+        "DLM-SQUARE",
+        "Wanda",
+        "SparseGPT"
+      ],
+      "pathological_slowdown_factor": 3.0,
+      "primary_filter": "strict-match",
+      "primary_metric": "exact_match,strict-match",
+      "random_seed": 0,
+      "task": "gsm8k",
+      "temperature": 0,
+      "timing_examples": 32,
+      "torch_seed": 1234
+    },
+    "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+    "lm_eval_version": "0.4.8",
+    "model": {
+      "dtype": "bfloat16",
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    }
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "status": "complete"
+}

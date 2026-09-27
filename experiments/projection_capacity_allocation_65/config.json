@@ -1,0 +1,50 @@
+{
+  "activation_semantics": "Historical sweep DLM-Wanda: unweighted mean of sum_token X^2 across 80 frozen states; overall_uniform field only",
+  "allocation": "raw next-increment marginal KL / (0.05*N); repository-order ties; exact row-floor budget reachability constraint",
+  "allocation_metric": "arithmetic mean across states of masked-token Dense||Sparse KL",
+  "bootstrap": {
+    "interval": "percentile 95%",
+    "resamples": 20000,
+    "seed": 0,
+    "unit": "paired state"
+  },
+  "budget": {
+    "achieved_global_sparsity": 0.6499211237980769,
+    "nominal_sparsity": 0.65,
+    "target_error": -7.887620192315037e-05,
+    "total_pruned": 4536008704,
+    "total_weights": 6979321856
+  },
+  "calibration_choice": "sweep DLM calibration, as stated before construction",
+  "capacity_path": "seven-variant suffix batch: dense same-path sham + all six grid masks; one target Linear intervention",
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "downstream": "only on DLM PASS: frozen GSM8K mini100; full1319 only if mini capacity correct > uniform correct",
+  "gate": "mean delta<0 AND CI upper<0 AND >4/8 sequences AND >2/5 timesteps improve",
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "heldout_path": "batch-one full forwards with physical masks; repeated dense sham must be exactly equal",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "monotone_envelope": null,
+  "nominal_global_sparsity": 0.65,
+  "projection_count": 224,
+  "selector": "Standard Wanda: abs(W.float()) * sqrt(A.float()); stable ascending row-wise sort",
+  "sources": {
+    "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "experiments/dlm_loss_aggregation/exp002/results/predictions/dense.jsonl": "1a1523c089558ee3df2ad1b49a937a3b01290060d67a51b8715e3374dc866b8e",
+    "experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "experiments/uniform_wanda_sparsity_sweep/mask_manifest.json": "0a1a1199ccddf95f216e7c2beb7e460220a66570062e9d7da75ad7cd2dc7b01a",
+    "experiments/wanda_failure_characterization/heldout_state_manifest.json": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0"
+  },
+  "status": "frozen_before_capacity_outcomes"
+}

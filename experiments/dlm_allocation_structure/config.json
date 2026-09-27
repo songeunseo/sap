@@ -1,0 +1,58 @@
+{
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 0,
+    "unit": "held-out sequence"
+  },
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "model": "GSAI-ML/LLaDA-8B-Base",
+  "primary_structure_variable": "functional marginal KL / (0.05 * projection parameter count)",
+  "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "scope": "persisted curves only; no new masks, model execution, or downstream evaluation",
+  "sequence_splits": [
+    [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6,
+        7
+      ]
+    ],
+    [
+      [
+        4,
+        5,
+        6,
+        7
+      ],
+      [
+        0,
+        1,
+        2,
+        3
+      ]
+    ]
+  ],
+  "source_sha256": {
+    "experiments/projection_capacity_allocation_65/allocation.json": "e7514c31f7488ac418d01e1c2627b184518dc11fa61c82ae75efbbc2fcf64257",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "experiments/projection_capacity_followup_65/eis_type65_mask_manifest.json": "e4dc57478a4236ed77c376af878d8cfd86bca6bc1aa150687f6e951b968c4175",
+    "experiments/projection_capacity_followup_65/reconstruction65_mask_manifest.json": "24b3a7670ad3f03b1fd107a1901d1e052126dc51531c9abe499f3f7cc51f1f46"
+  },
+  "status": "frozen_cpu_diagnostic",
+  "target_pruned": 4536008704
+}

@@ -1,0 +1,8 @@
+{
+  "aggregate_sha256": "552191f0609ed18f42afda1976b042cb985de8d8c28f7ef1338fc1e004f965e2",
+  "fingerprint": {
+    "candidates_sha256": "15b964d54df11f382d5722ebbcd09724342a04046c5fc8f8aebd822d07a7df18",
+    "config_sha256": "d62ad6462a299357218d85f596dd55a876019b5cfbbf2faf96a923001823f298",
+    "state_sha256": "311dc029fb4bee42b9dcee49126c57aef579feab9ab39534d1c1d4bf17a51454"
+  }
+}

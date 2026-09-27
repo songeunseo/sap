@@ -1,0 +1,11 @@
+{
+  "candidates": [
+    {
+      "mask_manifest": "experiments/dlm_capacity_predictor/allocations/probe16_mask_manifest.json",
+      "mask_manifest_sha256": "14665760243f58e983fb479eae4e3b20ee440cd6d46338f8fc21ff60e8e14ce7",
+      "method": "probe16"
+    }
+  ],
+  "config_sha256": "d62ad6462a299357218d85f596dd55a876019b5cfbbf2faf96a923001823f298",
+  "status": "frozen"
+}

@@ -1,0 +1,7 @@
+{
+  "ci_cross_zero_count": 198,
+  "negative_mean_count": 120,
+  "negative_pointwise_ci_count": 16,
+  "note": "exploratory pointwise conditional95% sequence bootstrap; no multiplicity adjustment or fullPPL interpretation",
+  "positive_pointwise_ci_count": 10
+}
