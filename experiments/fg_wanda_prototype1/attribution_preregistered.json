@@ -1,0 +1,32 @@
+{
+  "status": "frozen_before_ours_dlmw_downstream_results",
+  "experiment": "downstream attribution control",
+  "target": "block_31.ff_out",
+  "model_revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "sparsity": 0.5,
+  "standard_wanda_mask_sha256": "3273fbbe3aaeeb1dc66b0c436e6af7537e07d1bb461667354f3da00a879fc484",
+  "persisted_dlmw_target_raw_sha256": "06b238c0d59212366946e454ed6dfdb6281d28e5e6e5b15fb7dac2940fadddf2",
+  "persisted_fg_target_raw_sha256": "001f3aed0d20ada603626094e4ae23b43521e67d4eacfa61d12d8df5256c80a5",
+  "geometry_calibration_manifest_sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+  "run_only": [
+    "Ours-DLMW GSM8K",
+    "Ours-DLMW WinoGrande"
+  ],
+  "reuse": [
+    "Dense",
+    "Standard Wanda",
+    "SparseGPT",
+    "Ours-FG"
+  ],
+  "primary_task": "GSM8K full 1319, 5-shot, strict exact match, temperature 0, generation/block/steps 256",
+  "secondary_task": "WinoGrande full 1267, 5-shot, batch 8, MC 128, CFG 0",
+  "paired_test": "two-sided exact McNemar/binomial",
+  "outcome_order": [
+    "D if DLMW beats FG on primary GSM8K and is non-worse on WinoGrande",
+    "A if DLMW beats Wanda and FG beats DLMW on primary GSM8K with non-negative WinoGrande direction",
+    "C if FG beats Wanda while DLMW is non-better than Wanda on primary GSM8K",
+    "B if DLMW improves over Wanda while FG is tied/non-consistently better",
+    "E otherwise"
+  ],
+  "no_tuning_or_rescue": true
+}

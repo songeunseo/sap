@@ -1,0 +1,26 @@
+{
+  "nn_gate": {
+    "final_energy_abs": {
+      "max": 4.656612873077393e-10,
+      "mean": 2.0372680972768897e-11
+    },
+    "kl_abs": {
+      "max": 3.725290298461914e-09,
+      "mean": 3.2596289556430236e-10
+    },
+    "logit_energy_abs": {
+      "max": 4.656612873077393e-10,
+      "mean": 1.6007107098148232e-11
+    },
+    "loss_abs": {
+      "max": 4.76837158203125e-07,
+      "mean": 6.556511067401516e-08
+    }
+  },
+  "path_gate": {
+    "nn_final_hidden_max_abs": 0.0,
+    "nn_kl_abs": 0.0,
+    "nn_logits_max_abs": 0.0,
+    "nn_loss_abs": 0.0
+  }
+}

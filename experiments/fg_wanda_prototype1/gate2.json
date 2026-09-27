@@ -1,0 +1,30 @@
+{
+  "bootstrap_CI95": {
+    "improvement_DLMW": [
+      -0.00024690858524991196,
+      0.0006430771725717932
+    ],
+    "improvement_W": [
+      0.011089209024794398,
+      0.02822355405427515
+    ]
+  },
+  "criteria": {
+    "Wanda_improvement_CI_lower_positive": true,
+    "lower_mean_KL_than_DLMW": true,
+    "lower_mean_KL_than_Wanda": true,
+    "positive_sequence_means_at_least6": true,
+    "positive_timestep_means_at_least4": true
+  },
+  "failure_map_scope": "only block31.ff_out on independent states; no aggregate-map claim",
+  "mean_kl": {
+    "DLMW": 0.007972049311501906,
+    "FG": 0.007815974537516012,
+    "Wanda": 0.027096280216937885
+  },
+  "model_sha_after": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "model_sha_before": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "positive_sequence_means": 8,
+  "positive_timestep_means": 5,
+  "status": "pass"
+}

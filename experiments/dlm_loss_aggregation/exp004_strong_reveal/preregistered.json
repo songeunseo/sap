@@ -1,0 +1,140 @@
+{
+  "experiment": "EXP-004-STRONG-REVEAL",
+  "status": "frozen_before_strong_reveal_scoring",
+  "purpose": "Stress-test whether EXP-004 Reveal-2x failed to change masks because weighting was too weak or because reveal gradients are ranking-redundant with Uniform.",
+  "hypotheses": {
+    "H_A": "Reveal-2x was too weak to change the pruning decision.",
+    "H_B": "Reveal gradients induce nearly the same weight ranking as Uniform under ABS aggregation."
+  },
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+    "dtype": "bfloat16"
+  },
+  "calibration": {
+    "state_count": 80,
+    "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "manifest": {
+      "path": "experiments/dlm_loss_aggregation/calibration_manifest.json",
+      "file_sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694"
+    },
+    "partition": {
+      "path": "experiments/dlm_loss_aggregation/exp004/token_partition_summary.json",
+      "file_sha256": "c4566ecfee1e2d116a0ff20a64e12f42b88b75c3f59bcaf7a9327a16df53c665",
+      "masked_observations": 10267,
+      "reveal_observations": 116,
+      "remain_observations": 10151
+    },
+    "score_metadata": {
+      "path": "experiments/dlm_loss_aggregation/scores/metadata.json",
+      "file_sha256": "ed8a02b93b7a5c35b5667eeacb8649d4a8b374483151ef55cbe148dc479cf5e8"
+    }
+  },
+  "conditions": [
+    {
+      "name": "uniform_abs",
+      "reveal_raw": 1.0,
+      "remain_raw": 1.0
+    },
+    {
+      "name": "reveal2_abs",
+      "reveal_raw": 2.0,
+      "remain_raw": 1.0
+    },
+    {
+      "name": "reveal50_abs",
+      "reveal_raw": 50.0,
+      "remain_raw": 1.0
+    }
+  ],
+  "normalization": "For every state, divide raw masked-token weights by their mean over masked positions.",
+  "loss": "sum(alpha * masked_token_cross_entropy) / p_mask / sequence_length",
+  "aggregation": "mean_state(abs(-weight_fp32 * gradient_fp32))",
+  "mask": {
+    "sparsity": 0.5,
+    "semantics": "exact row-wise 50% using stable ascending score order"
+  },
+  "diagnostics": {
+    "pairs": [
+      [
+        "reveal2_abs",
+        "uniform_abs"
+      ],
+      [
+        "reveal50_abs",
+        "uniform_abs"
+      ],
+      [
+        "reveal50_abs",
+        "reveal2_abs"
+      ]
+    ],
+    "spearman_semantics": "exact per-matrix Spearman, summarized globally as an element-count-weighted mean",
+    "primary_pair": [
+      "reveal50_abs",
+      "uniform_abs"
+    ]
+  },
+  "decision_rules": {
+    "ranking_redundant": "primary mask XOR < 0.01 and primary Spearman > 0.99",
+    "strength_supported": "primary mask XOR >= 0.02",
+    "intermediate": "all other outcomes",
+    "downstream_gate": "evaluate Reveal-50x on the fixed GSM8K mini-100 iff primary mask XOR >= 0.01 or primary Spearman <= 0.99"
+  },
+  "evaluation": {
+    "scope": "fixed first 100 GSM8K test examples under the exact EXP-002 protocol",
+    "limit": 100,
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "config": {
+      "path": "experiments/dlm_loss_aggregation/exp002/config.yaml",
+      "file_sha256": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc"
+    },
+    "uniform_predictions": {
+      "path": "experiments/dlm_loss_aggregation/exp002/results/predictions/dlm_abs.jsonl",
+      "file_sha256": "20a2dfd234e6fdc0afd76e34ccf8b0010f80bb545676b1c665cb8ee8353d4720",
+      "reuse_first": 100,
+      "expected_correct": 58
+    },
+    "reveal2_predictions": {
+      "path": "experiments/dlm_loss_aggregation/exp004/gsm8k_per_example_results.jsonl",
+      "file_sha256": "ff00c300e173c513fcd78919ca7be36060e9efdbe8b358a1e96b3e07bb1f51a0",
+      "method": "REVEAL-ABS",
+      "reuse_first": 100,
+      "expected_correct": 59
+    }
+  },
+  "historical_reference": {
+    "reveal2_vs_uniform_spearman": 0.9999866065764942,
+    "reveal2_vs_uniform_mask_xor": 0.001385803406055157,
+    "source": {
+      "path": "experiments/dlm_loss_aggregation/exp004/mask_diagnostics.json",
+      "file_sha256": "97a29494347f58ad115dc52dd03ebe6c1abecf1857b9470cd058072d0672f0b6"
+    }
+  },
+  "storage": {
+    "mask_root": "/DATA/tmluser1/sap-dlm-exp004-strong-reveal/masks",
+    "persisted_methods": [
+      "reveal50_abs"
+    ],
+    "safety_bytes": 536870912
+  },
+  "execution": {
+    "score_shards": [
+      [
+        0,
+        16
+      ],
+      [
+        16,
+        32
+      ]
+    ],
+    "sharding_changes_method": false
+  },
+  "interpretation_guardrails": [
+    "Reveal-50x is an intentionally extreme stress test, not a proposed production hyperparameter.",
+    "Mini-100 accuracy is noisy and is not a method conclusion.",
+    "Mask and score diagnostics explain sensitivity but do not substitute for downstream performance.",
+    "No new timestep, seed, calibration state, reveal/remain partition, aggregation, or sparsity is introduced."
+  ]
+}

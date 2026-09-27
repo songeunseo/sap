@@ -1,0 +1,6 @@
+{
+  "batch3_repeat_sham_logits_max_abs": 0.0,
+  "batch5_vs_batch3_nn_kl_abs": 0.0,
+  "batch5_vs_batch3_nn_logits_max_abs": 0.0,
+  "selected_path": "batch5"
+}

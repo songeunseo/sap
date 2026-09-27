@@ -1,0 +1,60 @@
+{
+  "experiment": "GROUP-BALANCED-REVEAL-ABS",
+  "status": "frozen_before_scoring",
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+    "dtype": "bfloat16"
+  },
+  "calibration": {
+    "state_count": 80,
+    "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "manifest": {"path": "experiments/dlm_loss_aggregation/calibration_manifest.json", "file_sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694"},
+    "partition": {"path": "experiments/dlm_loss_aggregation/exp004/token_partition_summary.json", "file_sha256": "c4566ecfee1e2d116a0ff20a64e12f42b88b75c3f59bcaf7a9327a16df53c665", "masked_observations": 10267, "reveal_observations": 116, "remain_observations": 10151},
+    "score_metadata": {"path": "experiments/dlm_loss_aggregation/scores/metadata.json", "file_sha256": "ed8a02b93b7a5c35b5667eeacb8649d4a8b374483151ef55cbe148dc479cf5e8"}
+  },
+  "conditions": [
+    {"name": "uniform_abs", "reveal_raw": 1.0, "remain_raw": 1.0},
+    {"name": "reveal2_abs", "reveal_raw": 2.0, "remain_raw": 1.0},
+    {"name": "reveal50_abs", "reveal_raw": 50.0, "remain_raw": 1.0},
+    {"name": "group_balanced_abs", "reveal_raw": "masked/(2*reveal)", "remain_raw": "masked/(2*remain)"}
+  ],
+  "normalization": "L_group = masked_count * (0.5*mean_reveal_CE + 0.5*mean_remain_CE) / (p_mask * sequence_length); equivalently alpha_R=M/(2R), alpha_U=M/(2U), whose masked-token mean is one.",
+  "loss": "single normalization by p_mask(t) * 256 after the group-balanced token sum; no second normalization",
+  "aggregation": "mean_state(abs(-weight_fp32 * gradient_fp32))",
+  "mask": {"sparsity": 0.5, "semantics": "exact row-wise 50% using stable ascending score order"},
+  "diagnostics": {
+    "pairs": [["group_balanced_abs", "uniform_abs"], ["group_balanced_abs", "reveal2_abs"], ["group_balanced_abs", "reveal50_abs"]],
+    "spearman_semantics": "exact per-matrix Spearman, globally element-count-weighted",
+    "primary_pair": ["group_balanced_abs", "uniform_abs"]
+  },
+  "decision_rules": {"downstream": "always run full fixed 1319-example GSM8K after freezing mask diagnostics"},
+  "evaluation": {
+    "scope": "full fixed 1319 GSM8K test examples under the exact EXP-002 protocol",
+    "limit": 1319,
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+    "config": {"path": "experiments/dlm_loss_aggregation/exp002/config.yaml", "file_sha256": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc"},
+    "uniform_predictions": {"path": "experiments/dlm_loss_aggregation/exp002/results/predictions/dlm_abs.jsonl", "file_sha256": "20a2dfd234e6fdc0afd76e34ccf8b0010f80bb545676b1c665cb8ee8353d4720", "expected_correct": 745},
+    "reveal2_predictions": {"path": "experiments/dlm_loss_aggregation/exp004/gsm8k_per_example_results.jsonl", "file_sha256": "ff00c300e173c513fcd78919ca7be36060e9efdbe8b358a1e96b3e07bb1f51a0", "method": "REVEAL-ABS", "expected_correct": 767}
+  },
+  "historical_reference": {
+    "source": {"path": "experiments/dlm_loss_aggregation/exp004/mask_diagnostics.json", "file_sha256": "97a29494347f58ad115dc52dd03ebe6c1abecf1857b9470cd058072d0672f0b6"},
+    "reveal2_vs_uniform_spearman": 0.9999866065764942,
+    "reveal2_vs_uniform_mask_xor": 0.001385803406055157,
+    "strong_diagnostics": {"path": "experiments/dlm_loss_aggregation/exp004_strong_reveal/mask_diagnostics.json", "file_sha256": "4e15fbc5ef66ed6acb2ce013071770867a3314d76b0690cb078019a6e9775756"},
+    "strong_masks": {
+      "uniform_abs": {"path": "experiments/dlm_loss_aggregation/exp004_strong_reveal/uniform_abs_mask.json", "file_sha256": "91fb407351626b03e287e3abbde9d5e4a62469b3cb7ed6aa1666071b5ce99ef0"},
+      "reveal2_abs": {"path": "experiments/dlm_loss_aggregation/exp004_strong_reveal/reveal2_abs_mask.json", "file_sha256": "9a8dcecae9c5b631c4b080d97e167f8687a3c55b712d30c0bf3c64f95bd9dd3a"},
+      "reveal50_abs": {"path": "experiments/dlm_loss_aggregation/exp004_strong_reveal/reveal50_abs_mask.json", "file_sha256": "933929b7df7770f605bc50f7468cb7d52080de2fda19f9efd21c6e6d07ef1341"}
+    }
+  },
+  "context_results": {"dlm_square": 701, "wanda": 677, "sparsegpt": 584},
+  "storage": {
+    "mask_root": "/DATA/tmluser1/sap-group-balanced-reveal-abs/masks",
+    "score_root": "/DATA/tmluser1/sap-group-balanced-reveal-abs/scores",
+    "persisted_methods": ["group_balanced_abs"],
+    "persisted_scores": ["group_balanced_abs"],
+    "safety_bytes": 34359738368
+  },
+  "execution": {"score_shards": [[0, 16], [16, 32]], "sharding_changes_method": false}
+}

@@ -1,0 +1,37 @@
+{
+  "comparisons": [
+    {
+      "full_score_spearman": 0.9248231649398804,
+      "global_mask_xor": 0.10782460123300552,
+      "median_row_xor": 0.1077473983168602,
+      "p10_row_xor": 0.1041666641831398,
+      "p90_row_xor": 0.1116536483168602,
+      "pair": "FG_vs_WandaSequential",
+      "row_spearman_mean": 0.9276849031448364,
+      "row_spearman_median": 0.9275641441345215
+    },
+    {
+      "full_score_spearman": 0.9889559149742126,
+      "global_mask_xor": 0.031601984053850174,
+      "median_row_xor": 0.0315755195915699,
+      "p10_row_xor": 0.02897135354578495,
+      "p90_row_xor": 0.0341796875,
+      "pair": "FG_vs_DLMW",
+      "row_spearman_mean": 0.9922682046890259,
+      "row_spearman_median": 0.9923036098480225
+    },
+    {
+      "full_score_spearman": 0.9480579495429993,
+      "global_mask_xor": 0.09109107404947281,
+      "median_row_xor": 0.0911458358168602,
+      "p10_row_xor": 0.0877278670668602,
+      "p90_row_xor": 0.0944010391831398,
+      "pair": "DLMW_vs_WandaSequential",
+      "row_spearman_mean": 0.9479690790176392,
+      "row_spearman_median": 0.947799563407898
+    }
+  ],
+  "standard_wanda": "repository sequential layer-wise calibration",
+  "status": "pass",
+  "target_scaler_nsamples": 8
+}

@@ -1,0 +1,198 @@
+{
+  "KL_means": {
+    "cyclic_foreign": 0.00873025692999363,
+    "native": 0.02261367067694664,
+    "same_timestep_foreign": 0.008664070628583431
+  },
+  "bootstrap_replicates": 10000,
+  "bootstrap_seed": 20260905,
+  "cosine": {
+    "all_different_timestep": {
+      "fraction_positive": 1.0,
+      "mean": 0.18339719467330723,
+      "median": 0.14544566720724106,
+      "p10": 0.10461418777704239,
+      "p90": 0.3126656979322434
+    },
+    "all_same_timestep_cross_sequence": {
+      "fraction_positive": 1.0,
+      "mean": 0.16286857862557683,
+      "median": 0.13947805017232895,
+      "p10": 0.10097225531935691,
+      "p90": 0.25405854880809786
+    },
+    "cyclic": {
+      "fraction_positive": 1.0,
+      "mean": 0.16124703790992498,
+      "median": 0.14685580879449844,
+      "p10": 0.09783037826418876,
+      "p90": 0.25908853709697727
+    },
+    "cyclic_cosine_vs_foreign_KL": 0.5138836772983115,
+    "cyclic_cosine_vs_pairing_advantage": -0.2326454033771107,
+    "same_timestep_cosine_vs_foreign_KL": 0.5658536585365854,
+    "same_timestep_cosine_vs_pairing_advantage": -0.2739212007504691,
+    "same_timestep_donor": {
+      "fraction_positive": 1.0,
+      "mean": 0.16342942733317614,
+      "median": 0.14377447217702866,
+      "p10": 0.09783037826418876,
+      "p90": 0.2625081062316895
+    }
+  },
+  "foreign_native_ratio_distribution": {
+    "cyclic": {
+      "fraction_positive": 1.0,
+      "mean": 0.41840807273983954,
+      "median": 0.33063894510269165,
+      "p10": 0.09712391346693039,
+      "p90": 0.6780394852161408
+    },
+    "same_timestep": {
+      "fraction_positive": 1.0,
+      "mean": 0.4145019529387355,
+      "median": 0.33063894510269165,
+      "p10": 0.09712391346693039,
+      "p90": 0.6780394852161408
+    }
+  },
+  "magnitude": {
+    "cyclic": {
+      "advantage_vs_final_energy_difference_spearman": -0.3418386491557224,
+      "advantage_vs_logit_energy_difference_spearman": 0.11857410881801128,
+      "final_energy_foreign_mean": 0.002108457265421748,
+      "final_energy_native_mean": 0.002004162175580859,
+      "logit_energy_foreign_mean": 0.002815217711031437,
+      "logit_energy_native_mean": 0.0028028227388858795,
+      "logit_rms_foreign_mean": 0.14351196587085724,
+      "logit_rms_native_mean": 0.14151233434677124
+    },
+    "same_timestep": {
+      "advantage_vs_final_energy_difference_spearman": -0.3183864915572233,
+      "advantage_vs_logit_energy_difference_spearman": 0.11632270168855535,
+      "final_energy_foreign_mean": 0.0021080460865050554,
+      "final_energy_native_mean": 0.002004162175580859,
+      "logit_energy_foreign_mean": 0.0028023722115904093,
+      "logit_energy_native_mean": 0.0028028227388858795,
+      "logit_rms_foreign_mean": 0.1429591178894043,
+      "logit_rms_native_mean": 0.14151233434677124
+    }
+  },
+  "mapping_overlap": {
+    "same_donor_count": 35,
+    "total": 40
+  },
+  "native_gate": {
+    "final_energy_abs": {
+      "max": 0.0,
+      "mean": 0.0
+    },
+    "kl_abs": {
+      "max": 3.725290298461914e-09,
+      "mean": 2.3283064365386963e-10
+    },
+    "logit_energy_abs": {
+      "max": 0.0,
+      "mean": 0.0
+    },
+    "logit_rms_abs": {
+      "max": 0.0,
+      "mean": 0.0
+    },
+    "loss_abs": {
+      "max": 4.76837158203125e-07,
+      "mean": 6.556511067401516e-08
+    }
+  },
+  "norm_error": {
+    "max": 7.450580596923828e-09,
+    "mean": 1.862645149230957e-09,
+    "p99": 7.450580596923828e-09
+  },
+  "pairing_advantage": {
+    "cyclic": {
+      "fraction_positive": 0.975,
+      "mean": 0.013883415219606832,
+      "median": 0.011706375516951084,
+      "p10": 0.004027385171502829,
+      "p90": 0.02509130593389273
+    },
+    "same_timestep": {
+      "fraction_positive": 0.975,
+      "mean": 0.013949600869091227,
+      "median": 0.011757904198020697,
+      "p10": 0.004446791764348745,
+      "p90": 0.02509130593389273
+    }
+  },
+  "repeatability": {
+    "cyclic_hidden_max_abs": 0.0,
+    "cyclic_logits_max_abs": 0.0,
+    "same_timestep_hidden_max_abs": 0.0,
+    "same_timestep_logits_max_abs": 0.0
+  },
+  "retained_damage": {
+    "cyclic": 0.3860609829425812,
+    "same_timestep": 0.3831341564655304
+  },
+  "secondary_condition_means": {
+    "confidence_mae": {
+      "cyclic_foreign": 0.014436846598982811,
+      "native": 0.025458376854658127,
+      "same_timestep_foreign": 0.014442160725593567
+    },
+    "final_hidden_relative_energy": {
+      "cyclic_foreign": 0.002108457265421748,
+      "native": 0.002004162175580859,
+      "same_timestep_foreign": 0.0021080460865050554
+    },
+    "logit_rms": {
+      "cyclic_foreign": 0.14351196587085724,
+      "native": 0.14151233434677124,
+      "same_timestep_foreign": 0.1429591178894043
+    },
+    "loss_delta": {
+      "cyclic_foreign": 0.006091332994401455,
+      "native": 0.015385113656520844,
+      "same_timestep_foreign": 0.006090741604566574
+    },
+    "masked_logit_relative_energy": {
+      "cyclic_foreign": 0.002815217711031437,
+      "native": 0.0028028227388858795,
+      "same_timestep_foreign": 0.0028023722115904093
+    },
+    "top1_agreement": {
+      "cyclic_foreign": 0.9536496996879578,
+      "native": 0.9274431467056274,
+      "same_timestep_foreign": 0.9550288915634155
+    }
+  },
+  "sequence_cluster_bootstrap": {
+    "cyclic": {
+      "ci95": [
+        0.008300795475952328,
+        0.020844925194978714
+      ],
+      "estimate": 0.013883414678275585
+    },
+    "same_timestep": {
+      "ci95": [
+        0.008336968603543937,
+        0.020897973235696553
+      ],
+      "estimate": 0.013949600048363209
+    }
+  },
+  "sham": {
+    "external_kl": {
+      "max": 0.000518320593982935,
+      "median": 0.00023151210916694254,
+      "p99": 0.00046396974357776344
+    },
+    "external_loss_abs": {
+      "max": 0.005569338798522949,
+      "median": 0.0013175010681152344,
+      "p99": 0.00470553757622838
+    }
+  }
+}

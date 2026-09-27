@@ -1,0 +1,6 @@
+{
+  "delta_loss_max_abs": 0.0,
+  "delta_loss_mean_abs": 0.0,
+  "kl_max_abs": 0.0,
+  "kl_mean_abs": 0.0
+}

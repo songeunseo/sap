@@ -1,0 +1,50 @@
+{
+  "bootstrap_replicates": 10000,
+  "bootstrap_seed": 20260905,
+  "evaluation_manifest_sha256": "f0f22b49fda3bdab9b63d1d977b1e56cb2b68af2e3f3c215740906908105bed5",
+  "failure_map_claim": "target only, option B",
+  "fp_precision": "FP32 continuous logits; FP64 softmax, moments, G accumulation; FP32 persisted scores",
+  "gate1": {
+    "global_xor_min": 0.02,
+    "median_row_xor_min": 0.01
+  },
+  "gate2": {
+    "DLMW_minus_FG_mean_positive": true,
+    "W_improvement_positive_sequences_min": 6,
+    "W_improvement_positive_timesteps_min": 4,
+    "W_minus_FG_cluster_CI_lower_gt_zero": true,
+    "W_minus_FG_mean_positive": true
+  },
+  "geometry_manifest_sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+  "kappa_atol": 1e-10,
+  "kappa_rtol": 0.001,
+  "kappa_validation_output_indices": [
+    0,
+    1,
+    63,
+    127,
+    511,
+    1023,
+    2047,
+    4095
+  ],
+  "kappa_validation_states": [
+    0,
+    32,
+    64
+  ],
+  "kappa_validation_tokens": "first 2 masked positions",
+  "negative_tolerance": "1e-12 + 1e-9*sum(abs(three variance terms))",
+  "no_tuning_or_second_prototype": true,
+  "only_three_scores": [
+    "Wanda",
+    "DLMW",
+    "FG"
+  ],
+  "prototype": 1,
+  "score": "abs(W)*sqrt(K.T @ X_squared / total_masked_tokens)",
+  "sparsity": 0.5,
+  "status": "frozen_before_scores_and_outcomes",
+  "storage": "/DATA/tmluser1/sap-fg-wanda-prototype1",
+  "target": "model.transformer.blocks.31.ff_out"
+}

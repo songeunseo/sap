@@ -1,0 +1,89 @@
+{
+  "calibration": {
+    "label": "historical 80-state matched DLM-Wanda activation cache",
+    "path": "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt",
+    "sha256": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51"
+  },
+  "evaluation": {
+    "config_path": "experiments/dlm_loss_aggregation/exp002/config.yaml",
+    "config_sha256": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "dense_example_ids_sha256": "b26c074e552429331bd1b8cbf322228f12f05bfc7f31cb10da78376886a4c352",
+    "limit": 100,
+    "protocol": {
+      "evaluation": {
+        "block_length": 256,
+        "bootstrap_iters": 0,
+        "denoising_steps": 256,
+        "fewshot_seed": 1234,
+        "generation_length": 256,
+        "max_cuda_gib": 30,
+        "num_fewshot": 5,
+        "numpy_seed": 1234,
+        "order": [
+          "Dense",
+          "DLM-SUM",
+          "DLM-ABS",
+          "DLM-SQUARE",
+          "Wanda",
+          "SparseGPT"
+        ],
+        "pathological_slowdown_factor": 3.0,
+        "primary_filter": "strict-match",
+        "primary_metric": "exact_match,strict-match",
+        "random_seed": 0,
+        "task": "gsm8k",
+        "temperature": 0,
+        "timing_examples": 32,
+        "torch_seed": 1234
+      },
+      "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+      "lm_eval_version": "0.4.8",
+      "model": {
+        "dtype": "bfloat16",
+        "id": "GSAI-ML/LLaDA-8B-Base",
+        "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+      }
+    },
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+  },
+  "mask_semantics": "repository-equivalent row-wise int(in_features * sparsity), stable ascending score order",
+  "model": {
+    "expected_dense_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "new_mask_sparsities": [
+    0.6,
+    0.65,
+    0.7
+  ],
+  "nominal_sparsities": [
+    0.5,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "research_question": "Where between 50% and 75% does uniform DLM-Wanda GSM8K performance collapse?",
+  "reuse": {
+    "mask_50_manifest": {
+      "path": "experiments/oracle_allocation50/mask_manifest.json",
+      "sha256": "93ea5ec1577b7ea4d53bab776f721ee0a90e01fba0860b67884a9b9e252bdb32"
+    },
+    "mask_75_manifest": {
+      "path": "experiments/oracle_allocation75/mask_manifest.json",
+      "sha256": "85a7dbf899477a46ecfd3b827e6ecedcf8884d40987a7e75fcde3f87af7a0af7"
+    },
+    "predictions_75": {
+      "path": "experiments/oracle_allocation75/stage2/V0_uniform_predictions.jsonl",
+      "sha256": "aa480d6175eccdaa5cc15eab47695a2ee6fd038ba124fe4e816cd76495bbbcad"
+    },
+    "result_75": {
+      "path": "experiments/oracle_allocation75/stage2/V0_uniform.json",
+      "sha256": "92ee95c692e86dcd84a876c11bb5b924702ef137b9e9d528f5fb15949f47edbb"
+    }
+  },
+  "scope": "diagnosis_only_no_new_score_no_allocation_no_rollout_yet",
+  "score": "abs(W_ij) * sqrt(overall_uniform DLM activation statistic_j)",
+  "status": "frozen_before_new_masks_or_outcomes"
+}

@@ -1,0 +1,6 @@
+{
+  "execution_path": "ordinary full forward, fixed [sham,Wanda,DLMW,FG] batch",
+  "repeat_max_logits": 0.0,
+  "same_shape_all_noop_row_spread": 0.0,
+  "same_shape_noop_sham_max_logits": 0.0
+}

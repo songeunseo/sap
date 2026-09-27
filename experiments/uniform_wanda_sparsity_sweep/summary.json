@@ -1,0 +1,64 @@
+{
+  "metric": "fixed-100 GSM8K strict exact match",
+  "next_action_not_run": "rollout characterization near the observed transition",
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "research_question": "Where between 50% and 75% does uniform DLM-Wanda GSM8K performance collapse?",
+  "results": [
+    {
+      "accuracy": 0.62,
+      "achieved_global_sparsity": 0.5,
+      "correct": 62,
+      "dense_extracted_answer_agreement": 0.59,
+      "evaluation_seconds": 2165.015338850906,
+      "invalid_answer_count": 0,
+      "mask_sha256": "0c0a00d16de37e340cfc7b003aef2dcefe34680c2fefc8ea90f265f1c2acb3cc",
+      "nominal_sparsity": 0.5,
+      "reused": false
+    },
+    {
+      "accuracy": 0.32,
+      "achieved_global_sparsity": 0.5998722956730769,
+      "correct": 32,
+      "dense_extracted_answer_agreement": 0.27,
+      "evaluation_seconds": 2153.652055794839,
+      "invalid_answer_count": 0,
+      "mask_sha256": "504316ace63287591bfdb7b6eae08bf37ffeb1ff618a0b2b32f5cdbfa6df9e1a",
+      "nominal_sparsity": 0.6,
+      "reused": false
+    },
+    {
+      "accuracy": 0.12,
+      "achieved_global_sparsity": 0.6499211237980769,
+      "correct": 12,
+      "dense_extracted_answer_agreement": 0.12,
+      "evaluation_seconds": 2154.7102446251083,
+      "invalid_answer_count": 0,
+      "mask_sha256": "e2eebffbffea761d754f299a2ffc5d4dd8b96caa1a01621690a0440f925c762a",
+      "nominal_sparsity": 0.65,
+      "reused": false
+    },
+    {
+      "accuracy": 0.01,
+      "achieved_global_sparsity": 0.699951171875,
+      "correct": 1,
+      "dense_extracted_answer_agreement": 0.03,
+      "evaluation_seconds": 2141.9220311141107,
+      "invalid_answer_count": 0,
+      "mask_sha256": "9e035ed0e0ccfd8d65a5d4fa969e3d177f0552497e967692f2f6b1e090a1a19c",
+      "nominal_sparsity": 0.7,
+      "reused": false
+    },
+    {
+      "accuracy": 0.0,
+      "achieved_global_sparsity": 0.75,
+      "correct": 0,
+      "dense_extracted_answer_agreement": 0.02,
+      "evaluation_seconds": 2106.1054258090444,
+      "invalid_answer_count": 0,
+      "mask_sha256": "0818da6961403410c47370783d7df74cf0261e99f79e3dff1c49c3211f2eeefb",
+      "nominal_sparsity": 0.75,
+      "reused": true
+    }
+  ],
+  "status": "complete"
+}

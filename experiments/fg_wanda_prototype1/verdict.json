@@ -1,0 +1,55 @@
+{
+  "gate1": "pass",
+  "gate2": "pass",
+  "gsm8k_ours_vs_sparsegpt": {
+    "both_correct": 465,
+    "both_wrong": 506,
+    "correct_delta": 110,
+    "delta_percentage_points": 8.339651250947687,
+    "fg_correct": 694,
+    "fg_only": 229,
+    "mcnemar_exact_pvalue": 3.836028517586027e-09,
+    "sample_count": 1319,
+    "wanda_correct": 584,
+    "wanda_only": 119
+  },
+  "gsm8k_ours_vs_wanda": {
+    "both_correct": 565,
+    "both_wrong": 513,
+    "correct_delta": 17,
+    "delta_percentage_points": 1.288855193328279,
+    "fg_correct": 694,
+    "fg_only": 129,
+    "mcnemar_exact_pvalue": 0.3026951745039689,
+    "sample_count": 1319,
+    "wanda_correct": 677,
+    "wanda_only": 112
+  },
+  "no_rescue_experiment": true,
+  "primary_rule": "Ours-FG must have strictly more correct answers than Standard Wanda on PRIMARY GSM8K; secondary WinoGrande cannot rescue a tie or loss",
+  "verdict": "SUCCESS",
+  "winogrande_ours_vs_sparsegpt": {
+    "both_correct": 809,
+    "both_wrong": 301,
+    "correct_delta": 5,
+    "delta_percentage_points": 0.39463299131807417,
+    "fg_correct": 890,
+    "fg_only": 81,
+    "mcnemar_exact_pvalue": 0.74966507511158,
+    "sample_count": 1267,
+    "wanda_correct": 885,
+    "wanda_only": 76
+  },
+  "winogrande_ours_vs_wanda": {
+    "both_correct": 868,
+    "both_wrong": 360,
+    "correct_delta": 5,
+    "delta_percentage_points": 0.39463299131807417,
+    "fg_correct": 890,
+    "fg_only": 22,
+    "mcnemar_exact_pvalue": 0.5223973804968411,
+    "sample_count": 1267,
+    "wanda_correct": 885,
+    "wanda_only": 17
+  }
+}

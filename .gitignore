@@ -289,6 +289,14 @@ experiments/**/state_manifest.json
 experiments/**/prediction_keys.json
 experiments/**/paired_cases.jsonl
 experiments/**/allocation_plans.json
+experiments/**/*manifest.json
+experiments/**/*scores.json
+experiments/**/*mask.json
+experiments/**/*diagnostics.json
+experiments/**/*progress.json
+experiments/**/*results.json
+experiments/**/*.csv
+experiments/**/*.jsonl
 experiments/dlm_ppl50/alpha/
 experiments/dlm_ppl50/dlp/
 experiments/dlm_ppl50/dsa/

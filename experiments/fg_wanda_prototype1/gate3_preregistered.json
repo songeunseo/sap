@@ -1,0 +1,32 @@
+{
+  "frozen_before_downstream_results": true,
+  "model_revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2",
+  "prototype": "standard Wanda 50% on 223 matrices; FG 50% on block31.ff_out",
+  "gsm8k": {
+    "role": "PRIMARY",
+    "reuse": ["Dense", "Wanda", "SparseGPT"],
+    "reuse_reason": "EXP-002 records pin the exact revision, harness/config hash, calibration, sparsity, and per-example outcomes",
+    "run": ["Ours-FG"],
+    "sample_count": 1319,
+    "num_fewshot": 5,
+    "strict_exact_match": true,
+    "generation_length": 256,
+    "block_length": 256,
+    "steps": 256,
+    "temperature": 0
+  },
+  "winogrande": {
+    "role": "SECONDARY",
+    "reuse": [],
+    "reuse_reason": "historical controlled results did not record the model revision, so exact reuse cannot be established",
+    "run": ["Dense", "Wanda", "SparseGPT", "Ours-FG"],
+    "sample_count": 1267,
+    "num_fewshot": 5,
+    "batch_size": 8,
+    "mc_num": 128,
+    "cfg": 0.0
+  },
+  "downstream_success_rule": "Ours-FG must have strictly more correct answers than Standard Wanda on PRIMARY GSM8K; secondary WinoGrande cannot rescue a tie or loss",
+  "paired_test": "two-sided exact McNemar/binomial on discordant outcomes",
+  "no_tuning_or_rescue": true
+}

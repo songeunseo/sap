@@ -1,0 +1,73 @@
+{
+  "batch_benchmark": [
+    {
+      "candidates_per_batch": 1,
+      "first_candidate_corrected_delta_difference_vs_batch1": 0.0,
+      "first_candidate_corrected_kl_difference_vs_batch1": 0.0,
+      "first_candidate_raw_delta_loss": 0.010723233222961426,
+      "first_candidate_sham_corrected_delta_loss": 0.011446475982666016,
+      "first_candidate_sham_relative_kl": 0.0008242682088166475,
+      "peak_allocated_bytes": 16656636416,
+      "seconds": 0.03748414386063814,
+      "sham_delta_loss": -0.0007232427597045898,
+      "sham_kl": 0.0006602163193747401,
+      "variants_including_sham": 2
+    },
+    {
+      "candidates_per_batch": 4,
+      "first_candidate_corrected_delta_difference_vs_batch1": 0.015599489212036133,
+      "first_candidate_corrected_kl_difference_vs_batch1": 0.0003016784321516752,
+      "first_candidate_raw_delta_loss": 0.003334522247314453,
+      "first_candidate_sham_corrected_delta_loss": -0.004153013229370117,
+      "first_candidate_sham_relative_kl": 0.0005225897766649723,
+      "peak_allocated_bytes": 16941415936,
+      "seconds": 0.07069116504862905,
+      "sham_delta_loss": 0.00748753547668457,
+      "sham_kl": 0.0003745174326468259,
+      "variants_including_sham": 5
+    },
+    {
+      "candidates_per_batch": 8,
+      "first_candidate_corrected_delta_difference_vs_batch1": 0.01560819149017334,
+      "first_candidate_corrected_kl_difference_vs_batch1": 0.00024258630583062768,
+      "first_candidate_raw_delta_loss": 0.017020344734191895,
+      "first_candidate_sham_corrected_delta_loss": -0.004161715507507324,
+      "first_candidate_sham_relative_kl": 0.0005816819029860198,
+      "peak_allocated_bytes": 17322081792,
+      "seconds": 0.12484724586829543,
+      "sham_delta_loss": 0.02118206024169922,
+      "sham_kl": 0.0006962480838410556,
+      "variants_including_sham": 9
+    },
+    {
+      "candidates_per_batch": 16,
+      "first_candidate_corrected_delta_difference_vs_batch1": 0.01560819149017334,
+      "first_candidate_corrected_kl_difference_vs_batch1": 0.00024258630583062768,
+      "first_candidate_raw_delta_loss": 0.017020344734191895,
+      "first_candidate_sham_corrected_delta_loss": -0.004161715507507324,
+      "first_candidate_sham_relative_kl": 0.0005816819029860198,
+      "peak_allocated_bytes": 18083919360,
+      "seconds": 0.22267262497916818,
+      "sham_delta_loss": 0.02118206024169922,
+      "sham_kl": 0.0006962480838410556,
+      "variants_including_sham": 17
+    }
+  ],
+  "batch_loss_agreement_limit": 5e-05,
+  "dense_repeat": {
+    "logit_max_abs": 0.0,
+    "loss_abs": 0.0
+  },
+  "intervention_identity": {
+    "ablated_channel_max_abs": 0.0,
+    "max_abs": 1.1920928955078125e-06,
+    "other_channels_bitwise_equal": true,
+    "relative": 0.00016010759230202697
+  },
+  "intervention_relative_limit": 0.02,
+  "repeated_ablation": {
+    "kl_max_abs": 0.0,
+    "loss_max_abs": 0.0
+  },
+  "selected_candidates_per_batch": 1
+}

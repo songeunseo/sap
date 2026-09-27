@@ -1,0 +1,239 @@
+{
+  "frozen_at_unix": 1788784833.162993,
+  "global": {
+    "group_balanced_abs/reveal2_abs": {
+      "different": 298482894,
+      "mask_iou": 0.9180187410533827,
+      "mask_xor": 0.04276674727980907,
+      "num_weights": 6979321856,
+      "pair": "group_balanced_abs/reveal2_abs",
+      "scope": "global",
+      "spearman": 0.9850725683116874,
+      "topk_overlap": 0.9572332527201909
+    },
+    "group_balanced_abs/reveal50_abs": {
+      "different": 184546946,
+      "mask_iou": 0.9484894456646015,
+      "mask_xor": 0.026441959520945184,
+      "num_weights": 6979321856,
+      "pair": "group_balanced_abs/reveal50_abs",
+      "scope": "global",
+      "spearman": 0.9947709086064739,
+      "topk_overlap": 0.9735580404790548
+    },
+    "group_balanced_abs/uniform_abs": {
+      "different": 300587198,
+      "mask_iou": 0.9174651419686,
+      "mask_xor": 0.04306825279043271,
+      "num_weights": 6979321856,
+      "pair": "group_balanced_abs/uniform_abs",
+      "scope": "global",
+      "spearman": 0.9848323922481774,
+      "topk_overlap": 0.9569317472095673
+    }
+  },
+  "per_matrix": {
+    "group_balanced_abs/reveal2_abs": {
+      "mask_xor": {
+        "max": 0.06381464004516602,
+        "mean": 0.0422353238931724,
+        "median": 0.04175333182017009
+      },
+      "matrix_count": 224,
+      "spearman": {
+        "mean": 0.985364721019917,
+        "median": 0.9862598481664617,
+        "min": 0.9656725489837534
+      },
+      "top10_mask_xor": [
+        {
+          "layer": 0,
+          "mask_xor": 0.06381464004516602,
+          "module": "k_proj"
+        },
+        {
+          "layer": 0,
+          "mask_xor": 0.05928313732147217,
+          "module": "v_proj"
+        },
+        {
+          "layer": 8,
+          "mask_xor": 0.05892050266265869,
+          "module": "attn_out"
+        },
+        {
+          "layer": 28,
+          "mask_xor": 0.05410492420196533,
+          "module": "attn_out"
+        },
+        {
+          "layer": 31,
+          "mask_xor": 0.05381608009338379,
+          "module": "ff_out"
+        },
+        {
+          "layer": 26,
+          "mask_xor": 0.05333864688873291,
+          "module": "ff_out"
+        },
+        {
+          "layer": 27,
+          "mask_xor": 0.05330216884613037,
+          "module": "ff_out"
+        },
+        {
+          "layer": 25,
+          "mask_xor": 0.05264484882354736,
+          "module": "ff_out"
+        },
+        {
+          "layer": 24,
+          "mask_xor": 0.05218597253163656,
+          "module": "ff_out"
+        },
+        {
+          "layer": 30,
+          "mask_xor": 0.052155494689941406,
+          "module": "attn_out"
+        }
+      ]
+    },
+    "group_balanced_abs/reveal50_abs": {
+      "mask_xor": {
+        "max": 0.03730273246765137,
+        "mean": 0.026147803557770594,
+        "median": 0.0257568359375
+      },
+      "matrix_count": 224,
+      "spearman": {
+        "mean": 0.9949166234113936,
+        "median": 0.9950994199994241,
+        "min": 0.989958428045545
+      },
+      "top10_mask_xor": [
+        {
+          "layer": 0,
+          "mask_xor": 0.03730273246765137,
+          "module": "k_proj"
+        },
+        {
+          "layer": 0,
+          "mask_xor": 0.03431856632232666,
+          "module": "v_proj"
+        },
+        {
+          "layer": 8,
+          "mask_xor": 0.03383028507232666,
+          "module": "attn_out"
+        },
+        {
+          "layer": 30,
+          "mask_xor": 0.033069332440694175,
+          "module": "ff_out"
+        },
+        {
+          "layer": 31,
+          "mask_xor": 0.03294666608174642,
+          "module": "ff_out"
+        },
+        {
+          "layer": 28,
+          "mask_xor": 0.03234279155731201,
+          "module": "ff_out"
+        },
+        {
+          "layer": 27,
+          "mask_xor": 0.03222254912058512,
+          "module": "ff_out"
+        },
+        {
+          "layer": 29,
+          "mask_xor": 0.03216826915740967,
+          "module": "ff_out"
+        },
+        {
+          "layer": 29,
+          "mask_xor": 0.03202235698699951,
+          "module": "attn_out"
+        },
+        {
+          "layer": 30,
+          "mask_xor": 0.03174614906311035,
+          "module": "attn_out"
+        }
+      ]
+    },
+    "group_balanced_abs/uniform_abs": {
+      "mask_xor": {
+        "max": 0.06453335285186768,
+        "mean": 0.04253709937135379,
+        "median": 0.04200259844462077
+      },
+      "matrix_count": 224,
+      "spearman": {
+        "mean": 0.9851259204989286,
+        "median": 0.9860357654100911,
+        "min": 0.9647881903071049
+      },
+      "top10_mask_xor": [
+        {
+          "layer": 0,
+          "mask_xor": 0.06453335285186768,
+          "module": "k_proj"
+        },
+        {
+          "layer": 0,
+          "mask_xor": 0.05999195575714111,
+          "module": "v_proj"
+        },
+        {
+          "layer": 8,
+          "mask_xor": 0.05947089195251465,
+          "module": "attn_out"
+        },
+        {
+          "layer": 28,
+          "mask_xor": 0.054299235343933105,
+          "module": "attn_out"
+        },
+        {
+          "layer": 31,
+          "mask_xor": 0.05416186650594076,
+          "module": "ff_out"
+        },
+        {
+          "layer": 26,
+          "mask_xor": 0.053655385971069336,
+          "module": "ff_out"
+        },
+        {
+          "layer": 27,
+          "mask_xor": 0.05361135800679525,
+          "module": "ff_out"
+        },
+        {
+          "layer": 25,
+          "mask_xor": 0.05292340119679769,
+          "module": "ff_out"
+        },
+        {
+          "layer": 24,
+          "mask_xor": 0.05247767766316732,
+          "module": "ff_out"
+        },
+        {
+          "layer": 30,
+          "mask_xor": 0.052329301834106445,
+          "module": "attn_out"
+        }
+      ]
+    }
+  },
+  "status": "frozen_before_gsm8k",
+  "validation": {
+    "exact_rowwise_50_percent": true,
+    "mask_sha256_readback": true,
+    "matrix_count": 224,
+    "no_nan_inf": true
+  }
+}

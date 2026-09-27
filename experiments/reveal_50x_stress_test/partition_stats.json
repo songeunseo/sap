@@ -1,0 +1,12 @@
+{
+  "masked_observations": 10267,
+  "partition_sha256": "e847478e57e2f6d3e8ac2adacd7622f96d9ab7c0dddfc24588365f7383d10eb8",
+  "remain_observations": 10151,
+  "reveal_observations": 116,
+  "source_file": "experiments/dlm_loss_aggregation/exp004/token_partition_summary.json",
+  "source_file_sha256": "c4566ecfee1e2d116a0ff20a64e12f42b88b75c3f59bcaf7a9327a16df53c665",
+  "state_count": 80,
+  "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "states_with_1_reveal": 44,
+  "states_with_2_reveal": 36
+}

@@ -1,0 +1,49 @@
+{
+  "comparisons": [
+    {
+      "full_score_spearman": 0.9268789291381836,
+      "global_mask_xor": 0.10452020168304443,
+      "kept_jaccard": 0.8107409868578614,
+      "median_row_xor": 0.1044921875,
+      "p10_row_xor": 0.1009114608168602,
+      "p90_row_xor": 0.1080729216337204,
+      "pair": "FG_vs_Wanda",
+      "pruned_jaccard": 0.8107409868578614,
+      "row_spearman_mean": 0.9297493100166321,
+      "row_spearman_median": 0.9296437501907349
+    },
+    {
+      "full_score_spearman": 0.9889559149742126,
+      "global_mask_xor": 0.03160198777914047,
+      "kept_jaccard": 0.938732213109191,
+      "median_row_xor": 0.0315755233168602,
+      "p10_row_xor": 0.0289713554084301,
+      "p90_row_xor": 0.0341796875,
+      "pair": "FG_vs_DLMW",
+      "pruned_jaccard": 0.938732213109191,
+      "row_spearman_mean": 0.9922682046890259,
+      "row_spearman_median": 0.9923036098480225
+    },
+    {
+      "full_score_spearman": 0.9499204158782959,
+      "global_mask_xor": 0.0877053365111351,
+      "kept_jaccard": 0.8387332832085163,
+      "median_row_xor": 0.0877278670668602,
+      "p10_row_xor": 0.08447265625,
+      "p90_row_xor": 0.0909830778837204,
+      "pair": "DLMW_vs_Wanda",
+      "pruned_jaccard": 0.8387332832085163,
+      "row_spearman_mean": 0.9498381614685059,
+      "row_spearman_median": 0.9496634006500244
+    }
+  ],
+  "exact_pruned_per_row": 6144,
+  "mask_raw_hashes": {
+    "DLMW": "06b238c0d59212366946e454ed6dfdb6281d28e5e6e5b15fb7dac2940fadddf2",
+    "FG": "001f3aed0d20ada603626094e4ae23b43521e67d4eacfa61d12d8df5256c80a5",
+    "Wanda": "a0a09846a9d0a6da1846c5b058164d32ced6dfc6919f41fbca07e28ed3bd90a9"
+  },
+  "only_target_module_modified": true,
+  "rows": 4096,
+  "status": "pass"
+}
