@@ -1,0 +1,484 @@
+{
+  "status": "complete",
+  "summary": {
+    "rowwise": {
+      "total_tail_count": 38963987,
+      "total_tail_pruned": 0,
+      "tail_pruned_fraction": 0.0,
+      "modules_with_any_tail_removed": 0,
+      "per_type": {
+        "attn_out": {
+          "removed_diagonal_energy_fraction": [
+            0.015318540583237674,
+            0.04671573258469103,
+            0.055203156522170775,
+            0.05748494478030371
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ff_out": {
+          "removed_diagonal_energy_fraction": [
+            0.027955366907707592,
+            0.047827104311205675,
+            0.05280573850955021,
+            0.032059725532638285
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ff_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.0460477608293338,
+            0.04850254597729571,
+            0.04121433369401268,
+            0.05436469833701254
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "k_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.0007563559569510111,
+            0.007622729799727112,
+            0.015098283443200924,
+            0.02669990884137253
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "q_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.00223648758755135,
+            0.01678320153941668,
+            0.03349322755806601,
+            0.04401206260181558
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "up_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.05174474453095626,
+            0.06612157534811211,
+            0.06455288700055684,
+            0.0630106776098327
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "v_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.016696489145832008,
+            0.05020330343873787,
+            0.06229459058715986,
+            0.06714693477015529
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "layer_global": {
+      "total_tail_count": 38963987,
+      "total_tail_pruned": 0,
+      "tail_pruned_fraction": 0.0,
+      "modules_with_any_tail_removed": 0,
+      "per_type": {
+        "attn_out": {
+          "removed_diagonal_energy_fraction": [
+            0.07167229745979138,
+            0.13980671109277826,
+            0.07360060647685013,
+            0.037751997050192804
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.719881683588028,
+            0.6815708577632904,
+            0.5443926677107811,
+            0.4265609085559845
+          ],
+          "row_fraction_over75": [
+            0.33087158203125,
+            0.010772705078125,
+            0.000579833984375,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ff_out": {
+          "removed_diagonal_energy_fraction": [
+            0.13255213807586075,
+            0.2212148749182889,
+            0.18354698323291696,
+            0.05537591015482843
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.7742486620942752,
+            0.7767518262068431,
+            0.7188503593206406,
+            0.573557659983635
+          ],
+          "row_fraction_over75": [
+            0.61700439453125,
+            0.916229248046875,
+            0.147369384765625,
+            0.001708984375
+          ],
+          "row_fraction_over90": [
+            0.094482421875,
+            0.00079345703125,
+            0.00042724609375,
+            0.0
+          ]
+        },
+        "ff_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.009132204121285436,
+            0.017634184393364574,
+            0.027865766789725972,
+            0.04922377110358584
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.30176388969024026,
+            0.36403828362623847,
+            0.4458411435286204,
+            0.4875944356123606
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            6.103515624999999e-05,
+            0.0002848307291666667
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "k_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.000539986672731414,
+            0.0034486654056607377,
+            0.007575929342584235,
+            0.04855927752991865
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5305388569831848,
+            0.41871165484189987,
+            0.4191211611032486,
+            0.5889888033270836
+          ],
+          "row_fraction_over75": [
+            0.078369140625,
+            0.0142822265625,
+            0.008514404296875,
+            0.07635498046875
+          ],
+          "row_fraction_over90": [
+            0.00140380859375,
+            0.001617431640625,
+            0.001251220703125,
+            0.000762939453125
+          ]
+        },
+        "q_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.0012922287189473603,
+            0.007734674552395253,
+            0.016973598162238618,
+            0.07339856756980731
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.527413859963417,
+            0.4126325845718384,
+            0.41594529896974564,
+            0.586273804306984
+          ],
+          "row_fraction_over75": [
+            0.087310791015625,
+            0.003936767578125,
+            0.002593994140625,
+            0.077728271484375
+          ],
+          "row_fraction_over90": [
+            0.0032958984375,
+            0.0,
+            3.0517578125e-05,
+            0.0006103515625
+          ]
+        },
+        "up_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.011124061230971352,
+            0.026295416535516154,
+            0.03498313703961542,
+            0.042736492520865005
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.3079367081324259,
+            0.3719936410586039,
+            0.4148324107130369,
+            0.4451075717806816
+          ],
+          "row_fraction_over75": [
+            0.0,
+            0.0,
+            3.0517578125e-05,
+            0.0
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            1.0172526041666666e-05,
+            0.0
+          ]
+        },
+        "v_proj": {
+          "removed_diagonal_energy_fraction": [
+            0.021104388271216953,
+            0.034845906378378616,
+            0.02623050729318579,
+            0.02795460828292579
+          ],
+          "tail_pruned_fraction": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "sparsity": [
+            0.5703178197145462,
+            0.4487336501479149,
+            0.3819691315293312,
+            0.3793974816799164
+          ],
+          "row_fraction_over75": [
+            0.06756591796875,
+            0.0,
+            0.0,
+            6.103515625e-05
+          ],
+          "row_fraction_over90": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "elapsed_seconds": 202.6209900379181,
+  "checkpoint_sha256": {
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00001-of-00006.safetensors": "4c0652913997c26851c51d5881918a93b2d502c0eeabcf3fe409800441ebc385",
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00002-of-00006.safetensors": "330b95434544dcdac54531ef01a14fd7dede828974d3ca2c440e443a011d0365",
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00003-of-00006.safetensors": "e7847f941f2872c715af1700834056713aba45cfa66223d9e06000b1936e1abf",
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00004-of-00006.safetensors": "9d5d75b011eae74467ec02db8875b582cce7b02eff143dab78b8530af4bf4dd2",
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00005-of-00006.safetensors": "49e9018af8ae4852eefb2ffe7947df1931b7c4c1dcdd3648b36acd5c90eafd3d",
+    "/home/tmluser1/.cache/huggingface/hub/models--GSAI-ML--LLaDA-8B-Base/snapshots/0f2787f2d87eac5eed8a087d5ecd24277e6255b2/model-00006-of-00006.safetensors": "3a2c91cf7aac23ca84f48d4fdabf58ffd050e9f56b9c94b7962a3d3f5c35e3c6"
+  },
+  "manifest_sha256": {
+    "/home/tmluser1/sap/experiments/dlm_ppl50/uniform/mask_manifest.json": "3970b7a532495208d8c5be96649b0b5812b6e80b823aad958a2e38b40204034b",
+    "/home/tmluser1/sap/experiments/dlm_ppl50_uniform_layer/mask_manifest.json": "cbc8d6115d1234270ee321c1bcd89c6b315fe908cfcd688c17a2f6e46ce03e6a"
+  },
+  "script_sha256": "bc6c8598db0e12dd248e495ea046d8c607b620deb71bc0bdbbf7ed9a19669c98",
+  "definition": "Outlier threshold and diagonal energy use common original DENSE activation statistics. Both masks use their own historical sparse-prefix calibration. These are not exact reconstructions or causal attributions of the policy performance gap."
+}

@@ -1,0 +1,85 @@
+{
+  "actual_role_correct": 24,
+  "gate": {
+    "actual_role_correct": 24,
+    "decision": "RUN RANDOM FULL",
+    "passed": true,
+    "random_correct": [
+      22,
+      19,
+      22
+    ],
+    "random_mean": 21.0,
+    "strict_seed_wins": 3
+  },
+  "methods": {
+    "random_101": {
+      "correct": 22,
+      "metrics": {
+        "accuracy": 0.22,
+        "eval_seconds": 2128.781498085009,
+        "examples_per_second": 0.04697522976874665,
+        "full_num_examples": 1319,
+        "num_examples": 100
+      },
+      "predictions": "experiments/dlm_role_validation/gsm8k_mini/random65_random_101_100_predictions.jsonl",
+      "sha256": "e85470ae0e94eb9f05f48ef0867115cb7362d70184ee686e670a5cd36f985292"
+    },
+    "random_202": {
+      "correct": 19,
+      "metrics": {
+        "accuracy": 0.19,
+        "eval_seconds": 2128.925692308927,
+        "examples_per_second": 0.046972048090389185,
+        "full_num_examples": 1319,
+        "num_examples": 100
+      },
+      "predictions": "experiments/dlm_role_validation/gsm8k_mini/random65_random_202_100_predictions.jsonl",
+      "sha256": "eed430b80c691f0120474f37549f4fbd7840d78fd03f358a517813dbaee371b3"
+    },
+    "random_303": {
+      "correct": 22,
+      "metrics": {
+        "accuracy": 0.22,
+        "eval_seconds": 2129.3990678710397,
+        "examples_per_second": 0.046961605980216474,
+        "full_num_examples": 1319,
+        "num_examples": 100
+      },
+      "predictions": "experiments/dlm_role_validation/gsm8k_mini/random65_random_303_100_predictions.jsonl",
+      "sha256": "b5b4ec702f3c26ceaf18e11e9fa281f6f5858bfdedd3429820bf2523fa29e16b"
+    }
+  },
+  "paired_actual_vs_random": {
+    "random_101": {
+      "both_correct": 17,
+      "both_wrong": 71,
+      "discordant": 12,
+      "exact_mcnemar_p": 0.7744140625,
+      "net_correct": 2,
+      "reference_correct_candidate_wrong": 5,
+      "reference_wrong_candidate_correct": 7
+    },
+    "random_202": {
+      "both_correct": 15,
+      "both_wrong": 72,
+      "discordant": 13,
+      "exact_mcnemar_p": 0.266845703125,
+      "net_correct": 5,
+      "reference_correct_candidate_wrong": 4,
+      "reference_wrong_candidate_correct": 9
+    },
+    "random_303": {
+      "both_correct": 17,
+      "both_wrong": 71,
+      "discordant": 12,
+      "exact_mcnemar_p": 0.7744140625,
+      "net_correct": 2,
+      "reference_correct_candidate_wrong": 5,
+      "reference_wrong_candidate_correct": 7
+    }
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "status": "complete",
+  "suite": "random65"
+}

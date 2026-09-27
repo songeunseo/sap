@@ -1,0 +1,96 @@
+{
+  "aggregation": "max of pooled role levels, raw adjacent marginal greedy; exact row-floor budget",
+  "arithmetic": "separate BF16 batch1 Linear outputs then FP32 squared differences, FP64 pooled sums",
+  "definitions": {
+    "dense_target": "||W_s x_sparse - W x_dense||^2 / same fixed historical denominator",
+    "sparse_context": "||(W_s-W)x_sparse||^2 / fixed historical dense role output energy"
+  },
+  "dense_control_gate": "batch1 dense reconstruction must reproduce historical Role allocation before mini",
+  "evaluation": {
+    "baseline_correct": 24,
+    "limit": 100,
+    "protocol": {
+      "evaluation": {
+        "block_length": 256,
+        "bootstrap_iters": 0,
+        "denoising_steps": 256,
+        "fewshot_seed": 1234,
+        "generation_length": 256,
+        "max_cuda_gib": 30,
+        "num_fewshot": 5,
+        "numpy_seed": 1234,
+        "order": [
+          "Dense",
+          "DLM-SUM",
+          "DLM-ABS",
+          "DLM-SQUARE",
+          "Wanda",
+          "SparseGPT"
+        ],
+        "pathological_slowdown_factor": 3.0,
+        "primary_filter": "strict-match",
+        "primary_metric": "exact_match,strict-match",
+        "random_seed": 0,
+        "task": "gsm8k",
+        "temperature": 0,
+        "timing_examples": 32,
+        "torch_seed": 1234
+      },
+      "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+      "lm_eval_version": "0.4.8",
+      "model": {
+        "dtype": "bfloat16",
+        "id": "GSAI-ML/LLaDA-8B-Base",
+        "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+      }
+    },
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+  },
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "initial_model": "frozen historical Role-Wanda-65",
+  "methods": [
+    "sparse_context",
+    "dense_target"
+  ],
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_smoothing_no_retuning": true,
+  "pruned": 4536008704,
+  "source_hashes": {
+    "experiments/dlm_dual_role_allocation/role_reconstruction_raw.json": "c0c33a990f45da7cd35eaad6c47e4a0f84266f9094cd0794bff28680e236aa76",
+    "experiments/dlm_dual_role_mini100/config.json": "89cb856b62435bb958db6a71679b3a8c13646558f64864219b0aee206b9afe72",
+    "experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.jsonl": "7453aa2a1bcdfb8585e915aed0025572e2448d6da93bee831692cc22edfbf3f2",
+    "experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.receipt.json": "1507ba014b945e470331a994d0236e869f28629a0ecd62a1acb6e5d5a3de0c0a",
+    "experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "experiments/dlm_loss_aggregation/exp002/results/predictions/dense.jsonl": "1a1523c089558ee3df2ad1b49a937a3b01290060d67a51b8715e3374dc866b8e",
+    "experiments/dlm_loss_aggregation/exp002/run.py": "8d3589133dfb16c679eb4f52be3955b461631b98adef1aed1f821d58131c4b08",
+    "experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "experiments/dlm_role_context_mini100/core.py": "7731f627f40a6a6f65edc93d290c712575255b2cfe3884df55510ca8a5acb420",
+    "experiments/dlm_role_context_mini100/run.py": "c7849f6054f989009bd0a7eb0f4aadb5e97c6178d7809b0245cc04741d7eed85",
+    "experiments/dlm_role_context_mini100/run.sh": "8192468d3fd14c116bef18220475ba63cccbbf0f0da8fd1ef0d695ee2249c039",
+    "experiments/dlm_role_context_mini100/status.py": "085068096440df97f7afe421620300952793ebb947e09c467758c70ca4963027",
+    "experiments/dlm_role_context_mini100/test_core.py": "21672817b4ab16a80752c975af0deb395e0153a3e34ceeeae3e3efd2b7ce84c2",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "experiments/projection_capacity_allocation_65/config.json": "b313d7506b8fd4f8311e348a636c939ea9ace5fd26c92ce8afc0b1ff2091689d",
+    "experiments/projection_capacity_allocation_65/core.py": "0f435ff4a00ebff948f2d1cdc8031595ac2d357b66589b393f36eee27f4b8c04",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969",
+    "experiments/projection_capacity_followup_65/run_heldout.py": "505cb376d3cad31ab249995534c63b21203bc05c93b463d3c7c59e43c49a7213"
+  },
+  "source_receipt": "9e4a6fa78d9393677f615f47eb8bca66489babdd2c205b0e63ae6839aa8f08e9",
+  "state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "states": 80,
+  "updates": 1,
+  "weights": 6979321856
+}

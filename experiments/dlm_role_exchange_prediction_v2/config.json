@@ -1,0 +1,83 @@
+{
+  "bootstrap": "documents x 4-layer blocks, 20000, conditional on fitted models",
+  "code_hashes": {
+    "experiments/dlm_role_exchange_prediction_v2/__init__.py": "17b4e59244bab79120e3da670ca45b86c60e4709645eb1b8f314fe2775c9beea",
+    "experiments/dlm_role_exchange_prediction_v2/analyze.py": "5fd133944f2510690e9d8c2d52e5c81bb45681c553c308c5ef81f12d6c4b1196",
+    "experiments/dlm_role_exchange_prediction_v2/collect.py": "120e451cee6df60f55ec3d7c8abdec0693b812761161014b4ee1294f82acab6c",
+    "experiments/dlm_role_exchange_prediction_v2/common.py": "4f8ff5d9454084d64523aa474ebdd40ae6824bcdee429fe87cc14e2f81477707",
+    "experiments/dlm_role_exchange_prediction_v2/prepare.py": "67a7c30c55a2bea97e360fc6d096b8b3eca8879ce55789ebf30903f86aed44dd",
+    "experiments/dlm_role_exchange_prediction_v2/status.py": "baa0de4457f9a2cd347e9b4a5655312b92ad39ff6c8e4bb14dfdf39f365dc1d3",
+    "experiments/dlm_role_exchange_prediction_v2/test_validation.py": "b0a78bea6ca5085bf5f3a8a44a9159b2e9d2fa262a7baa96be4c23ddd1c55c96"
+  },
+  "development_documents": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "excluded_development_documents": [
+    8,
+    10
+  ],
+  "exploratory": [
+    "Pooled versus pooled+role contrast",
+    "role contrast x timestep/type"
+  ],
+  "features": "reuse immutable v1 local full-forward reconstruction; independently check in smoke",
+  "final_documents": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "interpretation_rule": "no significant gain is inconclusive; never reject role separation in general",
+  "measurement": "batch1 full forward for all singles and bundles; physical weights; restore each intervention",
+  "minimum_practical_relative_mse_reduction": 0.1,
+  "primary_comparisons": [
+    "P2-P1",
+    "P3-P2",
+    "P2-random"
+  ],
+  "ridge": "equal-document-layer weighted MSE + norm2, alpha=1, intercept unpenalized",
+  "source_hashes": {
+    "/DATA/tmluser1/sap-dlm-role-exchange-prediction/development.pt": "ef50fa000eab547cab2d67b2214c4000c086b04cd3f8bbb04bbc4bc13bfff661",
+    "/DATA/tmluser1/sap-dlm-role-exchange-prediction/final.pt": "d12759977dbdb7b69f154d7d61efce0eb33b21b14abac321968b15550c6e2944",
+    "experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "experiments/dlm_role_exchange_prediction/analyze.py": "46d6786a91d978f35187bb28771fbc01d1034f58a852fbf73fba23935a092609",
+    "experiments/dlm_role_exchange_prediction/collect.py": "223e06f2a2d750d98704a94cc1fbadafe4d1b1a64e684533d6a19b4e19fa37ee",
+    "experiments/dlm_role_exchange_prediction/core.py": "742154e926dffa53ea1b083bd44fc635f604d175cc3e1d54df5fee7df56b04ff",
+    "experiments/dlm_role_exchange_prediction/design.json": "a62d97dcacf5c8a60f53b5b59720704bd19270cab9e5fb95d0ab1c84c948ffd8",
+    "experiments/dlm_role_exchange_prediction/state_manifest.json": "9685a835541848656f3542697abd7fb53feed6aa7d74f21faad364875186773c",
+    "experiments/dlm_role_exchange_prediction_v2/document_audit.json": "f176f549399ab0277132fb124ec0d81fe749d43d43004b1133bb90e0c8b23397",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_followup_65/new_heldout_state_manifest.json": "79cf16cbf7f85681ebcda3817e51f24473a09897c7fdfa6b9b457c735b9a7442",
+    "experiments/wanda_failure_characterization/heldout_state_manifest.json": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0"
+  },
+  "split_correction": "retain final; exclude development spans sharing true parent article with final",
+  "status": "frozen_before_corrected_outcomes",
+  "study_type": "corrective exploratory rerun",
+  "version": 2
+}

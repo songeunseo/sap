@@ -1,0 +1,90 @@
+{
+  "audit_sha256": "cca8ff7168787cd8abd2e697bd1092d2a374ecaa4c296ccdaca25f75c844cd22",
+  "descriptive": [
+    "role vs eis_type",
+    "role vs uniform"
+  ],
+  "historical": {
+    "eis_type": {
+      "accuracy": 0.19939347990902198,
+      "correct": 263,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "num_examples": 1319,
+      "path": "/home/tmluser1/sap/experiments/projection_capacity_followup_65/gsm8k/eis_type_1319_predictions.jsonl",
+      "recomputed_correct": 263,
+      "sha256": "81804d0a8efe07b40cdcd8a64f474b908b164e8dc19ce02e9e437b195e219c58",
+      "status": "complete",
+      "verified": true
+    },
+    "uniform": {
+      "accuracy": 0.10538286580742987,
+      "correct": 139,
+      "evaluation_config_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "num_examples": 1319,
+      "path": "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/gsm8k/uniform_1319_predictions.jsonl",
+      "recomputed_correct": 139,
+      "sha256": "9f9fee4f951173f118db6e191c7b793d40402d5c880cf01b3e2daea0bb656897",
+      "status": "complete",
+      "verified": true
+    }
+  },
+  "limit": 1319,
+  "manifests": {
+    "aggregate": {
+      "path": "experiments/dlm_dual_role_mini100/aggregate65_mask_manifest.json",
+      "sha256": "513dbf4dadbb30bcd2cb6815b8db83db25cf41898f14778883a196e6b79741c9"
+    },
+    "role": {
+      "path": "experiments/dlm_dual_role_mini100/role65_mask_manifest.json",
+      "sha256": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2"
+    }
+  },
+  "mini_results_sha256": "3da107017875b6d53b689019bf19004799c6d4e692599a75ce0999d1600030ae",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_retuning": true,
+  "primary": "paired strict exact match: role vs aggregate",
+  "protocol": {
+    "evaluation": {
+      "block_length": 256,
+      "bootstrap_iters": 0,
+      "denoising_steps": 256,
+      "fewshot_seed": 1234,
+      "generation_length": 256,
+      "max_cuda_gib": 30,
+      "num_fewshot": 5,
+      "numpy_seed": 1234,
+      "order": [
+        "Dense",
+        "DLM-SUM",
+        "DLM-ABS",
+        "DLM-SQUARE",
+        "Wanda",
+        "SparseGPT"
+      ],
+      "pathological_slowdown_factor": 3.0,
+      "primary_filter": "strict-match",
+      "primary_metric": "exact_match,strict-match",
+      "random_seed": 0,
+      "task": "gsm8k",
+      "temperature": 0,
+      "timing_examples": 32,
+      "torch_seed": 1234
+    },
+    "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+    "lm_eval_version": "0.4.8",
+    "model": {
+      "dtype": "bfloat16",
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    }
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "question": "Does frozen Role allocation beat Aggregate on full GSM8K?",
+  "status": "frozen_before_full_evaluation",
+  "target_pruned": 4536008704,
+  "weights": 6979321856
+}

@@ -1,0 +1,78 @@
+{
+  "aggregate": "pooled total squared reconstruction error / pooled dense-output energy",
+  "allocation": "raw adjacent 5pp marginal proxy cost per nominal parameter; exact target row-floor budget",
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "evaluation": {
+    "limit": 1319,
+    "methods": [
+      "uniform",
+      "role"
+    ],
+    "mini_gate": "none; user explicitly requested full GSM8K",
+    "protocol": {
+      "evaluation": {
+        "block_length": 256,
+        "bootstrap_iters": 0,
+        "denoising_steps": 256,
+        "fewshot_seed": 1234,
+        "generation_length": 256,
+        "max_cuda_gib": 30,
+        "num_fewshot": 5,
+        "numpy_seed": 1234,
+        "order": [
+          "Dense",
+          "DLM-SUM",
+          "DLM-ABS",
+          "DLM-SQUARE",
+          "Wanda",
+          "SparseGPT"
+        ],
+        "pathological_slowdown_factor": 3.0,
+        "primary_filter": "strict-match",
+        "primary_metric": "exact_match,strict-match",
+        "random_seed": 0,
+        "task": "gsm8k",
+        "temperature": 0,
+        "timing_examples": 32,
+        "torch_seed": 1234
+      },
+      "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+      "lm_eval_version": "0.4.8",
+      "model": {
+        "dtype": "bfloat16",
+        "id": "GSAI-ML/LLaDA-8B-Base",
+        "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+      }
+    },
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+  },
+  "grid": [
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35
+  ],
+  "grid_reason": "same target-relative -15pp/+10pp range as frozen target50/75 validation",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_retuning": true,
+  "projection_count": 224,
+  "role": "max(pooled masked normalized reconstruction error, pooled unmasked normalized reconstruction error)",
+  "selector": "exact historical Standard Wanda abs(W)*sqrt(overall_uniform A), stable row-wise sort",
+  "source_hashes": {
+    "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969"
+  },
+  "state_count": 80,
+  "status": "frozen_before_collection_or_downstream_evaluation",
+  "suite": "target25",
+  "target": 0.25,
+  "total_prunable_weights": 6979321856
+}

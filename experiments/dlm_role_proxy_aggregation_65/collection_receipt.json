@@ -1,0 +1,10 @@
+{
+  "curves": "experiments/dlm_role_proxy_aggregation_65/diagonal_role_curves.json",
+  "curves_sha256": "b00a94757e3783ac434d64bdde4e3a76e917c5560b8dab03c28c9eac00c3031f",
+  "elapsed_seconds": 109.96833979478106,
+  "modules": 224,
+  "states": 80,
+  "status": "complete",
+  "tensor": "/DATA/tmluser1/sap-dlm-role-proxy-aggregation-65/role_input_second_moments.pt",
+  "tensor_sha256": "2af0f77d554308bf23a92f11045547cfa4fd1d8a1161fd6a49b0a3a23eec77b3"
+}

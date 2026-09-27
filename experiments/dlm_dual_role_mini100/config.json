@@ -1,0 +1,36 @@
+{
+  "allocation": "raw 5pp marginal cost per nominal additional parameter; repository-order ties; exact row-floor budget",
+  "evaluation": "historical frozen GSM8K mini-100, 5-shot, 256 steps, strict exact match",
+  "full_policy": "keep for separate full-GSM8K plan only if primary is true",
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "methods": {
+    "aggregate": "(sum num_M + sum num_U)/(sum den_M + sum den_U)",
+    "role": "max(sum num_M/sum den_M, sum num_U/sum den_U)"
+  },
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_retuning": true,
+  "pooling": "ratio of numerator sums to denominator sums over all frozen 80 states",
+  "primary": "role correct > aggregate correct",
+  "question": "Does full-pooled max(masked,unmasked) allocation beat identically pooled aggregate reconstruction on frozen GSM8K mini-100?",
+  "secondary": "role correct > historical uniform correct",
+  "source_artifacts": {
+    "experiments/dlm_dual_role_allocation/collection_manifest.json": "c4f88596dc6098df9866673762e7cb3b06c04ab04116ae585a37423ac8812e04",
+    "experiments/dlm_dual_role_allocation/role_reconstruction_raw.json": "c0c33a990f45da7cd35eaad6c47e4a0f84266f9094cd0794bff28680e236aa76",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92"
+  },
+  "source_receipt_sha256": "9e4a6fa78d9393677f615f47eb8bca66489babdd2c205b0e63ae6839aa8f08e9",
+  "status": "frozen_before_gsm8k_mini",
+  "target_pruned": 4536008704,
+  "weights": 6979321856
+}

@@ -1,0 +1,89 @@
+{
+  "aggregate_curve": "(num_masked+num_unmasked)/(den_masked+den_unmasked)",
+  "bootstrap": {
+    "interval": "percentile 95%",
+    "resamples": 20000,
+    "seed": 0,
+    "unit": "held-out sequence"
+  },
+  "contrast": "abs(E_masked-E_unmasked)/(E_masked+E_unmasked); zero/zero=0",
+  "crossfit": {
+    "directions": [
+      {
+        "construction_sequences": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "validation_sequences": [
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "construction_sequences": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "validation_sequences": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "qualification": "fixed-mask-family conditional cross-validation"
+  },
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "downstream_evaluation": false,
+  "full_model_evaluation": false,
+  "gpu_policy": "physical GPU 0 only; physical GPU 1 untouched",
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "mask_xor_gate": 0.01,
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "monotone_envelope": null,
+  "nested_ols": {
+    "baseline": "intercept + layer dummies + type dummies + aggregate marginal/parameter",
+    "extended_addition": "role-minus-aggregate marginal/parameter",
+    "reference_layer": 0,
+    "reference_type": "attn_out",
+    "standardization": "construction rows only"
+  },
+  "projection_count": 224,
+  "reconstruction_limits": {
+    "max_absolute": 1e-07,
+    "max_relative": 1e-05
+  },
+  "role_curve": "max(E_masked,E_unmasked)",
+  "selector": "existing 80-state Standard Wanda candidate mask family",
+  "source_files": {
+    "experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "experiments/projection_capacity_allocation_65/config.json": "b313d7506b8fd4f8311e348a636c939ea9ace5fd26c92ce8afc0b1ff2091689d",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969"
+  },
+  "source_receipt_sha256": "9e4a6fa78d9393677f615f47eb8bca66489babdd2c205b0e63ae6839aa8f08e9",
+  "state_count": 80,
+  "state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "status": "frozen_before_role_collection",
+  "total_prunable_weights": 6979321856,
+  "uniform65_pruned": 4536008704
+}

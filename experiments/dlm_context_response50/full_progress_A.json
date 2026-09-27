@@ -1,0 +1,11 @@
+{
+  "completed": 107,
+  "method": "A",
+  "pid": 3821332,
+  "stage": "stopped_by_user",
+  "time": 1789622109.3433049,
+  "total": 1319,
+  "stopped_at": 1789625198.9042273,
+  "reason": "User requested both evaluations stop",
+  "predictions_checkpointed": false
+}

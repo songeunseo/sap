@@ -1,0 +1,81 @@
+{
+  "analysis_policy": "sequence-cluster bootstrap; path tracing only after the role causal gate",
+  "candidate_level": 3,
+  "conditions": [
+    "sham",
+    "masked_only",
+    "unmasked_only",
+    "both_mixed",
+    "both_direct",
+    "masked_energy_matched",
+    "unmasked_energy_matched",
+    "random_101_a",
+    "random_101_b",
+    "random_202_a",
+    "random_202_b",
+    "random_303_a",
+    "random_303_b"
+  ],
+  "controls": "three cardinality-matched deterministic random partitions; direct-vs-mixed Both reproduction",
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "energy_matching": "scale the larger actual-role output delta down to the smaller role norm; never amplify",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_downstream_or_allocation_selection": true,
+  "partition_sha256": {
+    "actual": "1dfdc5d3989200cf6cd77b1a0c8ac872a5b706afa4c13c6a5c2e965e2ed9d82a",
+    "random_101": "d351c3232539f83260bc26223e7267801391a7db6769a6cdc14410e6dbb2a726",
+    "random_202": "0e6f8e5cc63724921cc6c2ee91116031cab902d44f4314dee2148246061e3d45",
+    "random_303": "5166008f60c70dc159eb7aae4e73bdda19222b02f36b7bf022219df485682c69"
+  },
+  "primary": "same-path final masked-token Dense||intervention KL",
+  "projection_names": [
+    "block_03.attn_out",
+    "block_03.ff_out",
+    "block_03.q_proj",
+    "block_03.k_proj",
+    "block_03.v_proj",
+    "block_03.ff_proj",
+    "block_03.up_proj",
+    "block_11.attn_out",
+    "block_11.ff_out",
+    "block_11.q_proj",
+    "block_11.k_proj",
+    "block_11.v_proj",
+    "block_11.ff_proj",
+    "block_11.up_proj",
+    "block_19.attn_out",
+    "block_19.ff_out",
+    "block_19.q_proj",
+    "block_19.k_proj",
+    "block_19.v_proj",
+    "block_19.ff_proj",
+    "block_19.up_proj",
+    "block_27.attn_out",
+    "block_27.ff_out",
+    "block_27.q_proj",
+    "block_27.k_proj",
+    "block_27.v_proj",
+    "block_27.ff_proj",
+    "block_27.up_proj"
+  ],
+  "projection_selection": "repository-order seven projections in each fixed layer 03/11/19/27",
+  "random_seeds": [
+    101,
+    202,
+    303
+  ],
+  "selector": "persisted exact historical Standard Wanda mask",
+  "source_hashes": {
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/config.json": "b313d7506b8fd4f8311e348a636c939ea9ace5fd26c92ce8afc0b1ff2091689d",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969"
+  },
+  "sparsity": 0.65,
+  "state_count": 80,
+  "state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "status": "frozen_before_causal_collection"
+}

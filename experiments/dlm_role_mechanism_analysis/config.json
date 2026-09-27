@@ -1,0 +1,13 @@
+{
+  "bootstrap_resamples": 2000,
+  "bootstrap_seed": 1234,
+  "no_curve_smoothing": true,
+  "no_gpu_or_downstream": true,
+  "primary_suite": "random65",
+  "secondary_suites": [
+    "target50",
+    "target75"
+  ],
+  "status": "frozen_before_analysis",
+  "unit": "8 sequences with 10 timestep repeated states"
+}

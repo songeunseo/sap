@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "decision": "stop_exact_local_max_keep_role_separation_investigate_sparse_context_and_objective_mismatch",
+  "observations": {
+    "B_minus_A_mean_kl": 0.006455483660101891,
+    "B_minus_A_bootstrap_95_ci": [0.000979965552687645, 0.011334876716136933],
+    "C_minus_A_mean_kl": -0.015040475130081178,
+    "C_minus_A_bootstrap_95_ci": [-0.025964549928903582, -0.003931954503059388],
+    "C_minus_A_exact_sequence_sign_flip_p": 0.046875,
+    "C_minus_A_holm_p_if_two_full_comparisons": 0.09375,
+    "C_improved_states": 26,
+    "C_improved_sequence_means": 6,
+    "C_improved_timestep_means": 3,
+    "frozen_mini100": {"A_role": 24, "C_global_minimax": 16}
+  },
+  "interpretation": [
+    "Exact optimization of local-Max does not improve held-out DLM fidelity over greedy Role.",
+    "Global Minimax improves held-out DLM fidelity despite worse GSM8K mini, demonstrating objective mismatch.",
+    "Role-separated interventions reveal distinct masked/unmasked causal routes, but do not identify a uniquely valid aggregation rule.",
+    "Dense-background additive projection effects can change direction in a jointly sparse background."
+  ],
+  "next": "Develop and audit a cheap sparse-context exchange utility and distinguish DLM fidelity from task-capability preservation before further downstream method sweeps."
+}

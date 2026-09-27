@@ -1,0 +1,18 @@
+{
+  "status": "complete",
+  "decision": "reject_role_separated_reconstruction_as_allocation_proxy_or_constraint",
+  "gates": {
+    "role_over_pooled": false,
+    "sparse_context_over_dense_role": false,
+    "actual_role_over_random_partition": false
+  },
+  "key_results": {
+    "P1_pooled_dense_mse": 0.000034625705,
+    "P2_role_dense_mse": 0.000034661578,
+    "P3_role_dense_sparse_mse": 0.000037752283,
+    "role_over_pooled_relative_mse_reduction": -0.0010360163,
+    "sparse_context_relative_mse_reduction": -0.08916805,
+    "both_roles_improve_but_kl_worsens_fraction": 0.4289504717
+  },
+  "next": "Test propagation or sparse-interaction statistics; retain masked/unmasked only as a diagnostic partition until incremental predictive value is established."
+}

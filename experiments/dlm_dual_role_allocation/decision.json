@@ -1,0 +1,50 @@
+{
+  "criteria": {
+    "extended_ols_better_both_folds_and_ci_below_zero": false,
+    "mask_xor_at_least_one_percent": false,
+    "numerical_and_dense_hash_sanity": true,
+    "role_better_both_sequence_folds": false,
+    "sequence_damage_ci_entirely_below_zero": false
+  },
+  "decision": "NOT SUPPORTED",
+  "evidence": {
+    "damage_difference_ci": [
+      0.022490346118947884,
+      0.02937620502573396
+    ],
+    "dense_hash_passed": true,
+    "extended_better_both_folds": false,
+    "mask_xor_fraction": 0.0028839111328125,
+    "reconstruction_sanity_passed": true,
+    "rmse_difference_ci": [
+      -1.468026586982121e-12,
+      8.25949883358055e-13
+    ],
+    "role_better_both_folds": false
+  },
+  "failed_criteria": [
+    "role_better_both_sequence_folds",
+    "sequence_damage_ci_entirely_below_zero",
+    "mask_xor_at_least_one_percent",
+    "extended_ols_better_both_folds_and_ci_below_zero"
+  ],
+  "passed": false,
+  "reconstruction_sanity": {
+    "absolute_limit": 1e-07,
+    "comparison_count": 107520,
+    "max_absolute_error": 5.642022554708248e-08,
+    "max_absolute_error_index": [
+      55,
+      7,
+      5
+    ],
+    "max_relative_error": 3.5223263803906057e-07,
+    "max_relative_error_index": [
+      96,
+      74,
+      2
+    ],
+    "passed": true,
+    "relative_limit": 1e-05
+  }
+}

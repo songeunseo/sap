@@ -1,0 +1,39 @@
+{
+  "method": "uniform",
+  "paired_role_vs_uniform": {
+    "both_correct": 0,
+    "both_wrong": 1311,
+    "discordant": 8,
+    "exact_mcnemar_p": 0.0078125,
+    "net_correct": 8,
+    "reference_correct_candidate_wrong": 0,
+    "reference_wrong_candidate_correct": 8
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "role_reference": {
+    "correct": 8,
+    "metrics": {
+      "accuracy": 0.006065200909780136,
+      "eval_seconds": 26348.031155601842,
+      "examples_per_second": 0.05006066647676512,
+      "full_num_examples": 1319,
+      "num_examples": 1319
+    },
+    "predictions": "experiments/dlm_role_validation/gsm8k_full/target75_role_1319_predictions.jsonl",
+    "sha256": "181da722e907d568f6ce6406f03ef1c6f356e5fb8120e5578bd75f5aa08071bd"
+  },
+  "status": "complete",
+  "suite": "target75",
+  "uniform": {
+    "correct": 0,
+    "metrics": {
+      "accuracy": 0.0,
+      "eval_seconds": 26701.603395093,
+      "examples_per_second": 0.04939778261564603,
+      "full_num_examples": 1319,
+      "num_examples": 1319
+    },
+    "predictions": "experiments/dlm_role_validation/gsm8k_full/target75_uniform_1319_predictions.jsonl",
+    "sha256": "59728e7e0d7cc3b67e4c308b19cbe59ec57f356a6230d0496da84b664e788b91"
+  }
+}

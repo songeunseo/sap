@@ -1,0 +1,92 @@
+{
+  "aggregations": {
+    "balanced": "Delta[(E_M+E_U)/2]",
+    "max_level": "Delta[max(E_M,E_U)]",
+    "max_marginal": "max(Delta E_M, Delta E_U)"
+  },
+  "allocation": "raw adjacent 5pp cost per nominal additional parameter; exact row-floor 65% budget",
+  "damage_proxies": {
+    "diagonal": "sum_j(sum_i removed_W_ij^2 * sum_role x_j^2) / role dense-output energy",
+    "reconstruction": "measured role-normalized local squared output reconstruction error"
+  },
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "evaluation": {
+    "dataset": "historical fixed GSM8K mini-100",
+    "primary": "strict exact match",
+    "protocol": {
+      "evaluation": {
+        "block_length": 256,
+        "bootstrap_iters": 0,
+        "denoising_steps": 256,
+        "fewshot_seed": 1234,
+        "generation_length": 256,
+        "max_cuda_gib": 30,
+        "num_fewshot": 5,
+        "numpy_seed": 1234,
+        "order": [
+          "Dense",
+          "DLM-SUM",
+          "DLM-ABS",
+          "DLM-SQUARE",
+          "Wanda",
+          "SparseGPT"
+        ],
+        "pathological_slowdown_factor": 3.0,
+        "primary_filter": "strict-match",
+        "primary_metric": "exact_match,strict-match",
+        "random_seed": 0,
+        "task": "gsm8k",
+        "temperature": 0,
+        "timing_examples": 32,
+        "torch_seed": 1234
+      },
+      "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+      "lm_eval_version": "0.4.8",
+      "model": {
+        "dtype": "bfloat16",
+        "id": "GSAI-ML/LLaDA-8B-Base",
+        "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+      }
+    },
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+  },
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_clipping_smoothing_or_retuning": true,
+  "projection_count": 224,
+  "question": "Which role aggregation and damage proxy yields the best fixed-budget projection allocation?",
+  "references": {
+    "aggregate": 19,
+    "reconstruction_max_level": 24,
+    "uniform": 12
+  },
+  "screening": "deduplicate exact selected-mask signatures; evaluate only novel representatives",
+  "selector": "unchanged exact historical Standard Wanda candidate masks",
+  "source_hashes": {
+    "experiments/dlm_dual_role_allocation/role_reconstruction_raw.json": "c0c33a990f45da7cd35eaad6c47e4a0f84266f9094cd0794bff28680e236aa76",
+    "experiments/dlm_dual_role_mini100/aggregate65_mask_manifest.json": "513dbf4dadbb30bcd2cb6815b8db83db25cf41898f14778883a196e6b79741c9",
+    "experiments/dlm_dual_role_mini100/mini100_results.json": "3da107017875b6d53b689019bf19004799c6d4e692599a75ce0999d1600030ae",
+    "experiments/dlm_dual_role_mini100/preparation.json": "ab751ec4104ffb0bdcd19896e9fdea534b4fb891246eaab9554dde3cc68fd7d2",
+    "experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "experiments/dlm_role_validation/curves_random65.json": "a9c338c665e2edbd049ac0a241216291b555af0ebe441fbf6ce5ecf1c2035498",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92"
+  },
+  "state_count": 80,
+  "state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "status": "frozen_before_new_collection_or_downstream_evaluation",
+  "target_pruned": 4536008704,
+  "target_sparsity": 0.65,
+  "weights": 6979321856
+}

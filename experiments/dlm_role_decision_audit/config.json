@@ -1,0 +1,55 @@
+{
+  "allocations": {
+    "A": "current Role greedy",
+    "B": "exact local-Max",
+    "C": "supported Global Minimax"
+  },
+  "bundle_sizes": [
+    2,
+    3,
+    4
+  ],
+  "bundles_per_source": 3,
+  "calibration_state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "grid": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75
+  ],
+  "heldout_state_digest": "bb2cdaa6985a6ae6f75b7623a58653dcc80c73b7240cddbea551d62e7bab2b5e",
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_gsm8k_or_allocation_tuning": true,
+  "primary": "batch1 full-forward change in masked-token Dense||candidate KL",
+  "selection": [
+    "proxy_better_kl_worse",
+    "proxy_better_kl_better",
+    "kl_neutral"
+  ],
+  "source_hashes": {
+    "experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "experiments/dlm_role_global_minimax_mini100/mini100_results.json": "23302acd6de47304a7bfca3f899df0a36f6422217fbae70bcdf6cf50fb6912c8",
+    "experiments/dlm_role_tradeoff/dp_results.json": "5203667a2de3c9251aeee0ebe62b12564c4359213255f696c13b8117bbaf26ef",
+    "experiments/dlm_role_validation/curves_random65.json": "a9c338c665e2edbd049ac0a241216291b555af0ebe441fbf6ce5ecf1c2035498",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/capacity_curves_raw.json": "5bc6dee33ed81cc7c3afb6bf76943b454a4dbf9232fba15fa13d4776f1355cc1",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969",
+    "experiments/wanda_failure_characterization/heldout_state_manifest.json": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0"
+  },
+  "statistics": {
+    "bootstrap_resamples": 20000,
+    "multiple_testing": "Holm",
+    "seed": 1234,
+    "sign_flip": "enumerate 2^8 sequence signs"
+  },
+  "status": "frozen_before_offline_selection",
+  "target_pruned": 4536008704,
+  "weights": 6979321856
+}

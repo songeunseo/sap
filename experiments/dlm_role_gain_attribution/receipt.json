@@ -1,0 +1,12 @@
+{
+  "status": "complete",
+  "source_hashes_unchanged": true,
+  "finished_utc": "2026-09-12T16:53:35.818022+00:00",
+  "outputs": {
+    "config.json": "ea2bc9c80e5af947715506a7ca2434c05db20d7a6cfb7c9817c5d763c2555aa9",
+    "allocation_audit.json": "bc6aa6acf3c8135f9c4d11cba6b031c9ceac814cef07348e2d800515e8b023a3",
+    "outcome_audit.json": "60e27d27208b8632ae49cdc7aed0e334943aaf617d5885260f41e307c3280478",
+    "paired_cases.jsonl": "84ddaadad39938daf60f79230a80d598ce6c51062d53ac0e8c1e3aa9d2ba29d7",
+    "report.md": "1d704932ceba570be070fc479ae8688206fdb427b5d40bcf0bc3f8aa1a1db03e"
+  }
+}

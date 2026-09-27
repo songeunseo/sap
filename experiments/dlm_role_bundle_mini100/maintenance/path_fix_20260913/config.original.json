@@ -1,0 +1,231 @@
+{
+  "baselines": {
+    "aggregate": "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/aggregate_100_predictions.jsonl",
+    "role": "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.jsonl"
+  },
+  "bundles": [
+    {
+      "delta_pruned": 0,
+      "id": 0,
+      "indices": [
+        29,
+        162
+      ],
+      "names": [
+        "block_04.ff_out",
+        "block_23.ff_out"
+      ]
+    },
+    {
+      "delta_pruned": 0,
+      "id": 1,
+      "indices": [
+        112,
+        182
+      ],
+      "names": [
+        "block_16.attn_out",
+        "block_26.attn_out"
+      ]
+    },
+    {
+      "delta_pruned": 0,
+      "id": 2,
+      "indices": [
+        2,
+        3,
+        14,
+        47
+      ],
+      "names": [
+        "block_00.q_proj",
+        "block_00.k_proj",
+        "block_02.attn_out",
+        "block_06.ff_proj"
+      ]
+    },
+    {
+      "delta_pruned": 0,
+      "id": 3,
+      "indices": [
+        21,
+        62,
+        79,
+        121
+      ],
+      "names": [
+        "block_03.attn_out",
+        "block_08.up_proj",
+        "block_11.q_proj",
+        "block_17.q_proj"
+      ]
+    },
+    {
+      "delta_pruned": 0,
+      "id": 4,
+      "indices": [
+        76,
+        106,
+        119,
+        185
+      ],
+      "names": [
+        "block_10.up_proj",
+        "block_15.ff_out",
+        "block_17.attn_out",
+        "block_26.k_proj"
+      ]
+    },
+    {
+      "delta_pruned": 0,
+      "id": 5,
+      "indices": [
+        168,
+        183,
+        206,
+        223
+      ],
+      "names": [
+        "block_24.attn_out",
+        "block_26.ff_out",
+        "block_29.k_proj",
+        "block_31.up_proj"
+      ]
+    }
+  ],
+  "created": 1789232677.3563597,
+  "historical_eval_seconds_per100": 2114.824099561549,
+  "limit": 100,
+  "manifests": {
+    "add_b0": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b0/mask_manifest.json",
+    "add_b1": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b1/mask_manifest.json",
+    "add_b2": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b2/mask_manifest.json",
+    "add_b3": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b3/mask_manifest.json",
+    "add_b4": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b4/mask_manifest.json",
+    "add_b5": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b5/mask_manifest.json",
+    "revert_b0": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b0/mask_manifest.json",
+    "revert_b1": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b1/mask_manifest.json",
+    "revert_b2": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b2/mask_manifest.json",
+    "revert_b3": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b3/mask_manifest.json",
+    "revert_b4": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b4/mask_manifest.json",
+    "revert_b5": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b5/mask_manifest.json"
+  },
+  "methods": [
+    "add_b0",
+    "add_b1",
+    "add_b2",
+    "add_b3",
+    "add_b4",
+    "add_b5",
+    "revert_b0",
+    "revert_b1",
+    "revert_b2",
+    "revert_b3",
+    "revert_b4",
+    "revert_b5"
+  ],
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "preparation_allowance_seconds": 120,
+  "protocol": {
+    "evaluation": {
+      "block_length": 256,
+      "bootstrap_iters": 0,
+      "denoising_steps": 256,
+      "fewshot_seed": 1234,
+      "generation_length": 256,
+      "max_cuda_gib": 30,
+      "num_fewshot": 5,
+      "numpy_seed": 1234,
+      "order": [
+        "Dense",
+        "DLM-SUM",
+        "DLM-ABS",
+        "DLM-SQUARE",
+        "Wanda",
+        "SparseGPT"
+      ],
+      "pathological_slowdown_factor": 3.0,
+      "primary_filter": "strict-match",
+      "primary_metric": "exact_match,strict-match",
+      "random_seed": 0,
+      "task": "gsm8k",
+      "temperature": 0,
+      "timing_examples": 32,
+      "torch_seed": 1234
+    },
+    "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+    "lm_eval_version": "0.4.8",
+    "model": {
+      "dtype": "bfloat16",
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    }
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "queues": {
+    "0": [
+      "add_b0",
+      "add_b1",
+      "add_b2",
+      "add_b3",
+      "add_b4",
+      "add_b5"
+    ],
+    "1": [
+      "revert_b0",
+      "revert_b1",
+      "revert_b2",
+      "revert_b3",
+      "revert_b4",
+      "revert_b5"
+    ]
+  },
+  "scope": "attribution only; no candidate selection, full evaluation, role-path causal claim, or retuning",
+  "source_sha256": {
+    "/home/tmluser1/sap/eval_llada.py": "ef4faecf7049ceb6861275c552fc5ee74fabb8ded69bba03dad5b01dbc610c96",
+    "/home/tmluser1/sap/experiments/dlm_capacity_predictor/audit_existing.py": "2f008c12d76443e89493e2e86e1d48efa5df3634b86fbcfda881390fdded9b6f",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/config.json": "61dfcb0d4aa09b1994d80aaad15933fa7c327565a36866116d05f992842badbf",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/aggregate65_mask_manifest.json": "513dbf4dadbb30bcd2cb6815b8db83db25cf41898f14778883a196e6b79741c9",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/config.json": "89cb856b62435bb958db6a71679b3a8c13646558f64864219b0aee206b9afe72",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/aggregate_100_predictions.jsonl": "afbebd13b492d8a73283cfcc38611ec475ea236025f8d9ccdb2bf465c2ef528f",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/aggregate_100_predictions.receipt.json": "12beaa13cd1b2021d6436593f5a4f5e7c6674fa61d5c81cd6726a85a2b0814fb",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.jsonl": "7453aa2a1bcdfb8585e915aed0025572e2448d6da93bee831692cc22edfbf3f2",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.receipt.json": "1507ba014b945e470331a994d0236e869f28629a0ecd62a1acb6e5d5a3de0c0a",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/config.yaml": "ab23b05adbda1582f1c95e45d61ee2bb662070d61be5a2496d0472ed7d6c3b28",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/core.py": "00a91f11d5a29b4dfec4691ec74c7cb4bc92ecf71d192951f7ab50f6904b49e3",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp002/run.py": "8d3589133dfb16c679eb4f52be3955b461631b98adef1aed1f821d58131c4b08",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/run.py": "04a5b7c2f665f5dad88e8c46c6efca52e479616ca3dfa8b43652b18c2d7001bf",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b0/mask_manifest.json": "605f2c720b73c4ae4c5458d362e35b11c877ab941cfa97a0184b955c5a244f8c",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b1/mask_manifest.json": "aae60d97927d147befd85d996ec1272f0a470f4fea1fe6b932a0f39a07ce6638",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b2/mask_manifest.json": "55e58b2ddb9e6ca932862c3fc868e2c847688a7c48413fe4c253b196054d018d",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b3/mask_manifest.json": "62758a059b6c5ff7493ea109bc830ce87f9679e77bca0eb855e68dd6fb996d54",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b4/mask_manifest.json": "94408e292c5d7411f3b63d4c58225260602fefcf3438d92f1593c2183074c974",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/add_b5/mask_manifest.json": "8ac694ba68cd3f68c664daae5e2be10784c559e6dc08a836c505a39d3b2a40eb",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/core.py": "57929322a7d886fe5240a30fa32c2bf4f634cc2b3370b32276951141d4c33b24",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b0/mask_manifest.json": "5e03500867e4dd5628e26c6d71b1a55cf13e5566ae49c98b648e0858df04af03",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b1/mask_manifest.json": "fb26588f9708f1dbfe0a43827570d2c233d5a7e43632c560ad9661d5e01c04f4",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b2/mask_manifest.json": "bcdd515c62695e50dc38d11f557f940cad03f83efdf8493759a23253ee1e9d00",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b3/mask_manifest.json": "81b595e2d7de0864a8140a24f924a1275e3769466bd550fe4a5400b52ca2dff1",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b4/mask_manifest.json": "ac52b5e971ded6d97b859dd149cd667107bdecb342d9b9de2ab3b8269114b447",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/revert_b5/mask_manifest.json": "60280c3accb0fbda8148c0d472d53f801626a5d72fb4c9fb24cab0a67bd6526c",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/run.py": "fd1a7a8df7d79b0093aef3db1e80bd163d6dd44ca2a49f4128d4e6fff9dc23a9",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/run.sh": "ed30b2ef771135df32e2f04c901e7d0b0777c15b2dfba0e16be0db99880d0ecd",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/status.py": "13eefc428e06b452758846a5d7da79ece3d22a356bf2ff74f3ad652b989971b0",
+    "/home/tmluser1/sap/experiments/dlm_role_gain_attribution/allocation_audit.json": "bc6aa6acf3c8135f9c4d11cba6b031c9ceac814cef07348e2d800515e8b023a3",
+    "/home/tmluser1/sap/experiments/dlm_role_gain_attribution/receipt.json": "e63d5303757594a7249ef0775da7c089eec9a51daa8a877fc8a7744fbee372b4",
+    "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/run.py": "0efdbb1d493a3f60e5dd4457ea615198ee431052078dcc2c347ea047f72d5fd3",
+    "/home/tmluser1/sap/experiments/projection_capacity_followup_65/run_heldout.py": "505cb376d3cad31ab249995534c63b21203bc05c93b463d3c7c59e43c49a7213",
+    "/home/tmluser1/sap/experiments/wanda_failure_characterization/run_failure_map.py": "b3e2802c8a3d2fec6ea60b9562f474b5bb8cfdcf4cc5836a381db37fbaf34e4e",
+    "/home/tmluser1/sap/generate.py": "9d7e2dbcbc112260003bde90905e8d5cf10afc9e960aa2be9b8f2b353aa1744c"
+  },
+  "statistics": "12 paired exact McNemar tests with Holm family12; paired example bootstrap20000 seed20260913; six interaction CIs unadjusted exploratory",
+  "status": "frozen_before_hybrid_generation",
+  "target_pruned": 4536008704,
+  "weights": 6979321856
+}

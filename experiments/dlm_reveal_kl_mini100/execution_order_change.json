@@ -1,0 +1,20 @@
+{
+  "time": 1789498841.238248,
+  "reason": "User requested all_masked before reveal",
+  "old_order": [
+    "reveal",
+    "all_masked"
+  ],
+  "new_order": [
+    "all_masked",
+    "reveal"
+  ],
+  "interrupted_pid": 1352059,
+  "interrupted_stage": {
+    "method": "reveal",
+    "pid": 1352059,
+    "stage": "evaluation_loading",
+    "time": 1789498809.2941601
+  },
+  "collection_reused": true
+}

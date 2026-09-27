@@ -1,0 +1,723 @@
+{
+  "changed": [
+    {
+      "index": 2,
+      "name": "block_00.q_proj",
+      "layer": 0,
+      "type": "q_proj",
+      "aggregate_sparsity": 0.75,
+      "role_sparsity": 0.7,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 6.278828347547981e-05,
+        "unmasked": 0.037192729381555614,
+        "aggregate": 0.014645578066343454,
+        "max": 0.037192729381555614
+      },
+      "proxy_at_role": {
+        "masked": 4.280353968375148e-05,
+        "unmasked": 0.024776215218101364,
+        "aggregate": 0.00975685458454645,
+        "max": 0.024776215218101364
+      },
+      "proxy_delta": {
+        "masked": -1.9984743791728326e-05,
+        "unmasked": -0.01241651416345425,
+        "aggregate": -0.004888723481797004,
+        "max": -0.01241651416345425
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 3,
+      "name": "block_00.k_proj",
+      "layer": 0,
+      "type": "k_proj",
+      "aggregate_sparsity": 0.75,
+      "role_sparsity": 0.7,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 2.1132673438628874e-05,
+        "unmasked": 0.030564442119624648,
+        "aggregate": 0.005527335259241946,
+        "max": 0.030564442119624648
+      },
+      "proxy_at_role": {
+        "masked": 1.5076952740414478e-05,
+        "unmasked": 0.020195452868542362,
+        "aggregate": 0.0036530991600538733,
+        "max": 0.020195452868542362
+      },
+      "proxy_delta": {
+        "masked": -6.0557206982143965e-06,
+        "unmasked": -0.010368989251082286,
+        "aggregate": -0.0018742360991880727,
+        "max": -0.010368989251082286
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 14,
+      "name": "block_02.attn_out",
+      "layer": 2,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.027584707881079727,
+        "unmasked": 0.016776066625809116,
+        "aggregate": 0.02093314871075316,
+        "max": 0.027584707881079727
+      },
+      "proxy_at_role": {
+        "masked": 0.018749545179842068,
+        "unmasked": 0.011299630328965875,
+        "aggregate": 0.014164921796182827,
+        "max": 0.018749545179842068
+      },
+      "proxy_delta": {
+        "masked": -0.008835162701237659,
+        "unmasked": -0.00547643629684324,
+        "aggregate": -0.006768226914570333,
+        "max": -0.008835162701237659
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 21,
+      "name": "block_03.attn_out",
+      "layer": 3,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.030448215348966592,
+        "unmasked": 0.022541204035154687,
+        "aggregate": 0.02602512995828622,
+        "max": 0.030448215348966592
+      },
+      "proxy_at_role": {
+        "masked": 0.02095353704846157,
+        "unmasked": 0.015239054599066272,
+        "aggregate": 0.017756925480059176,
+        "max": 0.02095353704846157
+      },
+      "proxy_delta": {
+        "masked": -0.009494678300505023,
+        "unmasked": -0.0073021494360884145,
+        "aggregate": -0.008268204478227043,
+        "max": -0.009494678300505023
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 29,
+      "name": "block_04.ff_out",
+      "layer": 4,
+      "type": "ff_out",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.75,
+      "delta_pruned": 2519040,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.0662370499132615,
+        "unmasked": 0.0698059298010722,
+        "aggregate": 0.06857213125039259,
+        "max": 0.0698059298010722
+      },
+      "proxy_at_role": {
+        "masked": 0.08980255487204504,
+        "unmasked": 0.09427906858866539,
+        "aggregate": 0.09273149167117722,
+        "max": 0.09427906858866539
+      },
+      "proxy_delta": {
+        "masked": 0.02356550495878354,
+        "unmasked": 0.02447313878759319,
+        "aggregate": 0.024159360420784634,
+        "max": 0.02447313878759319
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 47,
+      "name": "block_06.ff_proj",
+      "layer": 6,
+      "type": "ff_proj",
+      "aggregate_sparsity": 0.65,
+      "role_sparsity": 0.7,
+      "delta_pruned": 2519040,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.06510047245884759,
+        "unmasked": 0.07325326539568516,
+        "aggregate": 0.06984426295019387,
+        "max": 0.07325326539568516
+      },
+      "proxy_at_role": {
+        "masked": 0.08791648889027467,
+        "unmasked": 0.09797533333434504,
+        "aggregate": 0.09376933600627436,
+        "max": 0.09797533333434504
+      },
+      "proxy_delta": {
+        "masked": 0.022816016431427083,
+        "unmasked": 0.024722067938659872,
+        "aggregate": 0.023925073056080493,
+        "max": 0.024722067938659872
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 62,
+      "name": "block_08.up_proj",
+      "layer": 8,
+      "type": "up_proj",
+      "aggregate_sparsity": 0.55,
+      "role_sparsity": 0.6,
+      "delta_pruned": 2519040,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.06710686895476756,
+        "unmasked": 0.07040890143061371,
+        "aggregate": 0.06899097134133558,
+        "max": 0.07040890143061371
+      },
+      "proxy_at_role": {
+        "masked": 0.09049127662385417,
+        "unmasked": 0.09477613370993747,
+        "aggregate": 0.0929361676178241,
+        "max": 0.09477613370993747
+      },
+      "proxy_delta": {
+        "masked": 0.023384407669086615,
+        "unmasked": 0.02436723227932376,
+        "aggregate": 0.023945196276488515,
+        "max": 0.02436723227932376
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 76,
+      "name": "block_10.up_proj",
+      "layer": 10,
+      "type": "up_proj",
+      "aggregate_sparsity": 0.55,
+      "role_sparsity": 0.6,
+      "delta_pruned": 2519040,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.07025327633585214,
+        "unmasked": 0.0713651648547688,
+        "aggregate": 0.07087735786034342,
+        "max": 0.0713651648547688
+      },
+      "proxy_at_role": {
+        "masked": 0.09430268152745634,
+        "unmasked": 0.09566600636033286,
+        "aggregate": 0.09506788939281624,
+        "max": 0.09566600636033286
+      },
+      "proxy_delta": {
+        "masked": 0.0240494051916042,
+        "unmasked": 0.024300841505564053,
+        "aggregate": 0.024190531532472817,
+        "max": 0.024300841505564053
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 79,
+      "name": "block_11.q_proj",
+      "layer": 11,
+      "type": "q_proj",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.025507449157003658,
+        "unmasked": 0.03171104632231008,
+        "aggregate": 0.028723509299847638,
+        "max": 0.03171104632231008
+      },
+      "proxy_at_role": {
+        "masked": 0.018735506497220927,
+        "unmasked": 0.023376193873551693,
+        "aggregate": 0.021141325139005573,
+        "max": 0.023376193873551693
+      },
+      "proxy_delta": {
+        "masked": -0.0067719426597827315,
+        "unmasked": -0.008334852448758388,
+        "aggregate": -0.007582184160842064,
+        "max": -0.008334852448758388
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 106,
+      "name": "block_15.ff_out",
+      "layer": 15,
+      "type": "ff_out",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -2514944,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.12639024934524104,
+        "unmasked": 0.06091941789519361,
+        "aggregate": 0.07837194728508129,
+        "max": 0.12639024934524104
+      },
+      "proxy_at_role": {
+        "masked": 0.09554573699944101,
+        "unmasked": 0.04601214152615967,
+        "aggregate": 0.059216289260923524,
+        "max": 0.09554573699944101
+      },
+      "proxy_delta": {
+        "masked": -0.030844512345800032,
+        "unmasked": -0.01490727636903394,
+        "aggregate": -0.019155658024157765,
+        "max": -0.030844512345800032
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 112,
+      "name": "block_16.attn_out",
+      "layer": 16,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.5,
+      "role_sparsity": 0.55,
+      "delta_pruned": 835584,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.04936025043942166,
+        "unmasked": 0.04854852896514853,
+        "aggregate": 0.048937571807670194,
+        "max": 0.04936025043942166
+      },
+      "proxy_at_role": {
+        "masked": 0.0678251976335082,
+        "unmasked": 0.06676860698425434,
+        "aggregate": 0.0672750110188841,
+        "max": 0.0678251976335082
+      },
+      "proxy_delta": {
+        "masked": 0.018464947194086534,
+        "unmasked": 0.018220078019105808,
+        "aggregate": 0.018337439211213905,
+        "max": 0.018464947194086534
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 119,
+      "name": "block_17.attn_out",
+      "layer": 17,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.5,
+      "role_sparsity": 0.55,
+      "delta_pruned": 835584,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.050340001597863115,
+        "unmasked": 0.04978733962763048,
+        "aggregate": 0.05003824380251245,
+        "max": 0.050340001597863115
+      },
+      "proxy_at_role": {
+        "masked": 0.06896430922199706,
+        "unmasked": 0.06826544622640136,
+        "aggregate": 0.06858272451350997,
+        "max": 0.06896430922199706
+      },
+      "proxy_delta": {
+        "masked": 0.018624307624133946,
+        "unmasked": 0.01847810659877088,
+        "aggregate": 0.01854448071099752,
+        "max": 0.018624307624133946
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 121,
+      "name": "block_17.q_proj",
+      "layer": 17,
+      "type": "q_proj",
+      "aggregate_sparsity": 0.6,
+      "role_sparsity": 0.55,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.029007661863394745,
+        "unmasked": 0.031992389508363236,
+        "aggregate": 0.030580021856039537,
+        "max": 0.031992389508363236
+      },
+      "proxy_at_role": {
+        "masked": 0.0211223323612166,
+        "unmasked": 0.023322330530456046,
+        "aggregate": 0.022281295428093144,
+        "max": 0.023322330530456046
+      },
+      "proxy_delta": {
+        "masked": -0.007885329502178146,
+        "unmasked": -0.00867005897790719,
+        "aggregate": -0.008298726427946393,
+        "max": -0.00867005897790719
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 162,
+      "name": "block_23.ff_out",
+      "layer": 23,
+      "type": "ff_out",
+      "aggregate_sparsity": 0.65,
+      "role_sparsity": 0.6,
+      "delta_pruned": -2519040,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.10461275623711941,
+        "unmasked": 0.0903303145905791,
+        "aggregate": 0.09521087322406457,
+        "max": 0.10461275623711941
+      },
+      "proxy_at_role": {
+        "masked": 0.07831086752266221,
+        "unmasked": 0.06767870841232936,
+        "aggregate": 0.07131190203725105,
+        "max": 0.07831086752266221
+      },
+      "proxy_delta": {
+        "masked": -0.026301888714457197,
+        "unmasked": -0.02265160617824974,
+        "aggregate": -0.023898971186813528,
+        "max": -0.026301888714457197
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 168,
+      "name": "block_24.attn_out",
+      "layer": 24,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.5,
+      "role_sparsity": 0.55,
+      "delta_pruned": 835584,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.04796226372920108,
+        "unmasked": 0.05209081204013234,
+        "aggregate": 0.050136715150965586,
+        "max": 0.05209081204013234
+      },
+      "proxy_at_role": {
+        "masked": 0.06567486688251654,
+        "unmasked": 0.0711339612230995,
+        "aggregate": 0.06855009918123939,
+        "max": 0.0711339612230995
+      },
+      "proxy_delta": {
+        "masked": 0.017712603153315465,
+        "unmasked": 0.019043149182967165,
+        "aggregate": 0.018413384030273802,
+        "max": 0.019043149182967165
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 182,
+      "name": "block_26.attn_out",
+      "layer": 26,
+      "type": "attn_out",
+      "aggregate_sparsity": 0.55,
+      "role_sparsity": 0.5,
+      "delta_pruned": -835584,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.05393661626504299,
+        "unmasked": 0.07236665583483255,
+        "aggregate": 0.061352619017280126,
+        "max": 0.07236665583483255
+      },
+      "proxy_at_role": {
+        "masked": 0.03913248107671613,
+        "unmasked": 0.052797578038617024,
+        "aggregate": 0.044631134310492204,
+        "max": 0.052797578038617024
+      },
+      "proxy_delta": {
+        "masked": -0.014804135188326857,
+        "unmasked": -0.019569077796215528,
+        "aggregate": -0.01672148470678792,
+        "max": -0.019569077796215528
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 183,
+      "name": "block_26.ff_out",
+      "layer": 26,
+      "type": "ff_out",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -2514944,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.11248525375339354,
+        "unmasked": 0.08804346603079542,
+        "aggregate": 0.09683358381881943,
+        "max": 0.11248525375339354
+      },
+      "proxy_at_role": {
+        "masked": 0.08535998256415675,
+        "unmasked": 0.06686136363169722,
+        "aggregate": 0.07351411101570918,
+        "max": 0.08535998256415675
+      },
+      "proxy_delta": {
+        "masked": -0.027125271189236785,
+        "unmasked": -0.021182102399098207,
+        "aggregate": -0.023319472803110253,
+        "max": -0.027125271189236785
+      },
+      "larger_normalized_role_at_aggregate": "masked"
+    },
+    {
+      "index": 185,
+      "name": "block_26.k_proj",
+      "layer": 26,
+      "type": "k_proj",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.65,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.025066889596498935,
+        "unmasked": 0.03463312968139405,
+        "aggregate": 0.029824494812257834,
+        "max": 0.03463312968139405
+      },
+      "proxy_at_role": {
+        "masked": 0.018913592860456987,
+        "unmasked": 0.026181090572096298,
+        "aggregate": 0.022527958035444138,
+        "max": 0.026181090572096298
+      },
+      "proxy_delta": {
+        "masked": -0.006153296736041949,
+        "unmasked": -0.008452039109297753,
+        "aggregate": -0.007296536776813696,
+        "max": -0.008452039109297753
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 206,
+      "name": "block_29.k_proj",
+      "layer": 29,
+      "type": "k_proj",
+      "aggregate_sparsity": 0.65,
+      "role_sparsity": 0.6,
+      "delta_pruned": -839680,
+      "action": "protect",
+      "proxy_at_aggregate": {
+        "masked": 0.028228942998958638,
+        "unmasked": 0.03624832848195421,
+        "aggregate": 0.03202157206412416,
+        "max": 0.03624832848195421
+      },
+      "proxy_at_role": {
+        "masked": 0.021247090804993905,
+        "unmasked": 0.02724035855628873,
+        "aggregate": 0.024081502683195484,
+        "max": 0.02724035855628873
+      },
+      "proxy_delta": {
+        "masked": -0.006981852193964733,
+        "unmasked": -0.00900796992566548,
+        "aggregate": -0.007940069380928678,
+        "max": -0.00900796992566548
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    },
+    {
+      "index": 223,
+      "name": "block_31.up_proj",
+      "layer": 31,
+      "type": "up_proj",
+      "aggregate_sparsity": 0.7,
+      "role_sparsity": 0.75,
+      "delta_pruned": 2519040,
+      "action": "prune_more",
+      "proxy_at_aggregate": {
+        "masked": 0.07109639568242407,
+        "unmasked": 0.07230039520109117,
+        "aggregate": 0.07169378871135305,
+        "max": 0.07230039520109117
+      },
+      "proxy_at_role": {
+        "masked": 0.09641110570532256,
+        "unmasked": 0.09549280441636238,
+        "aggregate": 0.09595546865565943,
+        "max": 0.09641110570532256
+      },
+      "proxy_delta": {
+        "masked": 0.025314710022898493,
+        "unmasked": 0.0231924092152712,
+        "aggregate": 0.024261679944306377,
+        "max": 0.024110710504231386
+      },
+      "larger_normalized_role_at_aggregate": "unmasked"
+    }
+  ],
+  "by_type": {
+    "attn_out": {
+      "changed": 6,
+      "delta_pruned": -8192
+    },
+    "ff_out": {
+      "changed": 4,
+      "delta_pruned": -5029888
+    },
+    "ff_proj": {
+      "changed": 1,
+      "delta_pruned": 2519040
+    },
+    "k_proj": {
+      "changed": 3,
+      "delta_pruned": -2519040
+    },
+    "q_proj": {
+      "changed": 3,
+      "delta_pruned": -2519040
+    },
+    "up_proj": {
+      "changed": 3,
+      "delta_pruned": 7557120
+    }
+  },
+  "global_pruned": 4536008704,
+  "weights": 6979321856,
+  "global_sparsity": 0.6499211237980769,
+  "transferred_weights": 15101952,
+  "mask_xor_count_assuming_historical_nesting": 30203904,
+  "diagnostic_proxy_sums_not_functional_damage": {
+    "aggregate": {
+      "masked": 11.282134542820474,
+      "unmasked": 12.057723827191245,
+      "aggregate": 11.619438240279583,
+      "max": 12.456100988465149
+    },
+    "role": {
+      "masked": 11.310842335069792,
+      "unmasked": 12.086181778366806,
+      "aggregate": 11.659202891021023,
+      "max": 12.454786368558091
+    }
+  },
+  "calibration_fingerprint": [
+    "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc"
+  ],
+  "bundles": [
+    {
+      "id": 0,
+      "indices": [
+        29,
+        162
+      ],
+      "names": [
+        "block_04.ff_out",
+        "block_23.ff_out"
+      ],
+      "delta_pruned": 0
+    },
+    {
+      "id": 1,
+      "indices": [
+        112,
+        182
+      ],
+      "names": [
+        "block_16.attn_out",
+        "block_26.attn_out"
+      ],
+      "delta_pruned": 0
+    },
+    {
+      "id": 2,
+      "indices": [
+        2,
+        3,
+        14,
+        47
+      ],
+      "names": [
+        "block_00.q_proj",
+        "block_00.k_proj",
+        "block_02.attn_out",
+        "block_06.ff_proj"
+      ],
+      "delta_pruned": 0
+    },
+    {
+      "id": 3,
+      "indices": [
+        21,
+        62,
+        79,
+        121
+      ],
+      "names": [
+        "block_03.attn_out",
+        "block_08.up_proj",
+        "block_11.q_proj",
+        "block_17.q_proj"
+      ],
+      "delta_pruned": 0
+    },
+    {
+      "id": 4,
+      "indices": [
+        76,
+        106,
+        119,
+        185
+      ],
+      "names": [
+        "block_10.up_proj",
+        "block_15.ff_out",
+        "block_17.attn_out",
+        "block_26.k_proj"
+      ],
+      "delta_pruned": 0
+    },
+    {
+      "id": 5,
+      "indices": [
+        168,
+        183,
+        206,
+        223
+      ],
+      "names": [
+        "block_24.attn_out",
+        "block_26.ff_out",
+        "block_29.k_proj",
+        "block_31.up_proj"
+      ],
+      "delta_pruned": 0
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "base_config_sha256": "e1c01d2cdbf4a4f7fb5aa7faa0f95f6bc807d057d0859a66f62e0a802241093d",
+  "changed_sources": {
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/run.py": {
+      "after": "f33ef550eac34493f04598b31837abbb5c6ea37d57fa1ba65f9d76cb9d60509b",
+      "archive": "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/maintenance/path_fix_20260913/run.original.py",
+      "before": "fd1a7a8df7d79b0093aef3db1e80bd163d6dd44ca2a49f4128d4e6fff9dc23a9"
+    }
+  },
+  "new_sources": {
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/recover_path_fix.py": "56bd72a41b7f9defabeb73a7440fc3a2af08b60489a0100dc430c6a3f9c88355",
+    "/home/tmluser1/sap/experiments/dlm_role_bundle_mini100/test_receipts.py": "63ad189006a2f3e148b4e0f22fe37036113224217b6aa8075553d83a00cd15c6"
+  },
+  "reason": "str/Path receipt hash crash after predictions saved; user authorized recovery",
+  "scientific_configuration_changed": false
+}

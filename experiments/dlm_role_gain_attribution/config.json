@@ -1,0 +1,27 @@
+{
+  "started_utc": "2026-09-12T16:53:35.775225+00:00",
+  "source_sha256": {
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/config.json": "61dfcb0d4aa09b1994d80aaad15933fa7c327565a36866116d05f992842badbf",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/full1319_results.json": "561b1518c85bf7dcba13a1fd038f459e67c0158fba34cd3115430d9902505da3",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/aggregate65_mask_manifest.json": "513dbf4dadbb30bcd2cb6815b8db83db25cf41898f14778883a196e6b79741c9",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/role65_mask_manifest.json": "0385c65b81d950885c7319a9d9c17508c9876e75489b539ddf6941f6786365c2",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_allocation/role_reconstruction_raw.json": "c0c33a990f45da7cd35eaad6c47e4a0f84266f9094cd0794bff28680e236aa76",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/gsm8k/aggregate_1319_predictions.receipt.json": "ed1d6a28f95aa631330d71ba7433cd2c7b5e2e28820b707b88dd3de892af39fd",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/gsm8k/aggregate_1319_predictions.jsonl": "8a3e5b98f28075793f49ef08c8ae4c77ebd8dce8e40977cdb68a2046cb098827",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/aggregate_100_predictions.jsonl": "afbebd13b492d8a73283cfcc38611ec475ea236025f8d9ccdb2bf465c2ef528f",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/gsm8k/role_1319_predictions.receipt.json": "cc1b501e8470049d5a9c6a741b108f49d1f9ec0375c004c3e4d0302e5274ea3e",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_full1319/gsm8k/role_1319_predictions.jsonl": "bd8961b7929dad4682cd69afd81b5b8d61f44fbd2417067e5634b3f284a7d0d7",
+    "/home/tmluser1/sap/experiments/dlm_dual_role_mini100/gsm8k/role_100_predictions.jsonl": "7453aa2a1bcdfb8585e915aed0025572e2448d6da93bee831692cc22edfbf3f2",
+    "/home/tmluser1/sap/experiments/dlm_role_gain_attribution/analyze.py": "1719df5fb6583fa2edc9f78695dcb2889294b18716e037c9ea4f643feebc4d1a",
+    "/home/tmluser1/sap/experiments/dlm_capacity_predictor/audit_existing.py": "2f008c12d76443e89493e2e86e1d48efa5df3634b86fbcfda881390fdded9b6f"
+  },
+  "bootstrap": {
+    "seed": 20260913,
+    "resamples": 20000,
+    "unit": "paired GSM8K example",
+    "conditional_on": "fixed masks and fixed generation run"
+  },
+  "scope": "offline exploratory, no GPU/model invocation; output invalidity is not a reasoning label",
+  "bundle_rule": "repeated minimum-cardinality nonempty zero-pruned-count subset, canonical index tie-break; no labels",
+  "mask_payloads": "not reloaded; identities/counts linked to historical receipts, XOR conditional on validated historical nesting"
+}

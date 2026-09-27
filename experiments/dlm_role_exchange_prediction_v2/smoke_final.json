@@ -1,0 +1,91 @@
+{
+  "bundle_physical_hook_max_abs": 0.0,
+  "config_sha256": "b88bbed1c71539b2a983d922882da49d2085fa74e29505cfa4dff676b288ef74",
+  "singles": [
+    {
+      "exchange_index": 0,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 52,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 53,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 119,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 120,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 180,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 181,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 240,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 241,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 308,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 309,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    },
+    {
+      "exchange_index": 370,
+      "feature_check": "passed",
+      "mixed_direct_max_abs": 0.0,
+      "physical_hook_max_abs": 0.0,
+      "restore_max_abs": 0.0
+    }
+  ],
+  "status": "passed"
+}

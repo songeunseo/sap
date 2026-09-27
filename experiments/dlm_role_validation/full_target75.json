@@ -1,0 +1,26 @@
+{
+  "methods": {
+    "role": {
+      "correct": 8,
+      "metrics": {
+        "accuracy": 0.006065200909780136,
+        "eval_seconds": 26348.031155601842,
+        "examples_per_second": 0.05006066647676512,
+        "full_num_examples": 1319,
+        "num_examples": 1319
+      },
+      "predictions": "experiments/dlm_role_validation/gsm8k_full/target75_role_1319_predictions.jsonl",
+      "sha256": "181da722e907d568f6ce6406f03ef1c6f356e5fb8120e5578bd75f5aa08071bd"
+    }
+  },
+  "mini_gate_override": true,
+  "mini_gate_passed": false,
+  "override_reason": "user explicitly requested immediate full-1319 evaluation; mini screening was stopped",
+  "paired": {},
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "requested_methods": [
+    "role"
+  ],
+  "status": "complete",
+  "suite": "target75"
+}

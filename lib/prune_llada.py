@@ -135,6 +135,7 @@ def prune_wanda(
     prune_n=0,
     prune_m=0,
     delta_bundles=None,
+    module_sparsities=None,
 ):
     use_cache = model.config.use_cache 
     model.config.use_cache = False 
@@ -175,6 +176,14 @@ def prune_wanda(
         for name in subset:
             print(f"pruning layer {i} name {name}")
             W_metric = torch.abs(subset[name].weight.data) * torch.sqrt(wrapped_layers[name].scaler_row.reshape((1,-1)))
+            canonical_name = f"block_{i:02d}.{name}"
+            module_sparsity = args.sparsity_ratio
+            if module_sparsities is not None:
+                if canonical_name not in module_sparsities:
+                    raise KeyError(f"missing Wanda allocation for {canonical_name}")
+                module_sparsity = float(module_sparsities[canonical_name])
+                if not math.isfinite(module_sparsity) or not 0 <= module_sparsity <= 1:
+                    raise ValueError(f"invalid Wanda allocation for {canonical_name}: {module_sparsity}")
 
             W_mask = (torch.zeros_like(W_metric) == 1)  ## initialize a mask to be all False
             if prune_n != 0:
@@ -194,8 +203,8 @@ def prune_wanda(
                     alpha = 0.4
                     alpha_hist = [0., 0.8]
                     W_mask, cur_sparsity = return_given_alpha(alpha, sort_res, W_metric, tmp_metric, sum_before)
-                    while (torch.abs(cur_sparsity - args.sparsity_ratio)>0.001) and (alpha_hist[1]-alpha_hist[0]>=0.001):
-                        if cur_sparsity > args.sparsity_ratio:
+                    while (torch.abs(cur_sparsity - module_sparsity)>0.001) and (alpha_hist[1]-alpha_hist[0]>=0.001):
+                        if cur_sparsity > module_sparsity:
                             alpha_new = (alpha + alpha_hist[0]) / 2.0
                             alpha_hist[1] = alpha
                         else:
@@ -207,7 +216,7 @@ def prune_wanda(
                     print(f"alpha found {alpha} sparsity {cur_sparsity:.6f}")
                 else:
                     # unstructured pruning
-                    indices = sort_res[1][:,:int(W_metric.shape[1]*args.sparsity_ratio)]
+                    indices = sort_res[1][:,:int(W_metric.shape[1]*module_sparsity)]
                     W_mask.scatter_(1, indices, True)
 
             if delta_bundles is not None:

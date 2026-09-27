@@ -1,0 +1,44 @@
+{
+  "comparisons": {
+    "H1": {
+      "conditional_on_fitted_models": true,
+      "decision": "inconclusive",
+      "family": 3,
+      "mean": -1.771039563615982e-08,
+      "relative_mse_reduction": 0.0004839054768265294,
+      "resamples": 20000,
+      "simultaneous_ci": [
+        -3.9517531613822156e-07,
+        4.966982270855051e-07
+      ]
+    },
+    "H2": {
+      "conditional_on_fitted_models": true,
+      "decision": "inconclusive",
+      "family": 3,
+      "mean": -4.1722614198037776e-07,
+      "relative_mse_reduction": 0.011405491225879305,
+      "resamples": 20000,
+      "simultaneous_ci": [
+        -1.6185347297289304e-06,
+        2.0211685927291936e-07
+      ]
+    },
+    "random_control": {
+      "conditional_on_fitted_models": true,
+      "decision": "inconclusive",
+      "family": 3,
+      "mean": 8.631827784426416e-08,
+      "relative_mse_reduction": -0.002365218341646491,
+      "resamples": 20000,
+      "simultaneous_ci": [
+        -8.050052222881921e-08,
+        4.6594309135327906e-07
+      ]
+    }
+  },
+  "further_method_search": "not automated",
+  "role_separation": "retained",
+  "scope": "this predictor/target only",
+  "status": "complete"
+}

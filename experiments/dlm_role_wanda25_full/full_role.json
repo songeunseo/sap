@@ -1,0 +1,18 @@
+{
+  "method": "role",
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "result": {
+    "correct": 905,
+    "metrics": {
+      "accuracy": 0.686125852918878,
+      "eval_seconds": 26640.000579578103,
+      "examples_per_second": 0.04951201093483193,
+      "full_num_examples": 1319,
+      "num_examples": 1319
+    },
+    "predictions": "experiments/dlm_role_wanda25_full/gsm8k_full/target25_role_1319_predictions.jsonl",
+    "sha256": "7baba34bffba6d1734506c6c82a6d93bccd36a2436077e3f128a9a0439e3a9f6"
+  },
+  "status": "complete",
+  "suite": "target25"
+}

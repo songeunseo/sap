@@ -1,0 +1,113 @@
+{
+  "aggregate": "pooled total squared reconstruction error / pooled dense-output energy",
+  "allocation": "raw next 5pp marginal cost per nominal parameter; exact target row-floor budget",
+  "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "evaluation": {
+    "full_policy": "only after each preregistered mini gate passes",
+    "limit": 100,
+    "protocol": {
+      "evaluation": {
+        "block_length": 256,
+        "bootstrap_iters": 0,
+        "denoising_steps": 256,
+        "fewshot_seed": 1234,
+        "generation_length": 256,
+        "max_cuda_gib": 30,
+        "num_fewshot": 5,
+        "numpy_seed": 1234,
+        "order": [
+          "Dense",
+          "DLM-SUM",
+          "DLM-ABS",
+          "DLM-SQUARE",
+          "Wanda",
+          "SparseGPT"
+        ],
+        "pathological_slowdown_factor": 3.0,
+        "primary_filter": "strict-match",
+        "primary_metric": "exact_match,strict-match",
+        "random_seed": 0,
+        "task": "gsm8k",
+        "temperature": 0,
+        "timing_examples": 32,
+        "torch_seed": 1234
+      },
+      "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+      "lm_eval_version": "0.4.8",
+      "model": {
+        "dtype": "bfloat16",
+        "id": "GSAI-ML/LLaDA-8B-Base",
+        "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+      }
+    },
+    "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add"
+  },
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_retuning": true,
+  "projection_count": 224,
+  "random_partition": "SeedSequence([seed,state_index]); exact real masked-token cardinality; labels only, inputs unchanged",
+  "role": "max(pooled group-A normalized reconstruction error, pooled group-B normalized reconstruction error)",
+  "selector": "exact historical Standard Wanda abs(W)*sqrt(overall_uniform A), stable row-wise sort",
+  "source_hashes": {
+    "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "experiments/dlm_dual_role_allocation/role_reconstruction_raw.json": "c0c33a990f45da7cd35eaad6c47e4a0f84266f9094cd0794bff28680e236aa76",
+    "experiments/dlm_dual_role_mini100/mini100_results.json": "3da107017875b6d53b689019bf19004799c6d4e692599a75ce0999d1600030ae",
+    "experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969",
+    "experiments/uniform_wanda_sparsity_sweep/summary.json": "b9b91cb6b391b64f77c697b3f1118f064c6e9c1e33b0f73bf09e837b1334c939"
+  },
+  "state_count": 80,
+  "status": "frozen_before_new_collection_or_evaluation",
+  "suites": {
+    "random65": {
+      "grid": [
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75
+      ],
+      "groups": "actual masked/unmasked plus three cardinality-matched random partitions",
+      "mini_gate": "actual Role > mean(random Role) and strict wins against at least 2/3 seeds",
+      "random_seeds": [
+        101,
+        202,
+        303
+      ],
+      "target": 0.65
+    },
+    "target50": {
+      "grid": [
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6
+      ],
+      "grid_reason": "same -15/+10 percentage-point range around target as original 65% grid",
+      "mini_gate": "Role strictly exceeds both Aggregate and Uniform",
+      "target": 0.5
+    },
+    "target75": {
+      "grid": [
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85
+      ],
+      "grid_reason": "same -15/+10 percentage-point range around target as original 65% grid",
+      "mini_gate": "Role strictly exceeds both Aggregate and Uniform",
+      "target": 0.75
+    }
+  },
+  "total_prunable_weights": 6979321856
+}
