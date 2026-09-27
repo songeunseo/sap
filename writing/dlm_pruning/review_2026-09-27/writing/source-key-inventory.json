@@ -1,0 +1,34 @@
+{
+  "status": "complete",
+  "purpose": "Direct file and JSON-key inventory for paper-v1 claims",
+  "sources": {
+    "closeout": "/home/tmluser1/sap/writing/dlm_pruning/closeout.json",
+    "source_report": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/report.json",
+    "config": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/config.json",
+    "request_split": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/request_split.json",
+    "primary_predictions": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/{A,Multi,Cross,CrossMatched}/predictions.json",
+    "mini_report": "/home/tmluser1/sap/experiments/dlm_multi_validation10050/output/report.json",
+    "experiment_handoff": "/home/tmluser1/sap/writing/dlm_pruning/review_2026-09-27/experiment/verification.json (when available)"
+  },
+  "claims": {
+    "closeout_status": "closeout.json#/status",
+    "primary_scores": "closeout.json#/full/scores/primary_remaining_1119; report.json#/scores/primary_remaining_1119",
+    "primary_fixed_contrasts": "closeout.json#/full/comparisons/primary_remaining_1119; report.json#/comparisons/primary_remaining_1119",
+    "full_scores": "closeout.json#/full/scores/full_1319",
+    "previously_seen_scores": "closeout.json#/full/scores/previously_seen_200",
+    "error_categories": "closeout.json#/full/error_categories",
+    "fresh_diagnostics": "closeout.json#/full/fresh_diagnostics; report.json#/diagnostics/fresh",
+    "fresh_span_uncertainty": "report.json#/fresh_diagnostic_span_comparisons",
+    "mini_scores": "closeout.json#/mini/scores; closeout.json#/mini/development",
+    "mini_paired": "closeout.json#/mini/paired; report source experiments/dlm_multi_validation10050/output/report.json",
+    "model_protocol": "config.json#/model, config.json#/evaluation, config.json#/pruning, config.json#/banks",
+    "fixed_contrast_family": "report.json#/primary_family; config.json#/crosschain_control/primary_family",
+    "primary_ids": "request_split.json#/primary_ids",
+    "exposed_ids": "request_split.json#/exposed_ids",
+    "beta": "closeout.json#/full/beta; report.json#/beta",
+    "cost_scope": "closeout.json#/full/costs; report.json#/costs",
+    "historical_reproduction": "closeout.json#/full/historical_reproduction",
+    "limitations": "closeout.json#/full/limitations; report.json#/limitations"
+  },
+  "independent_check": "numeric-audit.json, recompute_primary.py; primary scores and all three gain/loss/effect/exact/Holm/bootstrap values recomputed from per-question predictions and matched persisted report and closeout within 1e-10"
+}

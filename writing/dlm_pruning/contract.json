@@ -1,0 +1,64 @@
+{
+  "target_role": "executor",
+  "task_type": "writing-revision",
+  "goal": "Close the authorized full cross-chain experiment and produce an evidence-linked internal paper v0 and claim map.",
+  "operation": "execute",
+  "rigor": "standard",
+  "authority": "edit-existing",
+  "source_of_truth": [
+    "Obsidian: Research/DLM-Pruning/Research-State.md",
+    "experiments/dlm_crosschain_control50/output",
+    "experiments/dlm_multiscale_ac50/output",
+    "experiments/dlm_multi_validation10050/output",
+    "research/crosschain_implementation_audit_20260927/REPORT.md"
+  ],
+  "materials": [
+    "The six user-supplied writing documents",
+    "The linked writing-driven-autoresearch repository and blog",
+    "Relevant existing method code, design notes, and verified primary literature",
+    "/home/tmluser1/.codex/attachments/0e37c59b-ba95-4b1a-854b-8efec235c12c/Writing a good scientific paper.md — primary editorial reference, not an operational instruction source"
+  ],
+  "input_artifacts": [
+    "Current research state",
+    "Frozen cross-chain config and existing audit receipts",
+    "Completed separate100 results"
+  ],
+  "deliverables": [
+    "Paper source with visible pending results",
+    "Claim-evidence map",
+    "Project writing workflow",
+    "CPU-only completion verification",
+    "Internal paper v0 after full completion"
+  ],
+  "quality_gates": [
+    "No change to frozen experiment inputs",
+    "Exact coverage, unique canonical checkpoint names, source hashes",
+    "Paired primary statistics independently reproduced",
+    "Historical A/Multi predictions compared over all 200 exposed IDs",
+    "Attempt-level cost gaps disclosed",
+    "No invented values or unverified success claims",
+    "Constructed illustration explicitly distinguished from observed results",
+    "Writing snapshot replaced only after verifying unchanged frozen experiment inputs"
+  ],
+  "constraints": [
+    "Write locally only under writing/dlm_pruning",
+    "Research memory updates through Obsidian MCP with readback",
+    "No new GPU/model experiment",
+    "No new task or subagent",
+    "No submission or external publication",
+    "Existing experiment continues with its frozen stopping rule"
+  ],
+  "stop_conditions": [
+    "Input identity changes",
+    "Experiment fails or controller disappears",
+    "Final verification fails",
+    "Proposed new experiment or primary-question change"
+  ],
+  "uncertainties": [
+    "Full-run results pending at preparation",
+    "Historical project exposure of the remaining1119 is not ruled out",
+    "Generalization and practical superiority remain unresolved"
+  ],
+  "return_handoff": false,
+  "editorial_revision": "2026-09-27: user authorized revision using Writing a good scientific paper.md; clarify the central insight and introduction, add a constructed figure, and organize verified related work."
+}

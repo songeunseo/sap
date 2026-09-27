@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "frozen_nonwriting_inputs_unchanged": 30,
+  "figure_matches_production_objective": {
+    "constant": {
+      "A": 1.0,
+      "C1": 0.0,
+      "C2": 0.0,
+      "C4": 0.0,
+      "C_natural": 0.0,
+      "L_Multi": 1.0
+    },
+    "changing": {
+      "A": 1.0,
+      "C1": 0.0,
+      "C2": 4.0,
+      "C4": 0.0,
+      "C_natural": 1.3333333333333333,
+      "L_Multi": 2.333333333333333
+    }
+  },
+  "results_source_section_unchanged": true,
+  "figure_visually_reviewed": true,
+  "evidence_gate_tests_passed": 11,
+  "rendered_results_section_unchanged": true,
+  "pending_full_results_explicit": true,
+  "word_count": 2669
+}

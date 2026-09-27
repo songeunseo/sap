@@ -1,0 +1,1 @@
+Source snapshot before authorized manuscript revision using Writing a good scientific paper.md. All frozen input hashes matched before snapshot. Only the writing watcher was stopped; experiment controller remained running.

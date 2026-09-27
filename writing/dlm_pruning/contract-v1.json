@@ -1,0 +1,93 @@
+{
+  "target_role": "controller",
+  "task_type": "writing-revision",
+  "secondary_routes": [
+    "empirical-analysis",
+    "research-visualization"
+  ],
+  "goal": "Verify the completed four-arm experiment and update the internal manuscript through master, experiment, and writing roles.",
+  "operation": "execute",
+  "rigor": "audit",
+  "authority": "create-new",
+  "source_of_truth": [
+    "/home/tmluser1/sap/writing/dlm_pruning/closeout.json",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/report.json",
+    "Original per-question checkpoints and frozen config",
+    "Obsidian Research-State.md"
+  ],
+  "materials": {
+    "master": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/master.md",
+      "sha256": "5317040f293705c50b884b1f59c50d984572509191b8a147f8d877b798279d42"
+    },
+    "experiment": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/experiment.md",
+      "sha256": "322297b9aee8c02762db8b31cbbf0618e171ae10a0832f13e92fb15920e3de4c"
+    },
+    "writing": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/writing.md",
+      "sha256": "de304126de6b89c8e281e6a74ce4e8c535f436090a8751d1a84faa65c4990950"
+    }
+  },
+  "input_artifacts": [
+    "paper-v0.md",
+    "inputs.json",
+    "state.json",
+    "source config and completion receipts"
+  ],
+  "deliverables": [
+    "paper-v1.md",
+    "claim-map-v1.md",
+    "Measured primary-contrast PNG/PDF with provenance",
+    "Independent experiment/writing/master checks",
+    "Updated research state and role workflow"
+  ],
+  "quality_gates": [
+    "Source hashes preserved",
+    "Complete exact sample coverage and official grading",
+    "Three-role numerical checks with direct source keys",
+    "All measured plots from verified data",
+    "No superiority/equivalence claim from nonsignificance",
+    "Readback of saved research notes"
+  ],
+  "constraints": [
+    "Frozen old artifacts remain unchanged",
+    "No GPU/model run",
+    "No publication or git push",
+    "Only explicitly requested experiment/writing agents; no further fanout",
+    "Master owns governance and Obsidian"
+  ],
+  "stop_conditions": [
+    "Changed experimental source identity",
+    "Missing source evidence",
+    "New primary question or new model experiment needed"
+  ],
+  "uncertainties": [
+    "Mechanism and generalization unresolved",
+    "Historical exposure of primary questions beyond these screens not ruled out"
+  ],
+  "return_handoff": false,
+  "role_sources": {
+    "master": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/master.md",
+      "sha256": "5317040f293705c50b884b1f59c50d984572509191b8a147f8d877b798279d42"
+    },
+    "experiment": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/experiment.md",
+      "sha256": "322297b9aee8c02762db8b31cbbf0618e171ae10a0832f13e92fb15920e3de4c"
+    },
+    "writing": {
+      "path": "/home/tmluser1/.codex/attachments/07806206-ed65-4894-8b99-f0eb2a0d114d/writing.md",
+      "sha256": "de304126de6b89c8e281e6a74ce4e8c535f436090a8751d1a84faa65c4990950"
+    }
+  },
+  "model_status": "Runtime accepted the preferred gpt-5.6-luna despite omission from the advertised model list; no substitution made.",
+  "supersedes": "Previous no-subagent constraint is superseded by the current explicit three-role request.",
+  "agents": {
+    "master": "/root",
+    "experiment": "/root/experiment",
+    "writing": "/root/writing"
+  },
+  "subagent_model": "gpt-5.6-luna",
+  "subagent_reasoning_effort": "xhigh"
+}

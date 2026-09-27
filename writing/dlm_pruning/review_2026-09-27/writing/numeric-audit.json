@@ -1,0 +1,131 @@
+{
+  "status": "passed",
+  "purpose": "Independent primary-score and paired-effect audit from per-question JSON",
+  "source_files": {
+    "predictions": {
+      "A": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/A/predictions.json",
+      "Multi": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/Multi/predictions.json",
+      "Cross": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/Cross/predictions.json",
+      "CrossMatched": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/CrossMatched/predictions.json"
+    },
+    "request_split": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/request_split.json",
+    "source_report": "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/report.json",
+    "closeout": "/home/tmluser1/sap/writing/dlm_pruning/closeout.json"
+  },
+  "source_sha256": {
+    "report": "0857b0f7931f5d019f282c5e6984159b014aca0b91747ff8e9bf077bb53c0a10",
+    "request_split": "15d26aa912e2f2e4aaa4b9f4193d3e5490ee0144871b65d3ef3d139e00a673e5",
+    "predictions_A": "2c91e5c9c75335cb749c92e9bd39d2f78f2f6b781aa32bbbdd25dcdfcd035669",
+    "predictions_Multi": "ceae1f15244e449f588e4eeede73f985cc32b1c5644adcd6083de0a8cc6b8639",
+    "predictions_Cross": "a7b664fd4c573bfd81a65ee344a81f13baf7627011ef9a13442bb946aa1bd300",
+    "predictions_CrossMatched": "8a70eed74c669113aa3a2a6bb46185f714619072648ef291a1b88762db1a198a"
+  },
+  "sample": {
+    "primary_key": "request_split.json#/primary_ids",
+    "n": 1119,
+    "exposed_n": 200,
+    "primary_ids_sha256": "9a103104da3c9ac05c35e71c7354365e662d81c00ecfebe500c6f6821ff62267"
+  },
+  "scores_primary_remaining_1119": {
+    "A": {
+      "correct": 646,
+      "total": 1119
+    },
+    "Multi": {
+      "correct": 636,
+      "total": 1119
+    },
+    "Cross": {
+      "correct": 637,
+      "total": 1119
+    },
+    "CrossMatched": {
+      "correct": 634,
+      "total": 1119
+    }
+  },
+  "comparisons_primary_remaining_1119": {
+    "Multi-A": {
+      "n": 1119,
+      "gain": 64,
+      "loss": 74,
+      "net": -10,
+      "difference_pp": -0.8936550491510277,
+      "exact_mcnemar_p": 0.4437150035266715,
+      "holm_p": 1.0,
+      "paired_bootstrap_95pp_unadjusted": [
+        -2.949061662198391,
+        1.161751563896336
+      ],
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260927
+    },
+    "Multi-Cross": {
+      "n": 1119,
+      "gain": 74,
+      "loss": 75,
+      "net": -1,
+      "difference_pp": -0.08936550491510277,
+      "exact_mcnemar_p": 1.0,
+      "holm_p": 1.0,
+      "paired_bootstrap_95pp_unadjusted": [
+        -2.234137622877569,
+        1.966041108132261
+      ],
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260927
+    },
+    "Multi-CrossMatched": {
+      "n": 1119,
+      "gain": 67,
+      "loss": 65,
+      "net": 2,
+      "difference_pp": 0.17873100983020554,
+      "exact_mcnemar_p": 0.9306844655255777,
+      "holm_p": 1.0,
+      "paired_bootstrap_95pp_unadjusted": [
+        -1.7873100983020553,
+        2.1447721179624666
+      ],
+      "bootstrap_draws": 10000,
+      "bootstrap_seed": 20260927
+    }
+  },
+  "matches_persisted_report_and_closeout": {
+    "Multi-A": {
+      "gain": true,
+      "loss": true,
+      "net": true,
+      "difference_pp": true,
+      "exact_mcnemar_p": true,
+      "holm_p": true,
+      "paired_bootstrap_95pp_unadjusted": true
+    },
+    "Multi-Cross": {
+      "gain": true,
+      "loss": true,
+      "net": true,
+      "difference_pp": true,
+      "exact_mcnemar_p": true,
+      "holm_p": true,
+      "paired_bootstrap_95pp_unadjusted": true
+    },
+    "Multi-CrossMatched": {
+      "gain": true,
+      "loss": true,
+      "net": true,
+      "difference_pp": true,
+      "exact_mcnemar_p": true,
+      "holm_p": true,
+      "paired_bootstrap_95pp_unadjusted": true
+    }
+  },
+  "method": {
+    "gain": "candidate correct and reference incorrect",
+    "loss": "reference correct and candidate incorrect",
+    "effect_pp": "100 * (gain - loss) / n",
+    "exact_mcnemar": "two-sided exact binomial tail over gain+loss discordant pairs",
+    "holm": "step-down adjustment over the three fixed contrasts",
+    "bootstrap": "20 batches x 500 draws, np.random.default_rng(20260927), paired question resampling, unadjusted percentile 95% interval"
+  }
+}

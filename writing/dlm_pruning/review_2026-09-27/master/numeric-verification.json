@@ -1,0 +1,187 @@
+{
+  "status": "verified",
+  "role": "master",
+  "method": "independent contingency counts, rational exact binomial sums, Holm, NumPy bootstrap with fixed seed; no imported experiment statistic functions",
+  "groups": {
+    "full_1319": {
+      "scores": {
+        "A": {
+          "correct": 764,
+          "total": 1319
+        },
+        "Multi": {
+          "correct": 758,
+          "total": 1319
+        },
+        "Cross": {
+          "correct": 757,
+          "total": 1319
+        },
+        "CrossMatched": {
+          "correct": 755,
+          "total": 1319
+        }
+      },
+      "comparisons": {
+        "Multi-A": {
+          "gain": 76,
+          "loss": 82,
+          "net": -6,
+          "difference_pp": -0.45489006823351025,
+          "exact_mcnemar_p": 0.6909249767024591,
+          "paired_bootstrap_95pp_unadjusted": [
+            -2.350265352539803,
+            1.4404852160727823
+          ]
+        },
+        "Multi-Cross": {
+          "gain": 85,
+          "loss": 84,
+          "net": 1,
+          "difference_pp": 0.0758150113722517,
+          "exact_mcnemar_p": 1.0,
+          "paired_bootstrap_95pp_unadjusted": [
+            -1.819560272934041,
+            2.047005307050796
+          ]
+        },
+        "Multi-CrossMatched": {
+          "gain": 77,
+          "loss": 74,
+          "net": 3,
+          "difference_pp": 0.22744503411675512,
+          "exact_mcnemar_p": 0.8707787409560848,
+          "paired_bootstrap_95pp_unadjusted": [
+            -1.592115238817286,
+            2.047005307050796
+          ]
+        }
+      }
+    },
+    "previously_seen_200": {
+      "scores": {
+        "A": {
+          "correct": 118,
+          "total": 200
+        },
+        "Multi": {
+          "correct": 122,
+          "total": 200
+        },
+        "Cross": {
+          "correct": 120,
+          "total": 200
+        },
+        "CrossMatched": {
+          "correct": 121,
+          "total": 200
+        }
+      },
+      "comparisons": {
+        "Multi-A": {
+          "gain": 12,
+          "loss": 8,
+          "net": 4,
+          "difference_pp": 2.0,
+          "exact_mcnemar_p": 0.5034446716308594,
+          "paired_bootstrap_95pp_unadjusted": [
+            -2.5,
+            6.5
+          ]
+        },
+        "Multi-Cross": {
+          "gain": 11,
+          "loss": 9,
+          "net": 2,
+          "difference_pp": 1.0,
+          "exact_mcnemar_p": 0.8238029479980469,
+          "paired_bootstrap_95pp_unadjusted": [
+            -3.5000000000000004,
+            5.5
+          ]
+        },
+        "Multi-CrossMatched": {
+          "gain": 10,
+          "loss": 9,
+          "net": 1,
+          "difference_pp": 0.5,
+          "exact_mcnemar_p": 1.0,
+          "paired_bootstrap_95pp_unadjusted": [
+            -3.5000000000000004,
+            4.5
+          ]
+        }
+      }
+    },
+    "primary_remaining_1119": {
+      "scores": {
+        "A": {
+          "correct": 646,
+          "total": 1119
+        },
+        "Multi": {
+          "correct": 636,
+          "total": 1119
+        },
+        "Cross": {
+          "correct": 637,
+          "total": 1119
+        },
+        "CrossMatched": {
+          "correct": 634,
+          "total": 1119
+        }
+      },
+      "comparisons": {
+        "Multi-A": {
+          "gain": 64,
+          "loss": 74,
+          "net": -10,
+          "difference_pp": -0.8936550491510277,
+          "exact_mcnemar_p": 0.4437150035266715,
+          "paired_bootstrap_95pp_unadjusted": [
+            -2.949061662198391,
+            1.161751563896336
+          ],
+          "holm_p": 1.0
+        },
+        "Multi-Cross": {
+          "gain": 74,
+          "loss": 75,
+          "net": -1,
+          "difference_pp": -0.08936550491510277,
+          "exact_mcnemar_p": 1.0,
+          "paired_bootstrap_95pp_unadjusted": [
+            -2.234137622877569,
+            1.966041108132261
+          ],
+          "holm_p": 1.0
+        },
+        "Multi-CrossMatched": {
+          "gain": 67,
+          "loss": 65,
+          "net": 2,
+          "difference_pp": 0.17873100983020554,
+          "exact_mcnemar_p": 0.9306844655255777,
+          "paired_bootstrap_95pp_unadjusted": [
+            -1.7873100983020553,
+            2.1447721179624666
+          ],
+          "holm_p": 1.0
+        }
+      }
+    }
+  },
+  "source_hashes": {
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/config.json": "59912694489062d4d7c08dece821c36ad292f95a4b42a7603851b7d14347d06b",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/report.json": "0857b0f7931f5d019f282c5e6984159b014aca0b91747ff8e9bf077bb53c0a10",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/execution.json": "e87842c38419f7087ed0a82815dbdadf3636928c1f0cb7082e2f81ed53bead26",
+    "/home/tmluser1/sap/writing/dlm_pruning/closeout.json": "8a076550ce16f2e81d4a8a2e6b5a72b85d8f8adcf887765c15c12261a2ece2a3",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/A/predictions.json": "2c91e5c9c75335cb749c92e9bd39d2f78f2f6b781aa32bbbdd25dcdfcd035669",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/Multi/predictions.json": "ceae1f15244e449f588e4eeede73f985cc32b1c5644adcd6083de0a8cc6b8639",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/Cross/predictions.json": "a7b664fd4c573bfd81a65ee344a81f13baf7627011ef9a13442bb946aa1bd300",
+    "/home/tmluser1/sap/experiments/dlm_crosschain_control50/output/gsm8k/CrossMatched/predictions.json": "8a70eed74c669113aa3a2a6bb46185f714619072648ef291a1b88762db1a198a"
+  },
+  "frozen_v0_artifacts_unchanged": true,
+  "uncertainty_note": "Bootstrap intervals are unadjusted; Holm correction applies to the three primary tests."
+}
