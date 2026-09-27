@@ -1,0 +1,124 @@
+{
+  "results": [
+    {
+      "mean_kl": 2.018469734489918,
+      "mean_nll_gap": 1.9604535467922688,
+      "mean_top1_agreement": 0.36630013585090637,
+      "p90_masked_token_kl": 3.93221116065979,
+      "variant": "V0_uniform"
+    },
+    {
+      "mean_kl": 2.0827214255928994,
+      "mean_nll_gap": 2.0323625065386297,
+      "mean_top1_agreement": 0.35757411904633046,
+      "p90_masked_token_kl": 3.986388683319092,
+      "variant": "V1_random_20260907_aggressive"
+    },
+    {
+      "mean_kl": 1.9982474431395532,
+      "mean_nll_gap": 1.9449754931032657,
+      "mean_top1_agreement": 0.37097599916160107,
+      "p90_masked_token_kl": 3.857151508331299,
+      "variant": "V1_random_20260907_medium"
+    },
+    {
+      "mean_kl": 1.9951314955949784,
+      "mean_nll_gap": 1.9401455231010913,
+      "mean_top1_agreement": 0.37246001735329626,
+      "p90_masked_token_kl": 3.8439061641693115,
+      "variant": "V1_random_20260907_mild"
+    },
+    {
+      "mean_kl": 2.823238030076027,
+      "mean_nll_gap": 2.7680699713528156,
+      "mean_top1_agreement": 0.2735397173091769,
+      "p90_masked_token_kl": 5.262790679931641,
+      "variant": "V1_random_20260908_aggressive"
+    },
+    {
+      "mean_kl": 2.3731580838561057,
+      "mean_nll_gap": 2.3127796091139317,
+      "mean_top1_agreement": 0.3268177956342697,
+      "p90_masked_token_kl": 4.512170314788818,
+      "variant": "V1_random_20260908_medium"
+    },
+    {
+      "mean_kl": 2.1291070014238356,
+      "mean_nll_gap": 2.0641467280685903,
+      "mean_top1_agreement": 0.3539508365094662,
+      "p90_masked_token_kl": 4.093497276306152,
+      "variant": "V1_random_20260908_mild"
+    },
+    {
+      "mean_kl": 2.1512416124343874,
+      "mean_nll_gap": 2.112004182487726,
+      "mean_top1_agreement": 0.3529962792992592,
+      "p90_masked_token_kl": 4.1367340087890625,
+      "variant": "V1_random_20260909_aggressive"
+    },
+    {
+      "mean_kl": 2.0317128866910936,
+      "mean_nll_gap": 1.988729513436556,
+      "mean_top1_agreement": 0.36190250515937805,
+      "p90_masked_token_kl": 3.904067039489746,
+      "variant": "V1_random_20260909_medium"
+    },
+    {
+      "mean_kl": 2.0012816339731216,
+      "mean_nll_gap": 1.9492901541292667,
+      "mean_top1_agreement": 0.371278490498662,
+      "p90_masked_token_kl": 3.8982107639312744,
+      "variant": "V1_random_20260909_mild"
+    },
+    {
+      "mean_kl": 2.8522342175245283,
+      "mean_nll_gap": 2.785213191062212,
+      "mean_top1_agreement": 0.2832075752317905,
+      "p90_masked_token_kl": 5.367431640625,
+      "variant": "V2_reconstruction_aggressive"
+    },
+    {
+      "mean_kl": 2.3391550853848457,
+      "mean_nll_gap": 2.2761261321604254,
+      "mean_top1_agreement": 0.3357249744236469,
+      "p90_masked_token_kl": 4.461860179901123,
+      "variant": "V2_reconstruction_medium"
+    },
+    {
+      "mean_kl": 2.0920555382966994,
+      "mean_nll_gap": 2.031725702434778,
+      "mean_top1_agreement": 0.3630219593644142,
+      "p90_masked_token_kl": 4.049617290496826,
+      "variant": "V2_reconstruction_mild"
+    },
+    {
+      "mean_kl": 2.726799134910107,
+      "mean_nll_gap": 2.7047785349190234,
+      "mean_top1_agreement": 0.22075093798339368,
+      "p90_masked_token_kl": 4.910356044769287,
+      "variant": "V3_functional_kl_aggressive"
+    },
+    {
+      "mean_kl": 2.247950811684132,
+      "mean_nll_gap": 2.2219275541603567,
+      "mean_top1_agreement": 0.29662379156798124,
+      "p90_masked_token_kl": 4.1301798820495605,
+      "variant": "V3_functional_kl_medium"
+    },
+    {
+      "mean_kl": 2.0282727286219595,
+      "mean_nll_gap": 1.981512177735567,
+      "mean_top1_agreement": 0.3639091543853283,
+      "p90_masked_token_kl": 3.87550950050354,
+      "variant": "V3_functional_kl_mild"
+    }
+  ],
+  "selected_for_stage2": [
+    "V0_uniform",
+    "V1_random_20260907_mild",
+    "V2_reconstruction_mild",
+    "V3_functional_kl_mild"
+  ],
+  "selection_rule": "V0; lowest mean-KL random; lowest mean-KL reconstruction; lowest mean-KL functional-KL schedule",
+  "status": "complete"
+}

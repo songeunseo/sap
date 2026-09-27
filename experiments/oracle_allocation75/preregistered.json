@@ -1,0 +1,82 @@
+{
+  "architecture_aliases": {
+    "down_proj": "ff_out",
+    "gate_proj": "ff_proj",
+    "k_proj": "k_proj",
+    "o_proj": "attn_out",
+    "q_proj": "q_proj",
+    "up_proj": "up_proj",
+    "v_proj": "v_proj"
+  },
+  "dlm_calibration": {
+    "semantics": "overall_uniform: mean over 80 corrupted batch-1 states of sum over all 256 token positions X^2",
+    "source": "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt",
+    "source_sha256": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "states": 80
+  },
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.8.0+cu128"
+  },
+  "fallback_reason": "Requested functional-KL schedules require donor sparsity >1.0 at q=10%,15%,20%; protection strength reduced while retaining q=10% and monotonic schedule order.",
+  "fallback_schedules": {
+    "aggressive": 0.66,
+    "medium": 0.69,
+    "mild": 0.72
+  },
+  "global_sparsity": 0.75,
+  "middle_sparsity": 0.75,
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_new_score_or_recovery": true,
+  "protected_fraction": 0.1,
+  "protected_group_count": 22,
+  "pruning_pattern": "unstructured, exact integer row-wise Wanda ranking",
+  "random_seeds": [
+    20260907,
+    20260908,
+    20260909
+  ],
+  "requested_schedules": {
+    "aggressive": 0.45,
+    "medium": 0.55,
+    "mild": 0.65
+  },
+  "research_question": "Does causal functional-KL projection allocation improve 75%-sparse DLM-Wanda downstream behavior?",
+  "score": "abs(W_ij) * sqrt(A_DLM_j); score unchanged across all variants",
+  "stage1": {
+    "metrics": [
+      "masked-token KL mean",
+      "masked-token KL p90",
+      "official DLM NLL gap",
+      "timestep KL"
+    ],
+    "selection": "V0; lowest-mean-KL random; lowest-mean-KL V2; two lowest-mean-KL V3 schedules",
+    "state_count": 40,
+    "states": "experiments/wanda_failure_characterization/heldout_state_manifest.json"
+  },
+  "stage2": {
+    "gsm8k_limit": 100,
+    "no_repeated_tuning": true,
+    "protocol": "exact EXP-002 GSM8K protocol with only limit=100"
+  },
+  "stage3_gate": {
+    "mean_kl_not_worse": true,
+    "mini_correct_improvement_min": 2,
+    "p90_kl_not_worse": true
+  },
+  "status": "frozen_before_any_75pct_mask_or_outcome",
+  "storage": "/DATA/tmluser1/sap-oracle-allocation75",
+  "variant_count_stage1": 16,
+  "vulnerability": {
+    "failure_map_sha256": "e9aea164252462b1dd94fa9672e8162d970ceebedd4a824a747e5abc121a8446",
+    "functional_field": "Y50_KL",
+    "heldout_state_sha256": "bb2cdaa6985a6ae6f75b7623a58653dcc80c73b7240cddbea551d62e7bab2b5e",
+    "reconstruction_negative_control_field": "Erec50",
+    "source": "experiments/wanda_failure_characterization/per_module_statistics.csv",
+    "source_sha256": "7d998a49e4d34c98f4c3ec88b2e046cb1669942e51b4dd9608913b8454e70ef1"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "adaptation": "224 projection-local statistics and parameter-weighted minmax centering; independent row count per projection; exact50 DP",
+  "calibration": "same frozen80 corrupted WikiText train states; native batch1 sparse-prefix block-wise integration",
+  "development": "existing disjoint development40 masked gold CE; custom bounded public-operator search, not official full controller",
+  "dsa": {
+    "elites": 2,
+    "fitness": "existing disjoint development40 masked gold CE; custom bounded public-operator search, not official full controller",
+    "generations": 4,
+    "lam": 0.08,
+    "mutation_probability": 0.5,
+    "parents": 4,
+    "population": 8,
+    "seed": 0
+  },
+  "evaluation": {
+    "batch_size": 1,
+    "cfg_scale": 0,
+    "conditioning": "unconditional within each article chunk",
+    "dataset": "Salesforce/wikitext",
+    "dataset_config": "wikitext-2-raw-v1",
+    "development_split": "validation",
+    "dtype": "BF16 model, FP32 masked CE",
+    "estimator": "LLaDA Eq.6 exact-k uniform without replacement; token NELBO then exp",
+    "final_split": "test",
+    "mask_id": 126336,
+    "mc_samples": 128,
+    "model": {
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    },
+    "remainder": "include nonempty short article tails; parameter-free token-weighted aggregation",
+    "seed": 2025,
+    "sequence_length": 512,
+    "special_tokens": false,
+    "tokenizer_sha256": "929596f51ca71002dcb12923dc36e4b389f5fa5caf6bca7ff782e1612f6e3490",
+    "torch_version": "2.8.0+cu128"
+  },
+  "methods": [
+    "owl_projection",
+    "dsa_projection"
+  ],
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "owl": {
+    "M": 5,
+    "lam": 0.08
+  },
+  "pruned": 3489660928,
+  "sources": {
+    "/home/tmluser1/sap/experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "/home/tmluser1/sap/experiments/dlm_dsa_search65/run.py": "2b4c27c6edfd552292cae1fe746b4be15fb203ab29d919aa3e4f745d1e74ec08",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "/home/tmluser1/sap/experiments/dlm_owl65/run.py": "e73dd2ba5dccf1f0db970cab5b7be15be36a1664c67a2b186185138bd23e9e00",
+    "/home/tmluser1/sap/experiments/dlm_ppl50/config.json": "4d9c11ed8e4265f39fa8c518b7ae5e534e4b7e092aa25f922a2df0bf0f5662e7",
+    "/home/tmluser1/sap/experiments/dlm_ppl50/run.py": "354dae309a1e58fb00d43051beb6eb3f9a6a7f5404a68696e526ac70f72bf3e8",
+    "/home/tmluser1/sap/experiments/dlm_ppl50/sequential.py": "88740c5336cb0384ccda81676e379b627a683055d830ba02ddf7658861ae3831",
+    "/home/tmluser1/sap/experiments/dlm_ppl50_projection/run.py": "287106904d84b4414439fd7945be0b5ac77ac1a472e62fc3881c024d5b3ce1a5",
+    "/home/tmluser1/sap/experiments/dlm_ppl50_projection/run.sh": "9b5f4fab0f1b8b1826df08202e8be207dc1f9ea305fe6141981b3a8f7e8432be",
+    "/home/tmluser1/sap/experiments/dlm_ppl50_projection/status.py": "7a3a0927316ee603c035733e1d10eeb52d82be127c418429e2c66f43cc77560a",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/config.json": "0698bca3b0fff79ee63d8288710c6f82742461f542cb42f800e2e4f0275e521f",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/corpus_manifest.json": "c0211ae2200c3d0d8bd481a1601bb1fe7d2a99646fa16bdf43c7a76b92e2071d",
+    "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "/home/tmluser1/sap/experiments/projection_capacity_followup_65/new_heldout_state_manifest.json": "79cf16cbf7f85681ebcda3817e51f24473a09897c7fdfa6b9b457c735b9a7442",
+    "/home/tmluser1/sap/experiments/projection_capacity_followup_65/new_state_verification.json": "1187e2fa71182cc50f72235b1ba6638bfebfa8a6ec3d40ea8151af50de92f26c"
+  },
+  "target": 0.5,
+  "test_policy": "Validation only; same frozen 551 chunks/MC128, no test or GSM8K",
+  "weights": 6979321856
+}

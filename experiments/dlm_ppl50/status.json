@@ -1,0 +1,114 @@
+{
+  "alpha": {
+    "method": "alpha",
+    "pid": 1793458,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007452808373059659,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 14.44774151086899,
+      "token_nelbo": 2.670538105517144,
+      "tokens": 268163
+    },
+    "time": 1789529432.2678292
+  },
+  "dlp": {
+    "method": "dlp",
+    "pid": 2668972,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007515418550418178,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 14.856601323451184,
+      "token_nelbo": 2.698444300038671,
+      "tokens": 268163
+    },
+    "time": 1789537741.32367
+  },
+  "dsa": {
+    "method": "dsa",
+    "pid": 2239313,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007441108283160525,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 12.555284741159054,
+      "token_nelbo": 2.530141671855284,
+      "tokens": 268163
+    },
+    "time": 1789535419.911643
+  },
+  "evopress": {
+    "method": "evopress",
+    "pid": 2290030,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007410514990638938,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 12.690996034629126,
+      "token_nelbo": 2.5408927683726263,
+      "tokens": 268163
+    },
+    "time": 1789556009.2960348
+  },
+  "lsa_layer": {
+    "method": "lsa_layer",
+    "pid": 1986411,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007447771982980482,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 13.155968649459895,
+      "token_nelbo": 2.5768755453397736,
+      "tokens": 268163
+    },
+    "time": 1789532129.6728911
+  },
+  "lsa_projection": {
+    "method": "lsa_projection",
+    "pid": 2239108,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007452933793341261,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 13.185581950699119,
+      "token_nelbo": 2.5791239561614594,
+      "tokens": 268163
+    },
+    "time": 1789534809.576224
+  },
+  "owl": {
+    "method": "owl",
+    "pid": 1740506,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.007439532821407455,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 13.057348194010421,
+      "token_nelbo": 2.569351055299442,
+      "tokens": 268163
+    },
+    "time": 1789526690.7034194
+  },
+  "uniform": {
+    "method": "uniform",
+    "pid": 1692338,
+    "stage": "complete",
+    "summary": {
+      "blocks": 551,
+      "mc_standard_error": 0.00743957266994796,
+      "note": "Monte Carlo estimate of a bound; finite-sample estimate is not a guaranteed upper bound; SE is MC noise, not corpus generalization uncertainty",
+      "ppl_upper_bound_estimate": 12.817418596800488,
+      "token_nelbo": 2.550805073713518,
+      "tokens": 268163
+    },
+    "time": 1789523985.4194486
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "causal_map": {
+    "failure_map_sha256": "e9aea164252462b1dd94fa9672e8162d970ceebedd4a824a747e5abc121a8446",
+    "field": "Y50_KL",
+    "path": "experiments/wanda_failure_characterization/per_module_statistics.csv",
+    "sha256": "7d998a49e4d34c98f4c3ec88b2e046cb1669942e51b4dd9608913b8454e70ef1"
+  },
+  "dlm_calibration": {
+    "semantics": "overall_uniform: mean over 80 corrupted batch-1 states of sum over all 256 token positions X^2",
+    "source": "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt",
+    "source_sha256": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+    "states": 80
+  },
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.8.0+cu128"
+  },
+  "global_sparsity": 0.5,
+  "heldout": {
+    "path": "experiments/wanda_failure_characterization/heldout_state_manifest.json",
+    "sha256": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0",
+    "state_count": 40,
+    "state_sha256": "bb2cdaa6985a6ae6f75b7623a58653dcc80c73b7240cddbea551d62e7bab2b5e"
+  },
+  "metrics": [
+    "mean masked-token KL",
+    "P90 masked-token KL",
+    "P95 masked-token KL",
+    "DLM NLL gap",
+    "top-1 agreement"
+  ],
+  "middle_sparsity": 0.5,
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "no_downstream": true,
+  "no_medium_or_aggressive_auto_followup": true,
+  "protected_sparsity": 0.48,
+  "pruning_pattern": "per-projection unstructured row-wise Wanda",
+  "random_seeds": [
+    20260907,
+    20260908,
+    20260909
+  ],
+  "relative_protection": 0.96,
+  "research_question": "Does causal functional-KL allocation become useful when the global budget is relaxed from 75% to 50% sparsity?",
+  "score": "abs(W_ij) * sqrt(A_DLM_j); score unchanged across all variants",
+  "selection_reuse": {
+    "note": "Exact 75% protected/donor group selections reused; 50% masks are newly generated.",
+    "path": "experiments/oracle_allocation75/allocation_selections.json",
+    "sha256": "648529f9ee414dc52ac20ce9d5d080139cc55c9858983a4ca25ad73dbe7a8e20"
+  },
+  "status": "frozen_before_any_50pct_mask_or_outcome",
+  "storage": "/DATA/tmluser1/sap-oracle-allocation50",
+  "variants": [
+    "V0_50_uniform",
+    "V3_50_functional_kl_mild",
+    "V1_50_random_20260907",
+    "V1_50_random_20260908",
+    "V1_50_random_20260909"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "batch_size": 1,
+  "cfg_scale": 0,
+  "conditioning": "unconditional within each article chunk",
+  "dataset": "Salesforce/wikitext",
+  "dataset_config": "wikitext-2-raw-v1",
+  "development_split": "validation",
+  "dtype": "BF16 model, FP32 masked CE",
+  "estimator": "LLaDA Eq.6 exact-k uniform without replacement; token NELBO then exp",
+  "final_split": "test",
+  "mask_id": 126336,
+  "mc_samples": 128,
+  "model": {
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "pilot": "eight distinct validation articles, one 512-token chunk each; timing only, not selection or final evaluation",
+  "pruning": "reuse exact completed sequential Uniform-Wanda65 mask manifest; no new local selector",
+  "remainder": "include nonempty short article tails; parameter-free token-weighted aggregation",
+  "seed": 2025,
+  "sequence_length": 512,
+  "sources": {
+    "/home/tmluser1/sap/experiments/dlm_allocation_sequential65/uniform/mask_manifest.json": "ae6365b8fc231f6e953d6e2365c10905653f77ea5edcd9e38a7df5b2e2a51e3f",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/core.py": "896b993f7bf680f52fe6799504cfa4b2a1c09e8a99b5d0f81b889964859489d9",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/corpus_manifest.json": "c0211ae2200c3d0d8bd481a1601bb1fe7d2a99646fa16bdf43c7a76b92e2071d",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/run.py": "c985ac6451d4da6b3accc726a7c6137f4a8bf907c47a0f41d6c4c72e501d5721",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/state_verification.json": "31fc6fc1bc44274d66e9d39838e151cb2aaa9a91a0209732c33d7dffc4cb156b",
+    "/home/tmluser1/sap/experiments/dlm_wikitext_ppl/test_core.py": "245a40d0317998073d5daf179b617a658fabbf8fc45cbd89711fc9fdf2d2bb94",
+    "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/run.py": "0efdbb1d493a3f60e5dd4457ea615198ee431052078dcc2c347ea047f72d5fd3",
+    "/home/tmluser1/sap/experiments/projection_capacity_followup_65/new_heldout_state_manifest.json": "79cf16cbf7f85681ebcda3817e51f24473a09897c7fdfa6b9b457c735b9a7442",
+    "/home/tmluser1/sap/experiments/projection_capacity_followup_65/run_heldout.py": "505cb376d3cad31ab249995534c63b21203bc05c93b463d3c7c59e43c49a7213",
+    "/home/tmluser1/sap/experiments/wanda_failure_characterization/heldout_state_manifest.json": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0",
+    "/home/tmluser1/sap/get_log_likelihood.py": "e728ddbb7925e427e9cab0208e59cdfc533653222fdafc2fc885a3f3583962a9"
+  },
+  "special_tokens": false,
+  "tokenizer_sha256": "929596f51ca71002dcb12923dc36e4b389f5fa5caf6bca7ff782e1612f6e3490",
+  "torch_version": "2.8.0+cu128"
+}

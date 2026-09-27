@@ -1,0 +1,47 @@
+{
+  "adaptation": "Public DSA graph operators/mapping + our graph-evolution controller; no official controller published in pinned source",
+  "elites": 2,
+  "exclusion_reason": "Unsafe/incompatible matrix operations on full pooled 1-D block scores; no approximate tensors",
+  "fitness": "Equal-state mean masked-token CE on frozen 80 calibration states; lower is better",
+  "generations": 4,
+  "lam": 0.08,
+  "max_new_evaluations": 26,
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "mutation_probability": 0.5,
+  "not_ppl": "exp(CE) is descriptive masked perplexity, NOT AR PPL or unbiased DLM likelihood",
+  "parents": 4,
+  "population": 8,
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "pruned": 4536008704,
+  "search_space_exclusion": [
+    "CORREF",
+    "DETERMINANT",
+    "DIAGONAL",
+    "GRAM",
+    "RANK",
+    "SLOGDET"
+  ],
+  "seed": 0,
+  "sources": {
+    "/DATA/tmluser1/dlm_allocation_baselines65/sap-dsa-reference/lib/autolayer.py": "16689ce1c2e8cb54ff708f56f74da04e7f9b83a4b09a97e0a8846c38df436589",
+    "/home/tmluser1/sap/experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+    "/home/tmluser1/sap/experiments/dlm_dsa_search65/README.md": "f04770d81c289ee735b18909ced61d43927ed7ee613be7c4211662bd3e3b9d28",
+    "/home/tmluser1/sap/experiments/dlm_dsa_search65/run.py": "2b4c27c6edfd552292cae1fe746b4be15fb203ab29d919aa3e4f745d1e74ec08",
+    "/home/tmluser1/sap/experiments/dlm_dsa_search65/run.sh": "d9c27d8a162d4bd4bcc284ba35d81a1bdb57d62e79f25f51ac48b2272b0878f5",
+    "/home/tmluser1/sap/experiments/dlm_dsa_search65/test_search.py": "c440b3128741f965a9a001c6ec52d31b80b417426234dd4f373a3447d9c87eb3",
+    "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp002/config.yaml": "9b29dabdb965854a99fb58a3309c5c6cd573afac0bc921d225c6263cdefa9dcc",
+    "/home/tmluser1/sap/experiments/projection_capacity_allocation_65/candidate_mask_manifest.json": "aeed534ecddf516a02dffcb62e5124e0aab2e6cc42fb3f446ac2531f2aa09c92",
+    "experiments/dlm_allocation_baselines65/core.py": "f744f19026fdfa97bce259ae9d30f5ccf16cebe54fbeeefa255cceb65ccaec14",
+    "experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+    "experiments/dlm_owl65/core.py": "926d11d28ceb3e12ef0a233fb6c429abec8c7f1cbcf71a2a7124c2f7790d3a53",
+    "experiments/projection_capacity_allocation_65/state_verification.json": "763e316d84bf39c73b86c0ffe5063a08529649ba265bc6ee1fb67af5efc61969",
+    "experiments/wanda_failure_characterization/heldout_state_manifest.json": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0"
+  },
+  "state_digest": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+  "target": 0.65,
+  "weights": 6979321856
+}

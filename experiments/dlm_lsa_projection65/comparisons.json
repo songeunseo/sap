@@ -1,0 +1,20 @@
+{
+  "lsa": {
+    "both_correct": 1,
+    "both_wrong": 87,
+    "discordant": 12,
+    "exact_mcnemar_p": 0.00634765625,
+    "net_correct": 10,
+    "reference_correct_candidate_wrong": 1,
+    "reference_wrong_candidate_correct": 11
+  },
+  "uniform": {
+    "both_correct": 4,
+    "both_wrong": 80,
+    "discordant": 16,
+    "exact_mcnemar_p": 1.0,
+    "net_correct": 0,
+    "reference_correct_candidate_wrong": 8,
+    "reference_wrong_candidate_correct": 8
+  }
+}

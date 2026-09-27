@@ -1,0 +1,267 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Functional-KL Allocation at 75% and 50% Sparsity",
+    "description": "A controlled re-validation of whether isolated-module causal KL can guide static per-projection Wanda budget allocation.",
+    "generatedAt": "2026-09-07T09:13:14+09:00",
+    "sources": [
+      {
+        "id": "stage1_50",
+        "title": "50% Stage-1 summary",
+        "path": "experiments/oracle_allocation50/stage1_summary.json"
+      },
+      {
+        "id": "budget_50",
+        "title": "50% allocation budget summary",
+        "path": "experiments/oracle_allocation50/budget_summary.json"
+      },
+      {
+        "id": "stage1_75",
+        "title": "75% Stage-1 summary",
+        "path": "experiments/oracle_allocation75/stage1_summary.json"
+      },
+      {
+        "id": "stage2_75",
+        "title": "75% GSM8K mini summary",
+        "path": "experiments/oracle_allocation75/stage2_summary.json"
+      }
+    ],
+    "charts": [
+      {
+        "id": "mean_kl_50",
+        "title": "50% Stage-1 mean masked-token KL",
+        "question": "Does functional-KL allocation reduce held-out mean KL more than uniform and random allocation?",
+        "rationale": "A sorted bar comparison shows that the oracle is best on mean KL, but only narrowly ahead of the strongest random control.",
+        "intent": "comparison",
+        "type": "bar",
+        "dataset": "results50",
+        "sourceId": "stage1_50",
+        "encodings": {
+          "x": {"field": "variant", "type": "nominal", "label": "Variant"},
+          "y": {"field": "mean_kl", "type": "quantitative", "label": "Mean masked-token KL", "format": "number"},
+          "tooltip": [
+            {"field": "p90_kl", "type": "quantitative", "label": "P90 KL", "format": "number"},
+            {"field": "nll_gap", "type": "quantitative", "label": "NLL gap", "format": "number"},
+            {"field": "top1", "type": "quantitative", "label": "Top-1 agreement", "format": "percent"}
+          ]
+        },
+        "settings": {"orientation": "vertical", "showValues": true, "sort": "none"},
+        "surface": {"viewMode": "both"}
+      }
+    ],
+    "tables": [
+      {
+        "id": "results_50",
+        "title": "Complete 50% Stage-1 results",
+        "dataset": "results50",
+        "sourceId": "stage1_50",
+        "columns": [
+          {"field": "variant", "label": "Variant", "type": "text"},
+          {"field": "mean_kl", "label": "Mean KL", "format": "number"},
+          {"field": "p90_kl", "label": "P90 KL", "format": "number"},
+          {"field": "p95_kl", "label": "P95 KL", "format": "number"},
+          {"field": "nll_gap", "label": "NLL gap", "format": "number"},
+          {"field": "top1", "label": "Top-1 agreement", "format": "percent"},
+          {"field": "global_sparsity", "label": "Global sparsity", "format": "percent"},
+          {"field": "min_deviation", "label": "Min projection deviation", "format": "percent"},
+          {"field": "max_deviation", "label": "Max projection deviation", "format": "percent"}
+        ]
+      },
+      {
+        "id": "results_75",
+        "title": "Selected 75% fidelity and GSM8K-mini results",
+        "dataset": "results75",
+        "sourceId": "stage1_75",
+        "columns": [
+          {"field": "variant", "label": "Variant", "type": "text"},
+          {"field": "mean_kl", "label": "Mean KL", "format": "number"},
+          {"field": "p90_kl", "label": "P90 KL", "format": "number"},
+          {"field": "nll_gap", "label": "NLL gap", "format": "number"},
+          {"field": "top1", "label": "Top-1 agreement", "format": "percent"},
+          {"field": "gsm8k_mini", "label": "GSM8K mini", "format": "number"}
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "type": "markdown",
+        "id": "title",
+        "body": "# Functional-KL Allocation at 75% and 50% Sparsity\n\nControlled oracle-allocation experiment and budget-relaxation re-validation"
+      },
+      {
+        "type": "markdown",
+        "id": "technical_summary",
+        "sourceId": "stage1_50",
+        "body": "## Technical summary\n\nAt 50% sparsity, the functional-KL allocation improved mean KL, P90 KL, and NLL gap relative to uniform DLM-Wanda, but reduced top-1 agreement slightly. Against the strongest random seed, it won only mean KL and NLL gap among the four preregistered gate metrics; random remained better on P90 KL and top-1 agreement. The directional-validity gate therefore failed. This does not support the claim that the 75% result failed only because its budget was too tight."
+      },
+      {
+        "type": "markdown",
+        "id": "headline",
+        "sourceId": "stage1_50",
+        "body": "## At 50%, the oracle helps versus uniform but is not uniquely better than random\n\nThe functional-KL variant has the lowest mean KL (0.143389) and NLL gap (0.101478). Random seed 20260907 has the best P90 KL (0.315628) and top-1 agreement (81.187%). The oracle's supplementary P95 KL is best (0.439291), but P95 was not part of the preregistered four-metric gate."
+      },
+      {
+        "type": "chart",
+        "id": "mean_kl_chart",
+        "chartId": "mean_kl_50",
+        "title": "50% Stage-1 mean masked-token KL",
+        "sourceId": "stage1_50",
+        "dataset": "results50",
+        "chartType": "bar",
+        "encoding": {
+          "x": {"field": "variant", "type": "nominal", "title": "Variant"},
+          "y": {"field": "mean_kl", "type": "quantitative", "title": "Mean masked-token KL", "format": ".4f"}
+        }
+      },
+      {
+        "type": "table",
+        "id": "results_50_table",
+        "tableId": "results_50",
+        "title": "Complete 50% Stage-1 results",
+        "sourceId": "stage1_50",
+        "dataset": "results50",
+        "columns": [
+          {"field": "variant", "label": "Variant"},
+          {"field": "mean_kl", "label": "Mean KL", "format": ".6f"},
+          {"field": "p90_kl", "label": "P90 KL", "format": ".6f"},
+          {"field": "p95_kl", "label": "P95 KL", "format": ".6f"},
+          {"field": "nll_gap", "label": "NLL gap", "format": ".6f"},
+          {"field": "top1", "label": "Top-1 agreement", "format": ".2%"},
+          {"field": "global_sparsity", "label": "Global sparsity", "format": ".2%"},
+          {"field": "min_deviation", "label": "Min projection deviation", "format": ".2%"},
+          {"field": "max_deviation", "label": "Max projection deviation", "format": ".2%"}
+        ]
+      },
+      {
+        "type": "markdown",
+        "id": "gate_detail",
+        "sourceId": "stage1_50",
+        "body": "## Preregistered gate result\n\nRelative to uniform, FunctionalKL-50-mild won 3/4 formal metrics: mean KL, P90 KL, and NLL gap. Relative to the best random result per metric, it won 2/4: mean KL and NLL gap. It lost P90 KL by 0.000359 and top-1 agreement by 0.156 percentage points to random seed 20260907. Consequently, medium/aggressive schedules were not tested and no 50% downstream evaluation was run."
+      },
+      {
+        "type": "markdown",
+        "id": "budget",
+        "sourceId": "budget_50",
+        "body": "## Exact budget and actuator size\n\nEvery 50% variant pruned exactly 3,489,660,928 of 6,979,321,856 prunable weights. Non-uniform schedules used 22 protected projections at requested sparsity 48%, middle projections at 50%, and 22 donors at an exact requested 55.459872%. Integer row-wise pruning produced an actual projection-deviation range of −2.001953 to +5.468750 percentage points. Random and oracle variants therefore used the same actuator magnitude and exact global budget."
+      },
+      {
+        "type": "markdown",
+        "id": "seventy_five",
+        "sourceId": "stage1_75",
+        "body": "## The 75% regime showed no functional-KL allocation advantage\n\nAt 75%, the selected random mild allocation beat the functional-KL mild allocation on mean KL, P90 KL, NLL gap, and top-1 agreement. Functional-KL mild was also worse than uniform on mean KL, NLL gap, and top-1 agreement, with only P90 KL improving."
+      },
+      {
+        "type": "table",
+        "id": "results_75_table",
+        "tableId": "results_75",
+        "title": "Selected 75% fidelity and GSM8K-mini results",
+        "sourceId": "stage1_75",
+        "dataset": "results75",
+        "columns": [
+          {"field": "variant", "label": "Variant"},
+          {"field": "mean_kl", "label": "Mean KL", "format": ".6f"},
+          {"field": "p90_kl", "label": "P90 KL", "format": ".6f"},
+          {"field": "nll_gap", "label": "NLL gap", "format": ".6f"},
+          {"field": "top1", "label": "Top-1 agreement", "format": ".2%"},
+          {"field": "gsm8k_mini", "label": "GSM8K mini", "format": ".0f"}
+        ]
+      },
+      {
+        "type": "markdown",
+        "id": "mini_interpretation",
+        "sourceId": "stage2_75",
+        "body": "## The 75% GSM8K mini screen was measurement-poor for ranking methods\n\nUniform, best random, and functional-KL each scored 0/100; reconstruction allocation scored 1/100. There were no invalid-answer cases. These near-floor counts do not support a functional-KL claim and full downstream evaluation was intentionally deferred."
+      },
+      {
+        "type": "markdown",
+        "id": "method",
+        "body": "## Controlled design\n\nThe model revision, DLM-matched Wanda calibration cache, unmodified local Wanda score, 224-module causal-KL ranking, 40 held-out DLM states, per-projection unstructured row-wise pruning, and evaluation implementation were reused. Only the global sparsity changed from 75% to 50%, and all 50% masks were regenerated. The exact 75% oracle groups were retained; three random allocations used fixed seeds and matched the oracle's projection-type and parameter-count composition."
+      },
+      {
+        "type": "markdown",
+        "id": "limitations",
+        "body": "## Limitations\n\nThis diagnoses a static allocation actuator, not the validity of causal module vulnerability itself. The causal map comes from isolated module perturbations, whereas a globally sparse model contains interactions among all 224 projections. The 50% differences are small and were not tested on GSM8K by design. P95 favors the oracle, but it was supplementary and cannot override the frozen four-metric gate."
+      },
+      {
+        "type": "markdown",
+        "id": "interpretation",
+        "sourceId": "stage1_50",
+        "body": "## Interpretation\n\n**Artifact-supported fact:** relaxing sparsity to 50% makes the oracle allocation modestly better than uniform on three fidelity metrics, while an equally sized random reallocation remains competitive.\n\n**Statistical interpretation:** the causal-KL ordering does not deliver a robust, uniquely useful static projection-budget signal. The data reject a clean explanation in which 75% failed only because capacity was too constrained.\n\n**Speculation:** joint-pruning interactions may break the transfer from isolated-module vulnerability to a static module budget, or the useful signal may need finer granularity than a single sparsity number per projection."
+      },
+      {
+        "type": "markdown",
+        "id": "recommendation",
+        "body": "## Exactly one recommended next step\n\nStop the causal-KL-to-projection-allocation branch and run one preregistered **individual-weight criterion diagnostic** to test whether the established functional signal survives at the actual Wanda decision granularity before any new pruning method is implemented."
+      },
+      {
+        "type": "markdown",
+        "id": "further_questions",
+        "body": "## Further question\n\nCan a pre-pruning per-weight statistic distinguish the vulnerable weight choices inside a projection without relying on a projection-wide budget shift?"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-09-07T09:13:14+09:00",
+    "status": "ready",
+    "datasets": {
+      "results50": [
+          {"variant": "Functional-KL mild", "mean_kl": 0.14338900428265333, "p90_kl": 0.31598687171936035, "p95_kl": 0.4392908811569214, "nll_gap": 0.10147768706083297, "top1": 0.8103133022785187, "global_sparsity": 0.5, "min_deviation": -0.02001953125, "max_deviation": 0.0546875},
+          {"variant": "Random 20260907", "mean_kl": 0.14477867567911745, "p90_kl": 0.3156282603740692, "p95_kl": 0.44032755494117737, "nll_gap": 0.10276418179273605, "top1": 0.8118738621473313, "global_sparsity": 0.5, "min_deviation": -0.02001953125, "max_deviation": 0.0546875},
+          {"variant": "Uniform", "mean_kl": 0.1453042108565569, "p90_kl": 0.3216622471809387, "p95_kl": 0.450244665145874, "nll_gap": 0.10315670296549798, "top1": 0.8110148191452027, "global_sparsity": 0.5, "min_deviation": 0.0, "max_deviation": 0.0},
+          {"variant": "Random 20260908", "mean_kl": 0.1453321620821953, "p90_kl": 0.3193894922733307, "p95_kl": 0.453624427318573, "nll_gap": 0.10534926801919937, "top1": 0.8069681718945503, "global_sparsity": 0.5, "min_deviation": -0.02001953125, "max_deviation": 0.0546875},
+          {"variant": "Random 20260909", "mean_kl": 0.1468652325682342, "p90_kl": 0.32363200187683105, "p95_kl": 0.4535735249519348, "nll_gap": 0.10530603379011154, "top1": 0.808666518330574, "global_sparsity": 0.5, "min_deviation": -0.02001953125, "max_deviation": 0.0546875}
+      ],
+      "results75": [
+          {"variant": "Uniform", "mean_kl": 2.01846973449, "p90_kl": 3.93221116066, "nll_gap": 1.96045354679, "top1": 0.3663, "gsm8k_mini": 0},
+          {"variant": "Random mild (best)", "mean_kl": 1.99513149559, "p90_kl": 3.84390616482, "nll_gap": 1.9401455231, "top1": 0.37246, "gsm8k_mini": 0},
+          {"variant": "Reconstruction mild", "mean_kl": 2.0920555383, "p90_kl": 4.0496172905, "nll_gap": 2.03172570243, "top1": 0.363022, "gsm8k_mini": 1},
+          {"variant": "Functional-KL mild", "mean_kl": 2.02827272862, "p90_kl": 3.8755095005, "nll_gap": 1.98151217774, "top1": 0.363909, "gsm8k_mini": 0}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "stage1_50",
+      "label": "50% Stage-1 summary",
+      "path": "experiments/oracle_allocation50/stage1_summary.json",
+      "query": {
+        "engine": "artifact-json",
+        "sql": "SELECT variant, mean_kl, p90_masked_token_kl, p95_masked_token_kl, mean_nll_gap, mean_top1_agreement, achieved_global_sparsity, minimum_projection_deviation, maximum_projection_deviation FROM raw_results",
+        "description": "Projects the persisted raw_results array into the report's 50% comparison dataset."
+      }
+    },
+    {
+      "id": "budget_50",
+      "label": "50% allocation budget summary",
+      "path": "experiments/oracle_allocation50/budget_summary.json",
+      "query": {
+        "engine": "artifact-json",
+        "sql": "SELECT protected_groups, donor_groups, protected_sparsity, middle_sparsity, donor_requested_sparsity, minimum_projection_deviation, maximum_projection_deviation, global_actual_sparsity FROM allocation_budgets",
+        "description": "Projects exact parameter-count-weighted allocation accounting for the five frozen variants."
+      }
+    },
+    {
+      "id": "stage1_75",
+      "label": "75% Stage-1 summary",
+      "path": "experiments/oracle_allocation75/stage1_summary.json",
+      "query": {
+        "engine": "artifact-json",
+        "sql": "SELECT variant, mean_kl, p90_masked_token_kl, mean_nll_gap, mean_top1_agreement FROM selected_variants",
+        "description": "Projects the four selected 75% Stage-1 variants."
+      }
+    },
+    {
+      "id": "stage2_75",
+      "label": "75% GSM8K mini summary",
+      "path": "experiments/oracle_allocation75/stage2_summary.json",
+      "query": {
+        "engine": "artifact-json",
+        "sql": "SELECT variant, correct, accuracy, invalid_answer_count, limit FROM results",
+        "description": "Projects the fixed-100 GSM8K mini results for the selected 75% variants."
+      }
+    }
+  ]
+}

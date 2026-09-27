@@ -1,0 +1,24 @@
+{
+  "budget": {
+    "budget_error": 0,
+    "corrected_pruned": 4536008704,
+    "correction_pruned": 151552,
+    "raw_row_floor_pruned": 4535857152,
+    "rounding_unit": 4096,
+    "rule": "independent projection floor-1/floor/floor+1; exact parameter-count DP",
+    "weighted_squared_rate_error": 68.38378483057117
+  },
+  "max": 0.8143948912620544,
+  "mean": 0.6435417125799826,
+  "min": 0.6052148938179016,
+  "parameter_weighted": 0.6499999682777203,
+  "per_type": {
+    "attn_out": 0.6299983244389296,
+    "ff_out": 0.6473478563129902,
+    "ff_proj": 0.6605879031121731,
+    "k_proj": 0.6275889240205288,
+    "q_proj": 0.627831507474184,
+    "up_proj": 0.6646680403500795,
+    "v_proj": 0.6467694323509932
+  }
+}

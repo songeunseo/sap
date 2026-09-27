@@ -313,6 +313,8 @@ experiments/**/*pairs.json
 experiments/**/*analysis.json
 experiments/**/manifest_*.json
 experiments/**/*preparation.json
+experiments/**/search.json
+experiments/**/*.html
 experiments/dlm_ppl50/alpha/
 experiments/dlm_ppl50/dlp/
 experiments/dlm_ppl50/dsa/

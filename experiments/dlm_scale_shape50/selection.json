@@ -1,0 +1,235 @@
+{
+  "config_sha256": "522dfcf195b4da1d59e88b0e4f88428eea70321144ee643b6de824980b8efb9f",
+  "pairs": [
+    {
+      "id": "pair_00",
+      "move_weights": 786432,
+      "prune_by_raw": "block_28.k_proj",
+      "prune_by_shape": "block_01.k_proj",
+      "raw_values": [
+        0.13926389664506586,
+        0.0095507197764698
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.87890625,
+      "shape_values": [
+        1.2895582484242631,
+        4.343392448354527
+      ],
+      "stratum": "cross_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_01",
+      "move_weights": 786432,
+      "prune_by_raw": "block_28.q_proj",
+      "prune_by_shape": "block_01.q_proj",
+      "raw_values": [
+        0.13817888308569728,
+        0.00834651732747766
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.87890625,
+      "shape_values": [
+        1.285263202107037,
+        4.270515750366882
+      ],
+      "stratum": "cross_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_02",
+      "move_weights": 786432,
+      "prune_by_raw": "block_28.ff_proj",
+      "prune_by_shape": "block_00.ff_proj",
+      "raw_values": [
+        0.1699315884606604,
+        0.006904803080549284
+      ],
+      "row_delta": 64,
+      "rows": 12288,
+      "selection_strength": 0.84765625,
+      "shape_values": [
+        1.2536589916853003,
+        1.5638689753556723
+      ],
+      "stratum": "cross_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_03",
+      "move_weights": 786432,
+      "prune_by_raw": "block_27.v_proj",
+      "prune_by_shape": "block_01.v_proj",
+      "raw_values": [
+        0.2034404409411735,
+        0.003999554082685283
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.791015625,
+      "shape_values": [
+        1.24736942903348,
+        3.102309451805469
+      ],
+      "stratum": "cross_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_04",
+      "move_weights": 786432,
+      "prune_by_raw": "block_11.up_proj",
+      "prune_by_shape": "block_08.up_proj",
+      "raw_values": [
+        0.07382067478811385,
+        0.06149642254366314
+      ],
+      "row_delta": 64,
+      "rows": 12288,
+      "selection_strength": 0.0673828125,
+      "shape_values": [
+        1.2457318686898124,
+        1.2633306178603159
+      ],
+      "stratum": "near_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_05",
+      "move_weights": 786432,
+      "prune_by_raw": "block_11.ff_proj",
+      "prune_by_shape": "block_08.ff_proj",
+      "raw_values": [
+        0.07770161620897545,
+        0.06558384790955263
+      ],
+      "row_delta": 64,
+      "rows": 12288,
+      "selection_strength": 0.064453125,
+      "shape_values": [
+        1.254061595121309,
+        1.2738541120841884
+      ],
+      "stratum": "near_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_06",
+      "move_weights": 786432,
+      "prune_by_raw": "block_13.ff_proj",
+      "prune_by_shape": "block_10.ff_proj",
+      "raw_values": [
+        0.08565565986018187,
+        0.07419484828306971
+      ],
+      "row_delta": 64,
+      "rows": 12288,
+      "selection_strength": 0.05859375,
+      "shape_values": [
+        1.2564311989832793,
+        1.2670528397760834
+      ],
+      "stratum": "near_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_07",
+      "move_weights": 786432,
+      "prune_by_raw": "block_13.up_proj",
+      "prune_by_shape": "block_10.up_proj",
+      "raw_values": [
+        0.08240588701612495,
+        0.07039802603223785
+      ],
+      "row_delta": 64,
+      "rows": 12288,
+      "selection_strength": 0.05859375,
+      "shape_values": [
+        1.2453312249721487,
+        1.2591335582901217
+      ],
+      "stratum": "near_depth_same_type",
+      "width": 4096
+    },
+    {
+      "id": "pair_08",
+      "move_weights": 786432,
+      "prune_by_raw": "block_00.k_proj",
+      "prune_by_shape": "block_00.attn_out",
+      "raw_values": [
+        0.02259426125958614,
+        0.012936247299651722
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.05917978290558206,
+      "shape_values": [
+        1.7456508093537995,
+        2.7172987685255383
+      ],
+      "stratum": "same_layer_same_shape",
+      "width": 4096
+    },
+    {
+      "id": "pair_09",
+      "move_weights": 786432,
+      "prune_by_raw": "block_12.v_proj",
+      "prune_by_shape": "block_12.attn_out",
+      "raw_values": [
+        0.06735785502655998,
+        0.040095902034851465
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.007179350364084576,
+      "shape_values": [
+        1.3281946137270102,
+        1.405553147352339
+      ],
+      "stratum": "same_layer_same_shape",
+      "width": 4096
+    },
+    {
+      "id": "pair_10",
+      "move_weights": 786432,
+      "prune_by_raw": "block_11.v_proj",
+      "prune_by_shape": "block_11.attn_out",
+      "raw_values": [
+        0.05731546047536107,
+        0.034882245424382737
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.006568304992374816,
+      "shape_values": [
+        1.3482269572673165,
+        1.423036981669626
+      ],
+      "stratum": "same_layer_same_shape",
+      "width": 4096
+    },
+    {
+      "id": "pair_11",
+      "move_weights": 786432,
+      "prune_by_raw": "block_23.v_proj",
+      "prune_by_shape": "block_23.attn_out",
+      "raw_values": [
+        0.1355168142037989,
+        0.10069736127304238
+      ],
+      "row_delta": 192,
+      "rows": 4096,
+      "selection_strength": 0.005807615433615238,
+      "shape_values": [
+        1.2554126482484813,
+        1.3583931937929423
+      ],
+      "stratum": "same_layer_same_shape",
+      "width": 4096
+    }
+  ],
+  "rule": "mean-score vs positive-log-score-variance disagreement; feature-only; four disjoint pairs each cross-depth/same-type, nearby-depth/same-type, same-layer/same-shape",
+  "statistics_sha256": "c9eda66aa9a078d8b32d59a8ec79f220623a3d1e51b3711231f394cfde109ec9"
+}

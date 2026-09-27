@@ -1,0 +1,145 @@
+{
+  "comparison": {
+    "functional_kl_vs_best_per_metric_random": {
+      "mean_kl": true,
+      "nll_gap": true,
+      "p90_kl": false,
+      "top1_agreement": false
+    },
+    "functional_kl_vs_uniform": {
+      "mean_kl": true,
+      "nll_gap": true,
+      "p90_kl": true,
+      "top1_agreement": false
+    },
+    "metrics_won_vs_best_random": 2,
+    "metrics_won_vs_uniform": 3
+  },
+  "directional_validity_gate": false,
+  "frozen_config": {
+    "causal_map": {
+      "failure_map_sha256": "e9aea164252462b1dd94fa9672e8162d970ceebedd4a824a747e5abc121a8446",
+      "field": "Y50_KL",
+      "path": "experiments/wanda_failure_characterization/per_module_statistics.csv",
+      "sha256": "7d998a49e4d34c98f4c3ec88b2e046cb1669942e51b4dd9608913b8454e70ef1"
+    },
+    "dlm_calibration": {
+      "semantics": "overall_uniform: mean over 80 corrupted batch-1 states of sum over all 256 token positions X^2",
+      "source": "experiments/cgq_wanda_structured_diagnostic/sufficient_statistics.pt",
+      "source_sha256": "81e121286f150f5dfad15a7e0c28bbecda6a6a2b2b820c191a6e024b6f528f51",
+      "state_sha256": "1e44d30e845aee6a7b9292c93b55e2e2373c5ac9cd7f2077edb311ce041023df",
+      "states": 80
+    },
+    "environment": {
+      "python": "3.12.3",
+      "torch": "2.8.0+cu128"
+    },
+    "global_sparsity": 0.5,
+    "heldout": {
+      "path": "experiments/wanda_failure_characterization/heldout_state_manifest.json",
+      "sha256": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0",
+      "state_count": 40,
+      "state_sha256": "bb2cdaa6985a6ae6f75b7623a58653dcc80c73b7240cddbea551d62e7bab2b5e"
+    },
+    "metrics": [
+      "mean masked-token KL",
+      "P90 masked-token KL",
+      "P95 masked-token KL",
+      "DLM NLL gap",
+      "top-1 agreement"
+    ],
+    "middle_sparsity": 0.5,
+    "model": {
+      "id": "GSAI-ML/LLaDA-8B-Base",
+      "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+    },
+    "no_downstream": true,
+    "no_medium_or_aggressive_auto_followup": true,
+    "protected_sparsity": 0.48,
+    "pruning_pattern": "per-projection unstructured row-wise Wanda",
+    "random_seeds": [
+      20260907,
+      20260908,
+      20260909
+    ],
+    "relative_protection": 0.96,
+    "research_question": "Does causal functional-KL allocation become useful when the global budget is relaxed from 75% to 50% sparsity?",
+    "score": "abs(W_ij) * sqrt(A_DLM_j); score unchanged across all variants",
+    "selection_reuse": {
+      "note": "Exact 75% functional-KL protected/donor groups are reused. Random groups use the same fixed seeds and stratified sampler, matched to the functional oracle's projection-type/parameter-count composition; 50% masks are newly generated.",
+      "path": "experiments/oracle_allocation75/allocation_selections.json",
+      "sha256": "648529f9ee414dc52ac20ce9d5d080139cc55c9858983a4ca25ad73dbe7a8e20"
+    },
+    "status": "frozen_before_any_50pct_mask_or_outcome",
+    "storage": "/DATA/tmluser1/sap-oracle-allocation50",
+    "variants": [
+      "V0_50_uniform",
+      "V3_50_functional_kl_mild",
+      "V1_50_random_20260907",
+      "V1_50_random_20260908",
+      "V1_50_random_20260909"
+    ]
+  },
+  "gsm8k_or_downstream_run": false,
+  "interpretation": "Static per-projection causal-KL-to-Wanda budget allocation is not validated at 50%, independent of 75% budget tightness.",
+  "medium_aggressive_tested": false,
+  "raw_results": [
+    {
+      "achieved_global_sparsity": 0.5,
+      "maximum_projection_deviation": 0.0,
+      "mean_kl": 0.1453042108565569,
+      "mean_nll_gap": 0.10315670296549798,
+      "mean_top1_agreement": 0.8110148191452027,
+      "minimum_projection_deviation": 0.0,
+      "p90_masked_token_kl": 0.3216622471809387,
+      "p95_masked_token_kl": 0.450244665145874,
+      "variant": "V0_50_uniform"
+    },
+    {
+      "achieved_global_sparsity": 0.5,
+      "maximum_projection_deviation": 0.0546875,
+      "mean_kl": 0.14477867567911745,
+      "mean_nll_gap": 0.10276418179273605,
+      "mean_top1_agreement": 0.8118738621473313,
+      "minimum_projection_deviation": -0.02001953125,
+      "p90_masked_token_kl": 0.3156282603740692,
+      "p95_masked_token_kl": 0.44032755494117737,
+      "variant": "V1_50_random_20260907"
+    },
+    {
+      "achieved_global_sparsity": 0.5,
+      "maximum_projection_deviation": 0.0546875,
+      "mean_kl": 0.1453321620821953,
+      "mean_nll_gap": 0.10534926801919937,
+      "mean_top1_agreement": 0.8069681718945503,
+      "minimum_projection_deviation": -0.02001953125,
+      "p90_masked_token_kl": 0.3193894922733307,
+      "p95_masked_token_kl": 0.453624427318573,
+      "variant": "V1_50_random_20260908"
+    },
+    {
+      "achieved_global_sparsity": 0.5,
+      "maximum_projection_deviation": 0.0546875,
+      "mean_kl": 0.1468652325682342,
+      "mean_nll_gap": 0.10530603379011154,
+      "mean_top1_agreement": 0.808666518330574,
+      "minimum_projection_deviation": -0.02001953125,
+      "p90_masked_token_kl": 0.32363200187683105,
+      "p95_masked_token_kl": 0.4535735249519348,
+      "variant": "V1_50_random_20260909"
+    },
+    {
+      "achieved_global_sparsity": 0.5,
+      "maximum_projection_deviation": 0.0546875,
+      "mean_kl": 0.14338900428265333,
+      "mean_nll_gap": 0.10147768706083297,
+      "mean_top1_agreement": 0.8103133022785187,
+      "minimum_projection_deviation": -0.02001953125,
+      "p90_masked_token_kl": 0.31598687171936035,
+      "p95_masked_token_kl": 0.4392908811569214,
+      "variant": "V3_50_functional_kl_mild"
+    }
+  ],
+  "recommended_next_step": "Abandon this allocation-conversion actuator and move to outlier-pathway or individual-weight-criterion diagnostics.",
+  "status": "complete"
+}

@@ -1,0 +1,376 @@
+"""Evaluate frozen 50% prior-method artifacts on GSM8K IDs 0--99."""
+from __future__ import annotations
+
+import argparse
+import contextlib
+import json
+import os
+from pathlib import Path
+import resource
+import shlex
+import signal
+import subprocess
+import sys
+import time
+
+from experiments.dlm_multiscale_ac50.artifacts import Progress, digest, freeze, lock, read, sha, write
+from experiments.dlm_multiscale_ac50.core import holm, paired
+from experiments.dlm_multiscale_ac50.evaluation import evaluate_requests, generator, grade, read_predictions, task_and_protocol
+from experiments.dlm_ac_screen50.run import _owned_group, _proc_info, _worker_state, proc_identity, terminate_owned
+from experiments.dlm_multiscale_ac50.run import idle_devices
+
+REPO = Path(__file__).resolve().parents[2]
+HERE = Path(__file__).resolve().parent
+ROOT = HERE / "output"
+SESSION = "baselines50_gsm8k_mini100"
+MODULE = "experiments.dlm_baselines50_gsm8k_mini100.run"
+TARGET = 3_489_660_928
+WEIGHTS = 6_979_321_856
+REQUEST_SOURCE = REPO / "experiments/dlm_multiscale_ac50/output/requests.json"
+LEGACY_CONFIG = REPO / "experiments/dlm_context_response50/config.json"
+MASK_SOURCE = REPO / "experiments/dlm_multiscale_ac50/output/bank_calibration.json"
+
+CANDIDATES = {
+    "DSA-layer": (REPO / "experiments/dlm_ppl50/dsa/mask_manifest.json", "wanda"),
+    "EvoPress-FastOBC": (REPO / "experiments/dlm_ppl50/evopress/mask_manifest.json", "fastobc"),
+    "DSA-projection": (REPO / "experiments/dlm_ppl50_projection/dsa_projection/mask_manifest.json", "wanda"),
+    "Uniform-row": (REPO / "experiments/dlm_ppl50/uniform/mask_manifest.json", "wanda"),
+    "OWL-projection": (REPO / "experiments/dlm_ppl50_projection/owl_projection/mask_manifest.json", "wanda"),
+    "OWL-layer": (REPO / "experiments/dlm_ppl50/owl/mask_manifest.json", "wanda"),
+    "LSA-layer": (REPO / "experiments/dlm_ppl50/lsa_layer/mask_manifest.json", "wanda"),
+    "LSA-projection": (REPO / "experiments/dlm_ppl50/lsa_projection/mask_manifest.json", "wanda"),
+    "Uniform-layer-global": (REPO / "experiments/dlm_ppl50_uniform_layer/mask_manifest.json", "wanda"),
+    "AlphaPruning": (REPO / "experiments/dlm_ppl50/alpha/mask_manifest.json", "wanda"),
+    "DLP": (REPO / "experiments/dlm_ppl50/dlp/mask_manifest.json", "wanda"),
+}
+ARMS = tuple(CANDIDATES)
+REFERENCE = "Uniform-row"
+GPUS = ("0", "1", "2", "3")
+
+
+def validation_result(manifest: Path) -> Path:
+    if "dlm_ppl50_uniform_layer" in str(manifest):
+        return manifest.parent / "validation/results.json"
+    return manifest.parent / "validation/results.json"
+
+
+def _metadata(arm: str, manifest: dict) -> dict:
+    path, engine = CANDIDATES[arm]
+    entries = manifest["entries"]
+    if len(entries) != 224 or len({e["name"] for e in entries}) != 224:
+        raise ValueError(f"{arm}: expected 224 unique modules")
+    if sum(int(e["weights"]) for e in entries) != WEIGHTS:
+        raise ValueError(f"{arm}: wrong weight universe")
+    actual = int(manifest["pruned"])
+    if engine == "wanda":
+        if actual != TARGET or any("selected_mask" not in e for e in entries):
+            raise ValueError(f"{arm}: wrong exact Wanda budget/format")
+        stored = sum(int(e["selected_mask"]["pruned"]) for e in entries)
+    else:
+        if manifest.get("nominal_pruned") != TARGET or any("actual_zeros" not in e for e in entries):
+            raise ValueError(f"{arm}: wrong FastOBC nominal budget/format")
+        stored = sum(int(e["actual_zeros"]) for e in entries)
+    if stored != actual:
+        raise ValueError(f"{arm}: entry counts do not sum to manifest")
+    result_path = validation_result(path)
+    result = read(result_path)
+    if result.get("status") != "complete" or result.get("mask_manifest_sha256") != sha(path):
+        raise ValueError(f"{arm}: WikiText completion receipt mismatch")
+    return dict(manifest_path=str(path), manifest_sha256=sha(path), engine=engine,
+                actual_pruned=actual, actual_sparsity=actual / WEIGHTS,
+                wikitext_result_path=str(result_path), wikitext_result_sha256=sha(result_path))
+
+
+def prepare() -> dict:
+    if (ROOT / "started.json").exists():
+        raise RuntimeError("Started experiment is immutable")
+    legacy = read(LEGACY_CONFIG)
+    requests = read(REQUEST_SOURCE)
+    if [r["example_id"] for r in requests["development"]] != list(range(100)):
+        raise ValueError("Development sample is not IDs 0--99")
+    if requests["protocol_hash"] != legacy["protocol_hash"]:
+        raise ValueError("Request and legacy protocol differ")
+    freeze(ROOT / "requests.json", requests)
+    mask_id = read(MASK_SOURCE).get("mask_id")
+    if mask_id != 126336:
+        raise ValueError("Frozen LLaDA calibration bank mask ID differs")
+    sources = {str(p): sha(p) for p in (REQUEST_SOURCE, LEGACY_CONFIG, MASK_SOURCE, HERE / "PLAN.md", HERE / "run.py", HERE / "run.sh")}
+    candidates = {}
+    names = None
+    for arm, (path, _) in CANDIDATES.items():
+        manifest = read(path)
+        meta = _metadata(arm, manifest)
+        current_names = [e["name"] for e in manifest["entries"]]
+        if names is None:
+            names = current_names
+        elif current_names != names:
+            raise ValueError(f"{arm}: module order differs")
+        sources[str(path)] = meta["manifest_sha256"]
+        sources[meta["wikitext_result_path"]] = meta["wikitext_result_sha256"]
+        candidates[arm] = meta
+    config = dict(status="prepared", model=legacy["model"], evaluation=legacy["evaluation"],
+                  protocol_hash=legacy["protocol_hash"], mask_id=mask_id, requests_sha256=sha(ROOT / "requests.json"),
+                  sample="GSM8K development IDs 0--99", arms=list(ARMS), reference=REFERENCE,
+                  target_pruned=TARGET, weights=WEIGHTS, candidates=candidates, sources=sources,
+                  fixed_contrasts=[[REFERENCE, a] for a in ARMS if a != REFERENCE],
+                  limitations=["Repeated development mini100", "WikiText-selected masks", "Cross-engine comparison includes FastOBC weight reconstruction"])
+    freeze(ROOT / "config.json", config)
+    validate()
+    return config
+
+
+def validate() -> dict:
+    c = read(ROOT / "config.json")
+    if c["arms"] != list(ARMS) or c["reference"] != REFERENCE:
+        raise ValueError("Arm contract changed")
+    if c["requests_sha256"] != sha(ROOT / "requests.json") or [r["example_id"] for r in read(ROOT / "requests.json")["development"]] != list(range(100)):
+        raise ValueError("Request artifact changed")
+    for p, h in c["sources"].items():
+        if sha(p) != h:
+            raise ValueError(f"Frozen source changed: {p}")
+    for arm in ARMS:
+        if _metadata(arm, read(c["candidates"][arm]["manifest_path"])) != c["candidates"][arm]:
+            raise ValueError(f"{arm}: candidate metadata changed")
+    return c
+
+
+def gates() -> dict:
+    c = validate()
+    receipt = read(ROOT / "cpu_validation.json")
+    if receipt.get("status") != "passed" or receipt.get("returncode") != 0 or receipt.get("config_sha256") != sha(ROOT / "config.json") or receipt.get("tests_run", 0) < 5:
+        raise RuntimeError("Matching CPU validation is required")
+    for p, h in receipt.get("test_sources", {}).items():
+        if sha(p) != h:
+            raise RuntimeError("Validated test source changed")
+    return c
+
+
+def fingerprint(arm: str, sparse_sha: str | None = None) -> dict:
+    c = read(ROOT / "config.json")
+    model_path = ROOT / "models" / f"{arm}.json"
+    if sparse_sha is None:
+        sparse_sha = read(model_path)["sparse_model_sha256"]
+    return dict(config_sha256=sha(ROOT / "config.json"), arm=arm,
+                manifest_sha256=c["candidates"][arm]["manifest_sha256"], sparse_model_sha256=sparse_sha,
+                requests_sha256=sha(ROOT / "requests.json"), protocol_hash=c["protocol_hash"], split="development")
+
+
+def result_folder(arm: str) -> Path:
+    return ROOT / "gsm8k" / arm
+
+
+def rows_for(arm: str) -> list:
+    folder = result_folder(arm)
+    if not (folder / "identity.json").exists():
+        return []
+    fp = fingerprint(arm)
+    if read(folder / "identity.json") != dict(fingerprint=fp, document_ids=list(range(100))):
+        raise ValueError(f"{arm}: evaluation identity changed")
+    return read_predictions(folder, read(ROOT / "requests.json")["development"], fp, read(ROOT / "config.json")["protocol_hash"], allow_partial=True)
+
+
+def candidate_files(arm: str) -> list[Path]:
+    c = read(ROOT / "config.json"); manifest = read(c["candidates"][arm]["manifest_path"])
+    paths = [Path(c["candidates"][arm]["manifest_path"]), Path(c["candidates"][arm]["wikitext_result_path"])]
+    for e in manifest["entries"]:
+        paths.append(Path(e["path"] if c["candidates"][arm]["engine"] == "fastobc" else e["selected_mask"]["path"]))
+    return paths
+
+
+def completion(arm: str, save: bool = False) -> dict:
+    rows = rows_for(arm); folder = result_folder(arm); result = read(folder / "results.json")
+    if len(rows) != 100 or result.get("status") != "complete" or result.get("correct") != sum(r["correct"] for r in rows):
+        raise ValueError(f"{arm}: incomplete result")
+    if result.get("predictions_sha256") != sha(folder / "predictions.json") or read(folder / "predictions.json") != rows:
+        raise ValueError(f"{arm}: aggregate predictions changed")
+    paths = candidate_files(arm) + [ROOT / "models" / f"{arm}.json"] + list(folder.rglob("*.json"))
+    receipt = dict(status="complete", arm=arm, config_sha256=sha(ROOT / "config.json"),
+                   outputs=[dict(path=str(p), sha256=sha(p)) for p in sorted(set(paths))])
+    if save:
+        freeze(ROOT / "done" / f"{arm}.json", receipt)
+    elif read(ROOT / "done" / f"{arm}.json") != receipt:
+        raise ValueError(f"{arm}: completion receipt changed")
+    return receipt
+
+
+def checked_generate(fn, calls, expected):
+    def one(request):
+        before = calls[0]; text = fn(request)
+        if calls[0] - before != expected:
+            raise RuntimeError("Generation forward count differs from 256")
+        return text
+    return one
+
+
+def worker(arm: str) -> None:
+    c = gates()
+    if os.environ.get("CUDA_VISIBLE_DEVICES") not in GPUS or not os.environ.get("TMUX"):
+        raise RuntimeError("Worker requires one authorized GPU inside tmux")
+    import torch
+    from transformers import AutoTokenizer
+    from experiments.projection_capacity_allocation_65.run import load_dense
+    from experiments.projection_capacity_followup_65.run_heldout import apply_manifest
+    from experiments.wanda_failure_characterization.run_failure_map import model_sha
+    begin = time.monotonic(); attempt = str(time.time_ns()); stages = []; calls = [0]; outcome = "failed"; hook = None
+    write(ROOT / "attempts" / f"{arm}_{attempt}.json", dict(arm=arm, pid=os.getpid(), gpu=os.environ["CUDA_VISIBLE_DEVICES"], started=time.time()))
+    def interrupted(*_): raise KeyboardInterrupt("Worker interrupted")
+    signal.signal(signal.SIGTERM, interrupted)
+    progress = Progress(ROOT, arm)
+    try:
+        stage = time.monotonic(); progress("loading_dense")
+        model, mapping = load_dense(); model.eval()
+        stages.append(dict(stage="loading_dense", wall_seconds=time.monotonic()-stage, forward_calls=0))
+        manifest = read(c["candidates"][arm]["manifest_path"]); stage = time.monotonic(); progress("apply_frozen_artifact")
+        if c["candidates"][arm]["engine"] == "fastobc":
+            from experiments.dlm_ppl50.evo import apply_result
+            apply_result(model, mapping, manifest)
+        else:
+            if apply_manifest(model, mapping, manifest) != c["candidates"][arm]["actual_pruned"]:
+                raise RuntimeError("Applied budget differs")
+        sparse_sha = model_sha(model)
+        freeze(ROOT / "models" / f"{arm}.json", dict(config_sha256=sha(ROOT / "config.json"), arm=arm,
+               manifest_sha256=c["candidates"][arm]["manifest_sha256"], sparse_model_sha256=sparse_sha,
+               actual_pruned=c["candidates"][arm]["actual_pruned"]))
+        stages.append(dict(stage="apply_frozen_artifact", wall_seconds=time.monotonic()-stage, forward_calls=0))
+        def tick(*_):
+            calls[0] += 1
+            if calls[0] > 25_600: raise RuntimeError("Generation forward ceiling exceeded")
+        hook = model.register_forward_hook(tick)
+        task, _, _ = task_and_protocol(c)
+        tok = AutoTokenizer.from_pretrained(c["model"]["id"], revision=c["model"]["revision"], trust_remote_code=True, local_files_only=True)
+        # LLaDA's tokenizer does not expose mask_token_id; use the frozen bank value.
+        if tok.mask_token_id is not None and tok.mask_token_id != c["mask_id"]:
+            raise RuntimeError("Tokenizer and frozen bank mask IDs disagree")
+        gen = checked_generate(generator(model, tok, c["evaluation"], c["mask_id"]), calls,
+                               c["evaluation"]["denoising_steps"])
+        stage = time.monotonic()
+        result = evaluate_requests(result_folder(arm), read(ROOT / "requests.json")["development"], fingerprint(arm, sparse_sha),
+                                   c["protocol_hash"], arm, gen, lambda req, text: grade(task, req, text), progress)
+        stages.append(dict(stage="gsm8k", wall_seconds=time.monotonic()-stage, forward_calls=calls[0]))
+        if model_sha(model) != sparse_sha: raise RuntimeError("Sparse model changed during evaluation")
+        outcome = "complete"; progress("complete", completed=100, total=100, correct=result["correct"])
+    except KeyboardInterrupt:
+        outcome = "interrupted"; raise
+    finally:
+        if hook is not None: hook.remove()
+        write(ROOT / "costs" / f"{arm}_{attempt}.json", dict(arm=arm, status=outcome, wall_seconds=time.monotonic()-begin,
+              forward_calls=calls[0], stages=stages, peak_cuda_bytes=torch.cuda.max_memory_allocated() if torch.cuda.is_initialized() else 0,
+              peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024, gpu=os.environ.get("CUDA_VISIBLE_DEVICES")))
+
+
+def report() -> dict:
+    scores = {a: dict(correct=sum(r["correct"] for r in rows_for(a)), total=len(rows_for(a))) for a in ARMS}
+    comparisons = {}
+    if scores[REFERENCE]["total"] == 100:
+        ref = [r["correct"] for r in rows_for(REFERENCE)]
+        for arm in ARMS:
+            if arm != REFERENCE and scores[arm]["total"] == 100:
+                comparisons[arm] = paired(ref, [r["correct"] for r in rows_for(arm)])
+        if len(comparisons) == len(ARMS)-1: holm(comparisons)
+    complete = all(v["total"] == 100 for v in scores.values())
+    out = dict(status="complete" if complete else "partial", scores=scores, paired_vs_uniform_row=comparisons,
+               fixed_holm_family=len(ARMS)-1, limitations=read(ROOT / "config.json")["limitations"])
+    write(ROOT / "report.json", out)
+    return out
+
+
+def status() -> None:
+    state = read(ROOT / "execution.json") if (ROOT / "execution.json").exists() else {"status":"prepared"}
+    print("50% prior methods | GSM8K mini100 |", state["status"])
+    for arm in ARMS:
+        rows = rows_for(arm); text = f"{arm:22} {sum(r['correct'] for r in rows):3}/{len(rows):3}"
+        p = ROOT / "progress" / f"{arm}.json"
+        if p.exists():
+            q = read(p); text += f"  {q['stage']} {q['completed']}/{q['total']} GPU {q.get('gpu','-')}"
+            if q.get("eta_seconds") is not None: text += f" ETA {q['eta_seconds']/60:.1f}min"
+        print(text)
+    if state.get("error"): print("Error:", state["error"])
+
+
+def command(*args): return [sys.executable, "-B", "-u", "-m", MODULE, *args]
+
+
+def pipeline(gpus: list[str]) -> None:
+    if not gpus or len(set(gpus)) != len(gpus) or not set(gpus) <= set(GPUS): raise ValueError("GPUs must be a unique subset of 0,1,2,3")
+    if not os.environ.get("TMUX"): raise RuntimeError("Pipeline must run in tmux")
+    active=[]; done=[]
+    def interrupted(*_): raise KeyboardInterrupt("Controller interrupted")
+    signal.signal(signal.SIGTERM, interrupted); signal.signal(signal.SIGINT, interrupted)
+    with lock(ROOT / "pipeline.lock"):
+        gates(); freeze(ROOT / "started.json", dict(config_sha256=sha(ROOT / "config.json")))
+        base=dict(pid=os.getpid(), start_ticks=proc_identity(os.getpid()), started=time.time(), gpus=gpus, config_sha256=sha(ROOT / "config.json"))
+        try:
+            for arm in ARMS:
+                if (ROOT / "done" / f"{arm}.json").exists(): completion(arm); done.append(arm)
+            while len(done) < len(ARMS):
+                for gpu in gpus:
+                    if any(r["gpu"] == gpu for r in active): continue
+                    arm = next((a for a in ARMS if a not in done and all(r["job"] != a for r in active)), None)
+                    if arm is None: break
+                    idle_devices([gpu])
+                    log=ROOT/"logs"/f"{arm}.log"; log.parent.mkdir(parents=True,exist_ok=True); stream=log.open("a")
+                    p=subprocess.Popen(command("worker","--arm",arm), cwd=REPO, env=dict(os.environ,CUDA_VISIBLE_DEVICES=gpu),
+                                       stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
+                    info=_proc_info(p.pid); active.append(dict(proc=p,pid=p.pid,start_ticks=info["start_ticks"],pgid=info["pgid"],session=info["session"],gpu=gpu,job=arm,stream=stream,log=str(log),started=time.time()))
+                for row in list(active):
+                    code=row["proc"].poll()
+                    if code is None: continue
+                    if code: raise RuntimeError(f"{row['job']} failed ({code}); see {row['log']}")
+                    completion(row["job"],save=True); row["stream"].close(); active.remove(row); done.append(row["job"])
+                write(ROOT/"execution.json",dict(base,status="running",completed=done,workers=[_worker_state(r) for r in active]))
+                if active: time.sleep(2)
+            final=report(); write(ROOT/"execution.json",dict(base,status=final["status"],completed=done,workers=[],ended=time.time(),obsidian_sync="pending"))
+        except BaseException as exc:
+            terminate_owned(active); write(ROOT/"execution.json",dict(base,status="interrupted" if isinstance(exc,KeyboardInterrupt) else "failed",completed=done,workers=[],error=str(exc),ended=time.time()))
+            raise
+        finally:
+            for row in active: row["stream"].close()
+
+
+def launch(gpus: list[str]) -> None:
+    if not gpus or len(set(gpus)) != len(gpus) or not set(gpus) <= set(GPUS): raise ValueError("GPUs must be a unique subset of 0,1,2,3")
+    gates()
+    with lock(ROOT/"launch.lock"):
+        with lock(ROOT/"pipeline.lock"): pass
+        if subprocess.run(["tmux","has-session","-t",SESSION],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0: raise RuntimeError("Session exists")
+        old=read(ROOT/"execution.json") if (ROOT/"execution.json").exists() else {}
+        if any(_owned_group(r) for r in old.get("workers",[])): raise RuntimeError("Recorded worker still alive")
+        idle_devices(gpus)
+        env={k:os.environ.get(k,"") for k in ("PYTHONPATH","OMP_NUM_THREADS","OPENBLAS_NUM_THREADS","MKL_NUM_THREADS","TOKENIZERS_PARALLELISM","HF_HUB_OFFLINE","HF_DATASETS_OFFLINE")}
+        log=ROOT/"logs/controller.log"; log.parent.mkdir(parents=True,exist_ok=True)
+        cmd=shlex.join(["env","CUDA_VISIBLE_DEVICES=",*[f"{k}={v}" for k,v in env.items()],*command("pipeline","--gpus",",".join(gpus))])+" >> "+shlex.quote(str(log))+" 2>&1"
+        subprocess.run(["tmux","new-session","-d","-s",SESSION,"-c",str(REPO),cmd],check=True)
+    print("Launched",SESSION,"GPUs",",".join(gpus))
+
+
+def stop() -> None:
+    p=ROOT/"execution.json"
+    if not p.exists(): return
+    state=read(p); pid=state.get("pid")
+    if pid and proc_identity(pid)==state.get("start_ticks"):
+        cmd=Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0",b" ").decode()
+        if MODULE not in cmd or "pipeline" not in cmd: raise RuntimeError("Unrelated controller")
+        os.kill(pid,signal.SIGTERM); deadline=time.monotonic()+20
+        while time.monotonic()<deadline and proc_identity(pid)==state["start_ticks"]: time.sleep(.2)
+    terminate_owned(state.get("workers",[]))
+
+
+def main():
+    p=argparse.ArgumentParser(); sub=p.add_subparsers(dest="cmd",required=True)
+    for name in ("prepare","validate","status","report","stop"): sub.add_parser(name)
+    for name in ("launch","pipeline"):
+        x=sub.add_parser(name); x.add_argument("--gpus",required=True)
+    x=sub.add_parser("worker"); x.add_argument("--arm",choices=ARMS,required=True)
+    a=p.parse_args()
+    if a.cmd!="worker": os.environ["CUDA_VISIBLE_DEVICES"]=""
+    if a.cmd=="prepare": print(json.dumps(prepare(),indent=2))
+    elif a.cmd=="validate": validate(); print("Validation passed")
+    elif a.cmd=="status": status()
+    elif a.cmd=="report": print(json.dumps(report(),indent=2))
+    elif a.cmd=="stop": stop()
+    elif a.cmd=="launch": launch(a.gpus.split(","))
+    elif a.cmd=="pipeline": pipeline(a.gpus.split(","))
+    else:
+        with lock(ROOT/"locks"/f"{a.arm}.lock"): worker(a.arm)
+
+if __name__ == "__main__": main()

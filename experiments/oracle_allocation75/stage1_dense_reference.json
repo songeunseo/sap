@@ -1,0 +1,8 @@
+{
+  "model_sha256_after": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "model_sha256_before": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+  "path": "/DATA/tmluser1/sap-oracle-allocation75/stage1_dense_reference.pt",
+  "sha256": "0aa32523e56e7c7734194eb53e1d6aaa39a86c8a575d88933b6b337b785e3d87",
+  "states": 40,
+  "status": "complete"
+}

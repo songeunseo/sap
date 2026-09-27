@@ -1,0 +1,37 @@
+{
+  "comparisons": {
+    "role": {
+      "both_correct": 3,
+      "both_wrong": 74,
+      "discordant": 23,
+      "exact_mcnemar_p": 6.604194641113281e-05,
+      "net_correct": -19,
+      "reference_correct_candidate_wrong": 21,
+      "reference_wrong_candidate_correct": 2
+    },
+    "uniform": {
+      "both_correct": 3,
+      "both_wrong": 86,
+      "discordant": 11,
+      "exact_mcnemar_p": 0.0654296875,
+      "net_correct": -7,
+      "reference_correct_candidate_wrong": 9,
+      "reference_wrong_candidate_correct": 2
+    }
+  },
+  "config_sha256": "b410bac32a6bb4063a4b52c4554fb4ce51f46273096773ea8c26c71156a78912",
+  "correct": 5,
+  "manifest_sha256": "717bde62105c3a94351390fb78aed0e78c4c013e0834fb0ab2cfc29abf8ee5e0",
+  "metrics": {
+    "accuracy": 0.05,
+    "eval_seconds": 2101.897748016985,
+    "examples_per_second": 0.04757605363740649,
+    "full_num_examples": 1319,
+    "num_examples": 100
+  },
+  "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "pruned": 4536008704,
+  "sparse_model_sha256": "d28ba531ca340ee44c0d9b831c9c8c0fb6cf4a390dddc999c70ad78f449185ab",
+  "status": "complete",
+  "total": 100
+}

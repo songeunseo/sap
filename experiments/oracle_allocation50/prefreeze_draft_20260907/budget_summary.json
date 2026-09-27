@@ -1,0 +1,52 @@
+{
+  "V0_50_uniform": {
+    "donor_groups": 0,
+    "donor_requested_sparsity": null,
+    "global_actual_sparsity": 0.5,
+    "maximum_projection_deviation": 0.0,
+    "middle_sparsity": 0.5,
+    "minimum_projection_deviation": 0.0,
+    "protected_groups": 0,
+    "protected_sparsity": null
+  },
+  "V1_50_random_20260907": {
+    "donor_groups": 22,
+    "donor_requested_sparsity": 0.5292593149038461,
+    "global_actual_sparsity": 0.5,
+    "maximum_projection_deviation": 0.029296875,
+    "middle_sparsity": 0.5,
+    "minimum_projection_deviation": -0.02001953125,
+    "protected_groups": 22,
+    "protected_sparsity": 0.48
+  },
+  "V1_50_random_20260908": {
+    "donor_groups": 22,
+    "donor_requested_sparsity": 0.5292593149038461,
+    "global_actual_sparsity": 0.5,
+    "maximum_projection_deviation": 0.029296875,
+    "middle_sparsity": 0.5,
+    "minimum_projection_deviation": -0.02001953125,
+    "protected_groups": 22,
+    "protected_sparsity": 0.48
+  },
+  "V1_50_random_20260909": {
+    "donor_groups": 22,
+    "donor_requested_sparsity": 0.5292593149038461,
+    "global_actual_sparsity": 0.5,
+    "maximum_projection_deviation": 0.029296875,
+    "middle_sparsity": 0.5,
+    "minimum_projection_deviation": -0.02001953125,
+    "protected_groups": 22,
+    "protected_sparsity": 0.48
+  },
+  "V3_50_functional_kl_mild": {
+    "donor_groups": 22,
+    "donor_requested_sparsity": 0.5545987215909091,
+    "global_actual_sparsity": 0.5,
+    "maximum_projection_deviation": 0.0546875,
+    "middle_sparsity": 0.5,
+    "minimum_projection_deviation": -0.02001953125,
+    "protected_groups": 22,
+    "protected_sparsity": 0.48
+  }
+}

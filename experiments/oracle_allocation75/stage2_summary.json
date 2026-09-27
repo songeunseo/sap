@@ -1,0 +1,241 @@
+{
+  "full_downstream_status": "deferred_by_user_regardless_of_signal",
+  "go_signal_definition": "At least two of: lower mean KL, lower P90 KL, higher fixed-100 GSM8K accuracy than V0.",
+  "go_signal_variants": [],
+  "results": [
+    {
+      "accuracy": 0.0,
+      "correct": 0,
+      "dense_extracted_answer_agreement": 0.02,
+      "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+      "evaluation_seconds": 2106.1054258090444,
+      "invalid_answer_count": 0,
+      "limit": 100,
+      "mask": {
+        "mask_sha256": "0818da6961403410c47370783d7df74cf0261e99f79e3dff1c49c3211f2eeefb",
+        "pruned": 5234491392,
+        "seconds": 21.58360096695833,
+        "sparsity": 0.75,
+        "weights": 6979321856
+      },
+      "prediction_sha256": "aa480d6175eccdaa5cc15eab47695a2ee6fd038ba124fe4e816cd76495bbbcad",
+      "protocol": {
+        "evaluation": {
+          "block_length": 256,
+          "bootstrap_iters": 0,
+          "denoising_steps": 256,
+          "fewshot_seed": 1234,
+          "generation_length": 256,
+          "max_cuda_gib": 30,
+          "num_fewshot": 5,
+          "numpy_seed": 1234,
+          "order": [
+            "Dense",
+            "DLM-SUM",
+            "DLM-ABS",
+            "DLM-SQUARE",
+            "Wanda",
+            "SparseGPT"
+          ],
+          "pathological_slowdown_factor": 3.0,
+          "primary_filter": "strict-match",
+          "primary_metric": "exact_match,strict-match",
+          "random_seed": 0,
+          "task": "gsm8k",
+          "temperature": 0,
+          "timing_examples": 32,
+          "torch_seed": 1234
+        },
+        "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+        "lm_eval_version": "0.4.8",
+        "model": {
+          "dtype": "bfloat16",
+          "id": "GSAI-ML/LLaDA-8B-Base",
+          "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+        }
+      },
+      "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "sparse_model_sha256_after_eval": "3f6c8b0d5620f787f9548621c2e8877ac0952f82215d27e54c264b5f35745f0a",
+      "sparse_model_sha256_before_eval": "3f6c8b0d5620f787f9548621c2e8877ac0952f82215d27e54c264b5f35745f0a",
+      "status": "complete",
+      "variant": "V0_uniform"
+    },
+    {
+      "accuracy": 0.0,
+      "correct": 0,
+      "dense_extracted_answer_agreement": 0.02,
+      "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+      "evaluation_seconds": 2110.3844753520098,
+      "invalid_answer_count": 0,
+      "limit": 100,
+      "mask": {
+        "mask_sha256": "e93e418ef497901665ef63cbd0562b83ac862472afcac8f84dd871aae08e170c",
+        "pruned": 5234491392,
+        "seconds": 29.464766297955066,
+        "sparsity": 0.75,
+        "weights": 6979321856
+      },
+      "prediction_sha256": "2e31e4e3a15ae9c50c51ea93ea28b9b77f5e473701d7a9b84b3455c145f94c1f",
+      "protocol": {
+        "evaluation": {
+          "block_length": 256,
+          "bootstrap_iters": 0,
+          "denoising_steps": 256,
+          "fewshot_seed": 1234,
+          "generation_length": 256,
+          "max_cuda_gib": 30,
+          "num_fewshot": 5,
+          "numpy_seed": 1234,
+          "order": [
+            "Dense",
+            "DLM-SUM",
+            "DLM-ABS",
+            "DLM-SQUARE",
+            "Wanda",
+            "SparseGPT"
+          ],
+          "pathological_slowdown_factor": 3.0,
+          "primary_filter": "strict-match",
+          "primary_metric": "exact_match,strict-match",
+          "random_seed": 0,
+          "task": "gsm8k",
+          "temperature": 0,
+          "timing_examples": 32,
+          "torch_seed": 1234
+        },
+        "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+        "lm_eval_version": "0.4.8",
+        "model": {
+          "dtype": "bfloat16",
+          "id": "GSAI-ML/LLaDA-8B-Base",
+          "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+        }
+      },
+      "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "sparse_model_sha256_after_eval": "150e201db0206d6772a760a62d1c41d4079daba9f80d5fd6a31ccbc738bed5a3",
+      "sparse_model_sha256_before_eval": "150e201db0206d6772a760a62d1c41d4079daba9f80d5fd6a31ccbc738bed5a3",
+      "status": "complete",
+      "variant": "V1_random_20260907_mild"
+    },
+    {
+      "accuracy": 0.01,
+      "correct": 1,
+      "dense_extracted_answer_agreement": 0.03,
+      "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+      "evaluation_seconds": 2109.0754196799826,
+      "invalid_answer_count": 0,
+      "limit": 100,
+      "mask": {
+        "mask_sha256": "c45d113fdf1663959c31506a145f85bfebe73b7b62ce4599943b35c59235b248",
+        "pruned": 5234491392,
+        "seconds": 19.957871814025566,
+        "sparsity": 0.75,
+        "weights": 6979321856
+      },
+      "prediction_sha256": "ed84c39fdec9a6401694ec97d7522bb3649d2af34a3ce1539666b338e80719ee",
+      "protocol": {
+        "evaluation": {
+          "block_length": 256,
+          "bootstrap_iters": 0,
+          "denoising_steps": 256,
+          "fewshot_seed": 1234,
+          "generation_length": 256,
+          "max_cuda_gib": 30,
+          "num_fewshot": 5,
+          "numpy_seed": 1234,
+          "order": [
+            "Dense",
+            "DLM-SUM",
+            "DLM-ABS",
+            "DLM-SQUARE",
+            "Wanda",
+            "SparseGPT"
+          ],
+          "pathological_slowdown_factor": 3.0,
+          "primary_filter": "strict-match",
+          "primary_metric": "exact_match,strict-match",
+          "random_seed": 0,
+          "task": "gsm8k",
+          "temperature": 0,
+          "timing_examples": 32,
+          "torch_seed": 1234
+        },
+        "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+        "lm_eval_version": "0.4.8",
+        "model": {
+          "dtype": "bfloat16",
+          "id": "GSAI-ML/LLaDA-8B-Base",
+          "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+        }
+      },
+      "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "sparse_model_sha256_after_eval": "222f2a7af5e82d088c8f7ddafb92a834038bc8477546693073752de198b874d4",
+      "sparse_model_sha256_before_eval": "222f2a7af5e82d088c8f7ddafb92a834038bc8477546693073752de198b874d4",
+      "status": "complete",
+      "variant": "V2_reconstruction_mild"
+    },
+    {
+      "accuracy": 0.0,
+      "correct": 0,
+      "dense_extracted_answer_agreement": 0.02,
+      "dense_model_sha256": "2ef1a6e04a2963b4458efeeb6a932df04b3bd394086bb6757bc8690cb9c614bc",
+      "evaluation_seconds": 2109.359703009948,
+      "invalid_answer_count": 0,
+      "limit": 100,
+      "mask": {
+        "mask_sha256": "b5569d3e5c6f8394dd032cd8ac8b2a6518145484cb8544764937ce998c475949",
+        "pruned": 5234491392,
+        "seconds": 6.1605789149180055,
+        "sparsity": 0.75,
+        "weights": 6979321856
+      },
+      "prediction_sha256": "382ae4e8710dbcb7324b78de62ffe1031aa9b807e6344eea4e7813f62313f16d",
+      "protocol": {
+        "evaluation": {
+          "block_length": 256,
+          "bootstrap_iters": 0,
+          "denoising_steps": 256,
+          "fewshot_seed": 1234,
+          "generation_length": 256,
+          "max_cuda_gib": 30,
+          "num_fewshot": 5,
+          "numpy_seed": 1234,
+          "order": [
+            "Dense",
+            "DLM-SUM",
+            "DLM-ABS",
+            "DLM-SQUARE",
+            "Wanda",
+            "SparseGPT"
+          ],
+          "pathological_slowdown_factor": 3.0,
+          "primary_filter": "strict-match",
+          "primary_metric": "exact_match,strict-match",
+          "random_seed": 0,
+          "task": "gsm8k",
+          "temperature": 0,
+          "timing_examples": 32,
+          "torch_seed": 1234
+        },
+        "gsm8k_task_sha256": "442b817bc83138ec89bd30ea9d6b4acac977dfc4653c177ad778f354c8543d29",
+        "lm_eval_version": "0.4.8",
+        "model": {
+          "dtype": "bfloat16",
+          "id": "GSAI-ML/LLaDA-8B-Base",
+          "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+        }
+      },
+      "protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+      "sparse_model_sha256_after_eval": "ca72ffaebab32750e76a9f3ae0a65b0f395d64969a1ad2f0322c03a4388b3933",
+      "sparse_model_sha256_before_eval": "ca72ffaebab32750e76a9f3ae0a65b0f395d64969a1ad2f0322c03a4388b3933",
+      "stage3_gate_checks": {
+        "mean_kl_better": false,
+        "mini_accuracy_better": false,
+        "p90_kl_better": true
+      },
+      "status": "complete",
+      "variant": "V3_functional_kl_mild"
+    }
+  ],
+  "status": "complete"
+}
