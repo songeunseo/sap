@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-09-17T13:45:25.634684+09:00",
+  "status": "verified",
+  "experiments": {
+    "experiments/dlm_context_response50": {
+      "status": "verified",
+      "scores": {
+        "A": 55,
+        "AC": 61,
+        "uniform": 54
+      },
+      "source_hashes_checked": 248,
+      "exact_pruned": 3489660928,
+      "primary": {
+        "both_correct": 52,
+        "both_wrong": 36,
+        "discordant": 12,
+        "exact_mcnemar_p": 0.14599609375,
+        "net_correct": 6,
+        "reference_correct_candidate_wrong": 3,
+        "reference_wrong_candidate_correct": 9
+      }
+    },
+    "experiments/dlm_support_coverage50": {
+      "status": "verified",
+      "scores": {
+        "coverage": 54,
+        "pooled": 50,
+        "uniform": 54
+      },
+      "source_hashes_checked": 307,
+      "exact_pruned": 3489660928,
+      "primary": {
+        "both_correct": 46,
+        "both_wrong": 42,
+        "discordant": 12,
+        "exact_mcnemar_p": 0.3876953125,
+        "net_correct": 4,
+        "reference_correct_candidate_wrong": 4,
+        "reference_wrong_candidate_correct": 8
+      }
+    }
+  },
+  "unique_file_hashes": 1447,
+  "identical_uniform_predictions": true,
+  "nelbo_rows_and_bootstrap_verified": true,
+  "obsidian_sync": "pending: MCP unavailable this turn"
+}

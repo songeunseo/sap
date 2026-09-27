@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DLM pruning framework — paper figure</title>
+<style>body{margin:0;background:#fff;color:#202833;font-family:'Noto Sans CJK KR',sans-serif}
+main{max-width:1600px;margin:0 auto;padding:24px}svg{display:block;width:100%;height:auto}
+p{font-size:13px;line-height:1.6;color:#607080;margin:12px 2px}</style></head>
+<body><main><svg role="img" aria-labelledby="paper-figure-title paper-figure-desc" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080pt" height="626.4pt" viewBox="0 0 1080 626.4" xmlns="http://www.w3.org/2000/svg" version="1.1"><title id="paper-figure-title">DLM 문맥 반응 기반 정적 가중치 pruning</title><desc id="paper-figure-desc">부분 공개 문맥을 동일한 질문에 대해 만들고, 원본과 sparse 모델의 응답 오차 A와 변화 오차 C를 측정하여 블록별 제거량을 배분하고 하나의 정적 마스크를 평가하는 논문 형식의 방법론 도식.</desc>
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-26T19:00:48.047709</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 626.4 
+L 1080 626.4 
+L 1080 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 111.6 186.48 
+L 136.08 186.48 
+Q 138.96 186.48 138.96 183.6 
+L 138.96 159.12 
+Q 138.96 156.24 136.08 156.24 
+L 111.6 156.24 
+Q 108.72 156.24 108.72 159.12 
+L 108.72 183.6 
+Q 108.72 186.48 111.6 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 146.88 186.48 
+L 171.36 186.48 
+Q 174.24 186.48 174.24 183.6 
+L 174.24 159.12 
+Q 174.24 156.24 171.36 156.24 
+L 146.88 156.24 
+Q 144 156.24 144 159.12 
+L 144 183.6 
+Q 144 186.48 146.88 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #f4f6f7; stroke: #cbd3da; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 182.16 186.48 
+L 206.64 186.48 
+Q 209.52 186.48 209.52 183.6 
+L 209.52 159.12 
+Q 209.52 156.24 206.64 156.24 
+L 182.16 156.24 
+Q 179.28 156.24 179.28 159.12 
+L 179.28 183.6 
+Q 179.28 186.48 182.16 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #f4f6f7; stroke: #cbd3da; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 217.44 186.48 
+L 241.92 186.48 
+Q 244.8 186.48 244.8 183.6 
+L 244.8 159.12 
+Q 244.8 156.24 241.92 156.24 
+L 217.44 156.24 
+Q 214.56 156.24 214.56 159.12 
+L 214.56 183.6 
+Q 214.56 186.48 217.44 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #faeee8; stroke: #bd6438; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 252.72 186.48 
+L 277.2 186.48 
+Q 280.08 186.48 280.08 183.6 
+L 280.08 159.12 
+Q 280.08 156.24 277.2 156.24 
+L 252.72 156.24 
+Q 249.84 156.24 249.84 159.12 
+L 249.84 183.6 
+Q 249.84 186.48 252.72 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #f4f6f7; stroke: #cbd3da; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 288 186.48 
+L 312.48 186.48 
+Q 315.36 186.48 315.36 183.6 
+L 315.36 159.12 
+Q 315.36 156.24 312.48 156.24 
+L 288 156.24 
+Q 285.12 156.24 285.12 159.12 
+L 285.12 183.6 
+Q 285.12 186.48 288 186.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 111.6 252.72 
+L 136.08 252.72 
+Q 138.96 252.72 138.96 249.84 
+L 138.96 225.36 
+Q 138.96 222.48 136.08 222.48 
+L 111.6 222.48 
+Q 108.72 222.48 108.72 225.36 
+L 108.72 249.84 
+Q 108.72 252.72 111.6 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 146.88 252.72 
+L 171.36 252.72 
+Q 174.24 252.72 174.24 249.84 
+L 174.24 225.36 
+Q 174.24 222.48 171.36 222.48 
+L 146.88 222.48 
+Q 144 222.48 144 225.36 
+L 144 249.84 
+Q 144 252.72 146.88 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 182.16 252.72 
+L 206.64 252.72 
+Q 209.52 252.72 209.52 249.84 
+L 209.52 225.36 
+Q 209.52 222.48 206.64 222.48 
+L 182.16 222.48 
+Q 179.28 222.48 179.28 225.36 
+L 179.28 249.84 
+Q 179.28 252.72 182.16 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 217.44 252.72 
+L 241.92 252.72 
+Q 244.8 252.72 244.8 249.84 
+L 244.8 225.36 
+Q 244.8 222.48 241.92 222.48 
+L 217.44 222.48 
+Q 214.56 222.48 214.56 225.36 
+L 214.56 249.84 
+Q 214.56 252.72 217.44 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #faeee8; stroke: #bd6438; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 252.72 252.72 
+L 277.2 252.72 
+Q 280.08 252.72 280.08 249.84 
+L 280.08 225.36 
+Q 280.08 222.48 277.2 222.48 
+L 252.72 222.48 
+Q 249.84 222.48 249.84 225.36 
+L 249.84 249.84 
+Q 249.84 252.72 252.72 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #f4f6f7; stroke: #cbd3da; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 288 252.72 
+L 312.48 252.72 
+Q 315.36 252.72 315.36 249.84 
+L 315.36 225.36 
+Q 315.36 222.48 312.48 222.48 
+L 288 222.48 
+Q 285.12 222.48 285.12 225.36 
+L 285.12 249.84 
+Q 285.12 252.72 288 252.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 215.28 195.84 
+Q 215.28 206.64 215.28 215.986556 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 1.3; stroke-linecap: round"/>
+    <path d="M 217.28 211.986556 
+L 215.28 215.986556 
+L 213.28 211.986556 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87; stroke: #216a87; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 65.52 452.16 
+L 78.48 452.16 
+L 78.48 440.64 
+L 65.52 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 82.8 452.16 
+L 95.76 452.16 
+L 95.76 440.64 
+L 82.8 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 100.08 452.16 
+L 113.04 452.16 
+L 113.04 440.64 
+L 100.08 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 117.36 452.16 
+L 130.32 452.16 
+L 130.32 440.64 
+L 117.36 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 134.64 452.16 
+L 147.6 452.16 
+L 147.6 440.64 
+L 134.64 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 151.92 452.16 
+L 164.88 452.16 
+L 164.88 440.64 
+L 151.92 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_21">
+    <path d="M 169.2 452.16 
+L 182.16 452.16 
+L 182.16 440.64 
+L 169.2 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 65.52 435.6 
+L 78.48 435.6 
+L 78.48 424.08 
+L 65.52 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 82.8 435.6 
+L 95.76 435.6 
+L 95.76 424.08 
+L 82.8 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 100.08 435.6 
+L 113.04 435.6 
+L 113.04 424.08 
+L 100.08 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 117.36 435.6 
+L 130.32 435.6 
+L 130.32 424.08 
+L 117.36 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 134.64 435.6 
+L 147.6 435.6 
+L 147.6 424.08 
+L 134.64 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 151.92 435.6 
+L 164.88 435.6 
+L 164.88 424.08 
+L 151.92 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 169.2 435.6 
+L 182.16 435.6 
+L 182.16 424.08 
+L 169.2 424.08 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 65.52 419.04 
+L 78.48 419.04 
+L 78.48 407.52 
+L 65.52 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_30">
+    <path d="M 82.8 419.04 
+L 95.76 419.04 
+L 95.76 407.52 
+L 82.8 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_31">
+    <path d="M 100.08 419.04 
+L 113.04 419.04 
+L 113.04 407.52 
+L 100.08 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #202833; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_32">
+    <path d="M 117.36 419.04 
+L 130.32 419.04 
+L 130.32 407.52 
+L 117.36 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_33">
+    <path d="M 134.64 419.04 
+L 147.6 419.04 
+L 147.6 407.52 
+L 134.64 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_34">
+    <path d="M 151.92 419.04 
+L 164.88 419.04 
+L 164.88 407.52 
+L 151.92 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_35">
+    <path d="M 169.2 419.04 
+L 182.16 419.04 
+L 182.16 407.52 
+L 169.2 407.52 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_36">
+    <path d="M 209.52 425.52 
+Q 236.88 425.52 262.451146 425.52 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 257.251146 422.92 
+L 262.451146 425.52 
+L 257.251146 428.12 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_37">
+    <path d="M 286.56 457.2 
+L 462.24 457.2 
+Q 465.84 457.2 465.84 453.6 
+L 465.84 409.68 
+Q 465.84 406.08 462.24 406.08 
+L 286.56 406.08 
+Q 282.96 406.08 282.96 409.68 
+L 282.96 453.6 
+Q 282.96 457.2 286.56 457.2 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #f4f6f7; stroke: #cbd3da; stroke-width: 0.9; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_38">
+    <path d="M 327.6 429.84 
+L 447.12 429.84 
+L 447.12 420.48 
+L 327.6 420.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_39">
+    <path d="M 327.6 429.84 
+L 384.9696 429.84 
+L 384.9696 420.48 
+L 327.6 420.48 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_40">
+    <path d="M 327.6 450.72 
+L 447.12 450.72 
+L 447.12 441.36 
+L 327.6 441.36 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-width: 0.8; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_41">
+    <path d="M 327.6 450.72 
+L 389.7504 450.72 
+L 389.7504 441.36 
+L 327.6 441.36 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #bd6438"/>
+   </g>
+   <g id="patch_42">
+    <path d="M 478.8 425.52 
+Q 505.44 425.52 530.291146 425.52 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 525.091146 422.92 
+L 530.291146 425.52 
+L 525.091146 428.12 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_43">
+    <path d="M 561.6 459.36 
+L 573.12 459.36 
+L 573.12 419.04 
+L 561.6 419.04 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_44">
+    <path d="M 579.6 459.36 
+L 591.12 459.36 
+L 591.12 405.36 
+L 579.6 405.36 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_45">
+    <path d="M 597.6 459.36 
+L 609.12 459.36 
+L 609.12 414.72 
+L 597.6 414.72 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_46">
+    <path d="M 615.6 459.36 
+L 627.12 459.36 
+L 627.12 393.84 
+L 615.6 393.84 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #bd6438"/>
+   </g>
+   <g id="patch_47">
+    <path d="M 633.6 459.36 
+L 645.12 459.36 
+L 645.12 421.2 
+L 633.6 421.2 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_48">
+    <path d="M 651.6 459.36 
+L 663.12 459.36 
+L 663.12 409.68 
+L 651.6 409.68 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_49">
+    <path d="M 669.6 459.36 
+L 681.12 459.36 
+L 681.12 400.32 
+L 669.6 400.32 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_50">
+    <path d="M 687.6 459.36 
+L 699.12 459.36 
+L 699.12 417.6 
+L 687.6 417.6 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87"/>
+   </g>
+   <g id="patch_51">
+    <path d="M 738.72 425.52 
+Q 763.92 425.52 787.331146 425.52 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 782.131146 422.92 
+L 787.331146 425.52 
+L 782.131146 428.12 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87; stroke: #216a87; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_52">
+    <path d="M 810 440.64 
+L 1026 440.64 
+Q 1029.6 440.64 1029.6 437.04 
+L 1029.6 403.92 
+Q 1029.6 400.32 1026 400.32 
+L 810 400.32 
+Q 806.4 400.32 806.4 403.92 
+L 806.4 437.04 
+Q 806.4 440.64 810 440.64 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #e7f1f5; stroke: #216a87; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_53">
+    <path d="M 918 442.8 
+Q 918 452.16 918 460.178359 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 1.2; stroke-linecap: round"/>
+    <path d="M 920 456.178359 
+L 918 460.178359 
+L 916 456.178359 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #216a87; stroke: #216a87; stroke-width: 1.2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_54">
+    <path d="M 810 501.12 
+L 1026 501.12 
+Q 1029.6 501.12 1029.6 497.52 
+L 1029.6 467.28 
+Q 1029.6 463.68 1026 463.68 
+L 810 463.68 
+Q 806.4 463.68 806.4 467.28 
+L 806.4 497.52 
+Q 806.4 501.12 810 501.12 
+z
+" clip-path="url(#p1dcbf626ac)" style="fill: #ffffff; stroke: #cbd3da; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 36 95.76 
+L 1044 95.76 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #202833; stroke-width: 1.3; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 36 134.64 
+L 334.8 134.64 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_3">
+    <path d="M 363.6 134.64 
+L 673.2 134.64 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_4">
+    <path d="M 410.4 270.72 
+L 640.8 270.72 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #202833; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_5">
+    <path d="M 410.4 270.72 
+L 410.4 169.2 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #202833; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_6">
+    <path d="M 410.4 255.6 
+L 640.8 176.4 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 3; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_7">
+    <path d="M 410.4 231.84 
+L 640.8 205.92 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #bd6438; stroke-width: 3; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_8">
+    <path d="M 410.4 255.6 
+L 410.4 231.84 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke-dasharray: 4.81,2.08; stroke-dashoffset: 0; stroke: #bd6438; stroke-width: 1.3"/>
+   </g>
+   <g id="line2d_9">
+    <path d="M 640.8 205.92 
+L 640.8 176.4 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke-dasharray: 4.81,2.08; stroke-dashoffset: 0; stroke: #bd6438; stroke-width: 1.3"/>
+   </g>
+   <g id="line2d_10">
+    <path d="M 429.84 157.68 
+L 450 157.68 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #216a87; stroke-width: 2.5; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_11">
+    <path d="M 516.24 157.68 
+L 536.4 157.68 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #bd6438; stroke-width: 2.5; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_12">
+    <path d="M 702 134.64 
+L 1044 134.64 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_13">
+    <path d="M 713.52 167.04 
+L 1035.36 167.04 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-width: 0.8; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_14">
+    <path d="M 36 311.04 
+L 1044 311.04 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #202833; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_15">
+    <path d="M 36 345.6 
+L 1044 345.6 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_16">
+    <path d="M 558.72 460.8 
+L 720.72 460.8 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #202833; stroke-width: 0.8; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_17">
+    <path d="M 36 524.88 
+L 1044 524.88 
+" clip-path="url(#p1dcbf626ac)" style="fill: none; stroke: #cbd3da; stroke-linecap: round"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="36" y="31.779687" transform="rotate(-0 36 31.779687)">FIGURE 1  |  METHOD OVERVIEW</text>
+   </g>
+   <g id="text_2">
+    <text style="font-weight: 700; font-size: 24px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="36" y="64.524375" transform="rotate(-0 36 64.524375)">DLM 문맥 반응을 이용한 정적 가중치 pruning</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="36" y="85.955625" transform="rotate(-0 36 85.955625)">같은 query의 문맥 변화를 보존하도록 블록별 제거량을 배분한다</text>
+   </g>
+   <g id="text_4">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="36" y="123.587812" transform="rotate(-0 36 123.587812)">(a)</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 15px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="63.36" y="125.22" transform="rotate(-0 63.36 125.22)">부분 공개 문맥 구성</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="43.92" y="174.1" transform="rotate(-0 43.92 174.1)">초기 상태</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="43.92" y="240.34" transform="rotate(-0 43.92 240.34)">공개 후</text>
+   </g>
+   <g id="text_8">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="123.84" y="175.54" transform="rotate(-0 123.84 175.54)">T</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #607080" x="159.12" y="175.54" transform="rotate(-0 159.12 175.54)">M</text>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #607080" x="194.4" y="175.54" transform="rotate(-0 194.4 175.54)">M</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #bd6438" x="229.68" y="175.094844" transform="rotate(-0 229.68 175.094844)">Q</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #607080" x="264.96" y="175.54" transform="rotate(-0 264.96 175.54)">M</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="300.24" y="175.54" transform="rotate(-0 300.24 175.54)">T</text>
+   </g>
+   <g id="text_14">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="123.84" y="241.78" transform="rotate(-0 123.84 241.78)">T</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="159.12" y="241.78" transform="rotate(-0 159.12 241.78)">T</text>
+   </g>
+   <g id="text_16">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="194.4" y="241.78" transform="rotate(-0 194.4 241.78)">T</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #bd6438" x="229.68" y="241.334844" transform="rotate(-0 229.68 241.334844)">Q</text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #607080" x="264.96" y="241.78" transform="rotate(-0 264.96 241.78)">M</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="300.24" y="241.78" transform="rotate(-0 300.24 241.78)">T</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="230.4" y="210.44" transform="rotate(-0 230.4 210.44)">정답 문맥 공개</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #bd6438" x="108.72" y="277.079687" transform="rotate(-0 108.72 277.079687)">Q: 끝까지 masked인 동일 질문</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="108.72" y="290.17" transform="rotate(-0 108.72 290.17)">T: 보이는 토큰  ·  M: masked 토큰</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="363.6" y="123.587812" transform="rotate(-0 363.6 123.587812)">(b)</text>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 15px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="390.96" y="125.22" transform="rotate(-0 390.96 125.22)">두 모델의 응답 비교</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 10.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="370.8" y="151.017422" transform="rotate(-0 370.8 151.017422)">동일 문맥을 Dense와 Sparse에 입력</text>
+   </g>
+   <g id="text_26">
+    <!-- $e_0$ -->
+    <g style="fill: #bd6438" transform="translate(420.48 246.24)">
+     <text>
+      <tspan x="0" y="-0.40625" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #bd6438">e</tspan>
+      <tspan x="6.152344" y="1.093745" style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #bd6438">0</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_27">
+    <!-- $e_1$ -->
+    <g style="fill: #bd6438" transform="translate(617.66 193.01)">
+     <text>
+      <tspan x="0" y="-0.40625" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #bd6438">e</tspan>
+      <tspan x="6.152344" y="1.093745" style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #bd6438">1</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_28">
+    <!-- $x_0$ -->
+    <g style="fill: #202833" transform="translate(405.05 287.28)">
+     <text>
+      <tspan x="0" y="-0.53125" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #202833">x</tspan>
+      <tspan x="5.917969" y="0.968745" style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #202833">0</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_29">
+    <!-- $x_1$ -->
+    <g style="fill: #202833" transform="translate(635.45 287.33)">
+     <text>
+      <tspan x="0" y="-0.53125" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #202833">x</tspan>
+      <tspan x="5.917969" y="0.968745" style="font-size: 7px; font-family: 'DejaVu Sans'; fill: #202833">1</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="455.76" y="161.48" transform="rotate(-0 455.76 161.48)">Dense</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #bd6438" x="542.16" y="160.934687" transform="rotate(-0 542.16 160.934687)">Sparse</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 9px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="520.56" y="298.62" transform="rotate(-0 520.56 298.62)">개념 예시 · 측정값 아님</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="702" y="123.587812" transform="rotate(-0 702 123.587812)">(c)</text>
+   </g>
+   <g id="text_34">
+    <text style="font-weight: 700; font-size: 15px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="729.36" y="125.22" transform="rotate(-0 729.36 125.22)">상태와 반응의 오차</text>
+   </g>
+   <g id="text_35">
+    <!-- $e_i = f_{S}(x_i)-f_{D}(x_i)$ -->
+    <g style="fill: #202833" transform="translate(713.52 157.32)">
+     <text>
+      <tspan x="0" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+      <tspan x="30.968994" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">f</tspan>
+      <tspan x="49.177002" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">x</tspan>
+      <tspan x="85.646484" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">f</tspan>
+      <tspan x="105.274658" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">x</tspan>
+      <tspan x="9.228516" y="1.640618" style="font-style: oblique; font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="36.249756" y="1.640618" style="font-style: oblique; font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #202833">S</tspan>
+      <tspan x="58.053955" y="1.640618" style="font-style: oblique; font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="90.927246" y="1.640618" style="font-style: oblique; font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #202833">D</tspan>
+      <tspan x="114.151611" y="1.640618" style="font-style: oblique; font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="15.478271" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">=</tspan>
+      <tspan x="43.324951" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">(</tspan>
+      <tspan x="61.381348" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">)</tspan>
+      <tspan x="70.155762" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">−</tspan>
+      <tspan x="99.422607" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">(</tspan>
+      <tspan x="117.479004" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">)</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_36">
+    <text style="font-weight: 700; font-size: 19px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="713.52" y="200.18" transform="rotate(-0 713.52 200.18)">A</text>
+   </g>
+   <g id="text_37">
+    <!-- $=\;\mathrm{mean}_{i}\;e_i^2$ -->
+    <g style="fill: #202833" transform="translate(737.28 198.145)">
+     <text>
+      <tspan x="3.312012" y="-0.725" style="font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">=</tspan>
+      <tspan x="25.468217" y="-0.725" style="font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">m</tspan>
+      <tspan x="42.028276" y="-0.725" style="font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+      <tspan x="52.48726" y="-0.725" style="font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">a</tspan>
+      <tspan x="62.904741" y="-0.725" style="font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">n</tspan>
+      <tspan x="73.84185" y="1.824992" style="font-style: oblique; font-size: 11.9px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="92.671932" y="5.132812" style="font-style: oblique; font-size: 11.9px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="82.212948" y="-0.725" style="font-style: oblique; font-size: 17px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+      <tspan x="93.461802" y="-8.1625" style="font-size: 11.9px; font-family: 'DejaVu Sans'; fill: #202833">2</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_38">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="713.52" y="214.76" transform="rotate(-0 713.52 214.76)">각 문맥에서 원본 응답을 보존</text>
+   </g>
+   <g id="text_39">
+    <text style="font-weight: 700; font-size: 19px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #bd6438" x="713.52" y="248.42" transform="rotate(-0 713.52 248.42)">C</text>
+   </g>
+   <g id="text_40">
+    <!-- $=\;\mathrm{mean}_{(i,j)\in E}\;(e_j-e_i)^2$ -->
+    <g style="fill: #202833" transform="translate(737.28 246.32)">
+     <text>
+      <tspan x="3.117188" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">=</tspan>
+      <tspan x="23.970087" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">m</tspan>
+      <tspan x="39.556024" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+      <tspan x="49.399774" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">a</tspan>
+      <tspan x="59.204462" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">n</tspan>
+      <tspan x="116.166736" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">(</tspan>
+      <tspan x="138.91908" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">−</tspan>
+      <tspan x="168.835486" y="-0.0795" style="font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">)</tspan>
+      <tspan x="69.498212" y="2.320492" style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">(</tspan>
+      <tspan x="76.979462" y="2.320492" style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">,</tspan>
+      <tspan x="85.833368" y="2.320492" style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">)</tspan>
+      <tspan x="92.38493" y="2.320492" style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">∈</tspan>
+      <tspan x="175.230798" y="-6.6875" style="font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">2</tspan>
+      <tspan x="73.867743" y="2.320492" style="font-style: oblique; font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="82.721649" y="2.320492" style="font-style: oblique; font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">j</tspan>
+      <tspan x="104.323212" y="2.320492" style="font-style: oblique; font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">E</tspan>
+      <tspan x="132.252673" y="2.320492" style="font-style: oblique; font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">j</tspan>
+      <tspan x="165.286267" y="2.320492" style="font-style: oblique; font-size: 11.2px; font-family: 'DejaVu Sans'; fill: #202833">i</tspan>
+      <tspan x="122.408923" y="-0.0795" style="font-style: oblique; font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+      <tspan x="155.442517" y="-0.0795" style="font-style: oblique; font-size: 16px; font-family: 'DejaVu Sans'; fill: #202833">e</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_41">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="713.52" y="263" transform="rotate(-0 713.52 263)">문맥 변화에 따른 응답 갱신을 보존</text>
+   </g>
+   <g id="text_42">
+    <!-- $L = A + \lambda C$ -->
+    <g style="fill: #202833" transform="translate(713.52 292.26)">
+     <text>
+      <tspan x="0" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">L</tspan>
+      <tspan x="26.77002" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">A</tspan>
+      <tspan x="55.444336" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">λ</tspan>
+      <tspan x="64.321289" y="-0.609375" style="font-style: oblique; font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">C</tspan>
+      <tspan x="11.279297" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">=</tspan>
+      <tspan x="39.953613" y="-0.609375" style="font-size: 15px; font-family: 'DejaVu Sans'; fill: #202833">+</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_43">
+    <!-- $E$: 비교할 상태 쌍 -->
+    <g style="fill: #607080" transform="translate(835.2 290.17)">
+     <text>
+      <tspan x="0" y="-0.0625" style="font-style: oblique; font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #607080">E</tspan>
+      <tspan x="6.002441" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">:</tspan>
+      <tspan x="8.643448" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="10.771454" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">비</tspan>
+      <tspan x="19.511475" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">교</tspan>
+      <tspan x="28.251495" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">할</tspan>
+      <tspan x="36.991516" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="39.119522" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">상</tspan>
+      <tspan x="47.859543" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">태</tspan>
+      <tspan x="56.599564" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="58.72757" y="-0.0625" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">쌍</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_44">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="36" y="334.547812" transform="rotate(-0 36 334.547812)">(d)</text>
+   </g>
+   <g id="text_45">
+    <text style="font-weight: 700; font-size: 15px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="63.36" y="336.18" transform="rotate(-0 63.36 336.18)">목표 오차를 이용한 정확한 예산의 정적 마스크 선택</text>
+   </g>
+   <g id="text_46">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="50.4" y="374.98" transform="rotate(-0 50.4 374.98)">1</text>
+   </g>
+   <g id="text_47">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="64.8" y="375.74" transform="rotate(-0 64.8 375.74)">Wanda 순위 고정</text>
+   </g>
+   <g id="text_48">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="50.4" y="391.16" transform="rotate(-0 50.4 391.16)">각 행에서 제거할 순서는 유지</text>
+   </g>
+   <g id="text_49">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="63.36" y="470.89" transform="rotate(-0 63.36 470.89)">■ 제거  □ 유지</text>
+   </g>
+   <g id="text_50">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="275.76" y="374.98" transform="rotate(-0 275.76 374.98)">2</text>
+   </g>
+   <g id="text_51">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="290.16" y="375.74" transform="rotate(-0 290.16 375.74)">블록별 변화 측정</text>
+   </g>
+   <g id="text_52">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="275.76" y="390.864687" transform="rotate(-0 275.76 390.864687)">50% 기준에서 한 블록만 48/52%</text>
+   </g>
+   <g id="text_53">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="293.76" y="428.41" transform="rotate(-0 293.76 428.41)">48%</text>
+   </g>
+   <g id="text_54">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="293.76" y="449.29" transform="rotate(-0 293.76 449.29)">52%</text>
+   </g>
+   <g id="text_55">
+    <!-- 동일 calibration bank에서 $A$, $C$ 측정 -->
+    <g style="fill: #607080" transform="translate(280.8 471.9975)">
+     <text>
+      <tspan x="0" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">동</tspan>
+      <tspan x="8.740021" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">일</tspan>
+      <tspan x="17.480042" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="19.608047" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">c</tspan>
+      <tspan x="24.453064" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">a</tspan>
+      <tspan x="29.801575" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">l</tspan>
+      <tspan x="32.499588" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">i</tspan>
+      <tspan x="35.112091" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">b</tspan>
+      <tspan x="40.983109" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">r</tspan>
+      <tspan x="44.669113" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">a</tspan>
+      <tspan x="50.017624" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">t</tspan>
+      <tspan x="53.599136" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">i</tspan>
+      <tspan x="56.211639" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">o</tspan>
+      <tspan x="61.968658" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">n</tspan>
+      <tspan x="67.763672" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="69.891678" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">b</tspan>
+      <tspan x="75.762695" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">a</tspan>
+      <tspan x="81.111206" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">n</tspan>
+      <tspan x="86.906219" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">k</tspan>
+      <tspan x="92.150238" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">에</tspan>
+      <tspan x="100.890259" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">서</tspan>
+      <tspan x="109.63028" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="118.257065" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">,</tspan>
+      <tspan x="120.898071" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="129.659378" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080"> </tspan>
+      <tspan x="131.787384" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">측</tspan>
+      <tspan x="140.527405" y="-0.125" style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; fill: #607080">정</tspan>
+      <tspan x="111.758286" y="-0.125" style="font-style: oblique; font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #607080">A</tspan>
+      <tspan x="123.026077" y="-0.125" style="font-style: oblique; font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #607080">C</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_56">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="544.32" y="374.98" transform="rotate(-0 544.32 374.98)">3</text>
+   </g>
+   <g id="text_57">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="558.72" y="375.74" transform="rotate(-0 558.72 375.74)">블록별 제거량 배분</text>
+   </g>
+   <g id="text_58">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="544.32" y="390.589687" transform="rotate(-0 544.32 390.589687)">오차 기반 순위 → 층별 sparsity</text>
+   </g>
+   <g id="text_59">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="558.72" y="478.09" transform="rotate(-0 558.72 478.09)">합계는 정확히 전체 50% 예산</text>
+   </g>
+   <g id="text_60">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="799.2" y="374.98" transform="rotate(-0 799.2 374.98)">4</text>
+   </g>
+   <g id="text_61">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #202833" x="813.6" y="375.74" transform="rotate(-0 813.6 375.74)">하나의 정적 마스크</text>
+   </g>
+   <g id="text_62">
+    <text style="font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="799.2" y="390.51" transform="rotate(-0 799.2 390.51)">모든 denoising 상태에 공통 적용</text>
+   </g>
+   <g id="text_63">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #216a87" x="918" y="424.47" transform="rotate(-0 918 424.47)">완성된 Sparse DLM</text>
+   </g>
+   <g id="text_64">
+    <text style="font-size: 10.5px; font-family: 'Noto Sans CJK KR'; text-anchor: middle; fill: #202833" x="918" y="486.39" transform="rotate(-0 918 486.39)">별도 문항에서 생성 성능 평가</text>
+   </g>
+   <g id="text_65">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #216a87" x="36" y="547.4" transform="rotate(-0 36 547.4)">방법별 변형</text>
+   </g>
+   <g id="text_66">
+    <!-- A-only: C 제외    ·    Short / Path / All / Multi: 상태 쌍 $E$ 변경    ·    Vector: 응답 $f$ 변경    ·    Exchange: 배분 탐색 변경 -->
+    <g style="fill: #202833" transform="translate(110.16 546.75)">
+     <text>
+      <tspan x="0" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">A</tspan>
+      <tspan x="6.080002" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">-</tspan>
+      <tspan x="9.550003" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">o</tspan>
+      <tspan x="15.610001" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">n</tspan>
+      <tspan x="21.709991" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">l</tspan>
+      <tspan x="24.549988" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">y</tspan>
+      <tspan x="29.759979" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">:</tspan>
+      <tspan x="32.539978" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="34.779984" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">C</tspan>
+      <tspan x="41.159973" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="43.399979" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">제</tspan>
+      <tspan x="52.599976" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">외</tspan>
+      <tspan x="61.799973" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="64.039978" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="66.279984" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="68.519989" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="70.759995" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">·</tspan>
+      <tspan x="76.369995" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="78.610001" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="80.850006" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="83.090012" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="85.330017" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">S</tspan>
+      <tspan x="91.290009" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">h</tspan>
+      <tspan x="97.360001" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">o</tspan>
+      <tspan x="103.419998" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">r</tspan>
+      <tspan x="107.299988" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">t</tspan>
+      <tspan x="111.069977" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="113.309982" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">/</tspan>
+      <tspan x="117.22998" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="119.469986" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">P</tspan>
+      <tspan x="125.799973" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">a</tspan>
+      <tspan x="131.429962" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">t</tspan>
+      <tspan x="135.199951" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">h</tspan>
+      <tspan x="141.269943" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="143.509949" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">/</tspan>
+      <tspan x="147.429947" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="149.669952" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">A</tspan>
+      <tspan x="155.749954" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">l</tspan>
+      <tspan x="158.589951" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">l</tspan>
+      <tspan x="161.429947" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="163.669952" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">/</tspan>
+      <tspan x="167.589951" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="169.829956" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">M</tspan>
+      <tspan x="177.949951" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">u</tspan>
+      <tspan x="184.019943" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">l</tspan>
+      <tspan x="186.85994" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">t</tspan>
+      <tspan x="190.629929" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">i</tspan>
+      <tspan x="193.379929" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">:</tspan>
+      <tspan x="196.159927" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="198.399933" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">상</tspan>
+      <tspan x="207.59993" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">태</tspan>
+      <tspan x="216.799927" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="219.039932" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">쌍</tspan>
+      <tspan x="228.239929" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="236.798294" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="239.0383" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">변</tspan>
+      <tspan x="248.238297" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">경</tspan>
+      <tspan x="257.438293" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="259.678299" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="261.918304" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="264.15831" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="266.398315" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">·</tspan>
+      <tspan x="272.008316" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="274.248322" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="276.488327" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="278.728333" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="280.968338" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">V</tspan>
+      <tspan x="286.718338" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">e</tspan>
+      <tspan x="292.258331" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">c</tspan>
+      <tspan x="297.358322" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">t</tspan>
+      <tspan x="301.128311" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">o</tspan>
+      <tspan x="307.188309" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">r</tspan>
+      <tspan x="311.068298" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">:</tspan>
+      <tspan x="313.848297" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="316.088303" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">응</tspan>
+      <tspan x="325.2883" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">답</tspan>
+      <tspan x="334.488297" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="340.24881" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="342.488815" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">변</tspan>
+      <tspan x="351.688812" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">경</tspan>
+      <tspan x="360.888809" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="363.128815" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="365.36882" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="367.608826" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="369.848831" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">·</tspan>
+      <tspan x="375.458832" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="377.698837" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="379.938843" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="382.178848" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="384.418854" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">E</tspan>
+      <tspan x="390.308853" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">x</tspan>
+      <tspan x="395.288849" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">c</tspan>
+      <tspan x="400.38884" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">h</tspan>
+      <tspan x="406.458832" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">a</tspan>
+      <tspan x="412.088821" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">n</tspan>
+      <tspan x="418.188812" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">g</tspan>
+      <tspan x="423.828812" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">e</tspan>
+      <tspan x="429.368805" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">:</tspan>
+      <tspan x="432.148804" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="434.388809" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">배</tspan>
+      <tspan x="443.588806" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">분</tspan>
+      <tspan x="452.788803" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="455.028809" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">탐</tspan>
+      <tspan x="464.228806" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">색</tspan>
+      <tspan x="473.428802" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833"> </tspan>
+      <tspan x="475.668808" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">변</tspan>
+      <tspan x="484.868805" y="-0.734375" style="font-size: 10px; font-family: 'Noto Sans CJK KR'; fill: #202833">경</tspan>
+      <tspan x="230.479935" y="-0.734375" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #202833">E</tspan>
+      <tspan x="336.728302" y="-0.734375" style="font-style: oblique; font-size: 10px; font-family: 'DejaVu Sans'; fill: #202833">f</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="text_67">
+    <text style="font-size: 9.5px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="36" y="574.2375" transform="rotate(-0 36 574.2375)">실선 흐름은 기존 scalar A+C의 공통 골격. 변형은 각 한 요소를 바꾸는 연구 후보이며, 이 그림은 성능 우열을 나타내지 않는다.</text>
+   </g>
+   <g id="text_68">
+    <text style="font-size: 9px; font-family: 'Noto Sans CJK KR'; text-anchor: start; fill: #607080" x="36" y="595.466719" transform="rotate(-0 36 595.466719)">D: dense model   S: sparse model   Q: fixed masked query   48/52%: 기존 50% block probe 예시</text>
+   </g>
+   <g id="line2d_18">
+    <defs>
+     <path id="m1b73c0a3bb" d="M 0 3.5 
+C 0.928211 3.5 1.81853 3.131218 2.474874 2.474874 
+C 3.131218 1.81853 3.5 0.928211 3.5 0 
+C 3.5 -0.928211 3.131218 -1.81853 2.474874 -2.474874 
+C 1.81853 -3.131218 0.928211 -3.5 0 -3.5 
+C -0.928211 -3.5 -1.81853 -3.131218 -2.474874 -2.474874 
+C -3.131218 -1.81853 -3.5 -0.928211 -3.5 0 
+C -3.5 0.928211 -3.131218 1.81853 -2.474874 2.474874 
+C -1.81853 3.131218 -0.928211 3.5 0 3.5 
+z
+" style="stroke: #216a87"/>
+    </defs>
+    <g clip-path="url(#p1dcbf626ac)">
+     <use xlink:href="#m1b73c0a3bb" x="410.4" y="255.6" style="fill: #216a87; stroke: #216a87"/>
+    </g>
+   </g>
+   <g id="line2d_19">
+    <g clip-path="url(#p1dcbf626ac)">
+     <use xlink:href="#m1b73c0a3bb" x="640.8" y="176.4" style="fill: #216a87; stroke: #216a87"/>
+    </g>
+   </g>
+   <g id="line2d_20">
+    <defs>
+     <path id="mb16bf270b2" d="M 0 3.5 
+C 0.928211 3.5 1.81853 3.131218 2.474874 2.474874 
+C 3.131218 1.81853 3.5 0.928211 3.5 0 
+C 3.5 -0.928211 3.131218 -1.81853 2.474874 -2.474874 
+C 1.81853 -3.131218 0.928211 -3.5 0 -3.5 
+C -0.928211 -3.5 -1.81853 -3.131218 -2.474874 -2.474874 
+C -3.131218 -1.81853 -3.5 -0.928211 -3.5 0 
+C -3.5 0.928211 -3.131218 1.81853 -2.474874 2.474874 
+C -1.81853 3.131218 -0.928211 3.5 0 3.5 
+z
+" style="stroke: #bd6438"/>
+    </defs>
+    <g clip-path="url(#p1dcbf626ac)">
+     <use xlink:href="#mb16bf270b2" x="410.4" y="231.84" style="fill: #bd6438; stroke: #bd6438"/>
+    </g>
+   </g>
+   <g id="line2d_21">
+    <g clip-path="url(#p1dcbf626ac)">
+     <use xlink:href="#mb16bf270b2" x="640.8" y="205.92" style="fill: #bd6438; stroke: #bd6438"/>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p1dcbf626ac">
+   <rect x="0" y="0" width="1080" height="626.4"/>
+  </clipPath>
+ </defs>
+</svg>
+<p>Figure 1. 같은 masked query에서 문맥을 공개하며 얻은 응답을 Dense와 Sparse 모델에 공통으로 측정한다. A는 각 상태의 오차, C는 상태 사이의 응답 변화 오차다. 기존 scalar A+C 구현은 고정된 Wanda 순위와 block probe를 이용해 정확한 전체 예산의 정적 마스크를 만든다.</p></main></body></html>

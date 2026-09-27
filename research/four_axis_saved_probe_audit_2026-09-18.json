@@ -1,0 +1,53 @@
+{
+  "analysis": "Saved probe linear-response reconstruction; descriptive; no new forwards or optimized masks",
+  "methods": {
+    "A": {
+      "baseline_recomputed": 0.8240013682178469,
+      "offdiag_cosine_mean": 0.00023081004647636295,
+      "offdiag_cosine_min": -0.16982752086477937,
+      "offdiag_cosine_max": 0.08565489802097619,
+      "candidate_predictions": {
+        "A": {
+          "actual": 0.6652900870629489,
+          "linear_response_pred": 0.7971090642436862,
+          "linear_term": -0.2033684268350138,
+          "diagonal_quadratic": 0.16233840638989822,
+          "cross_layer_quadratic": 0.014137716470954909,
+          "max_abs_delta_fraction": 0.05003004807692308
+        },
+        "AC": {
+          "actual": 0.6589823091775575,
+          "linear_response_pred": 0.8041275951146705,
+          "linear_term": -0.19580362656012973,
+          "diagonal_quadratic": 0.15940438051405603,
+          "cross_layer_quadratic": 0.0165254729428973,
+          "max_abs_delta_fraction": 0.05003004807692308
+        }
+      }
+    },
+    "AC": {
+      "baseline_recomputed": 1.2025693489399016,
+      "offdiag_cosine_mean": 0.0001640679970087115,
+      "offdiag_cosine_min": -0.12848949615947267,
+      "offdiag_cosine_max": 0.11013740530729975,
+      "candidate_predictions": {
+        "A": {
+          "actual": 1.0416285390292757,
+          "linear_response_pred": 1.3490054533196076,
+          "linear_term": -0.21470868924525405,
+          "diagonal_quadratic": 0.33700501514992437,
+          "cross_layer_quadratic": 0.02413977847503529,
+          "max_abs_delta_fraction": 0.05003004807692308
+        },
+        "AC": {
+          "actual": 1.0259823048354837,
+          "linear_response_pred": 1.3385767537400044,
+          "linear_term": -0.22229603890117733,
+          "diagonal_quadratic": 0.335134356824938,
+          "cross_layer_quadratic": 0.023169086876341893,
+          "max_abs_delta_fraction": 0.05003004807692308
+        }
+      }
+    }
+  }
+}

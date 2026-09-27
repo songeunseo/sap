@@ -1,0 +1,113 @@
+{
+  "scores": {
+    "A": {
+      "correct": 58,
+      "total": 100
+    },
+    "Multi": {
+      "correct": 59,
+      "total": 100
+    },
+    "Uniform": {
+      "correct": 52,
+      "total": 100
+    }
+  },
+  "paired": {
+    "Multi_minus_A": {
+      "exact_mcnemar_p": 1.0,
+      "gained": 6,
+      "holm_p": 1.0,
+      "lost": 5,
+      "net": 1,
+      "total": 100,
+      "gained_ids": [
+        399,
+        465,
+        763,
+        804,
+        958,
+        1233
+      ],
+      "lost_ids": [
+        370,
+        609,
+        679,
+        971,
+        976
+      ]
+    },
+    "Multi_minus_Uniform": {
+      "exact_mcnemar_p": 0.1670684814453125,
+      "gained": 13,
+      "holm_p": 0.5012054443359375,
+      "lost": 6,
+      "net": 7,
+      "total": 100,
+      "gained_ids": [
+        227,
+        340,
+        350,
+        398,
+        442,
+        465,
+        614,
+        718,
+        763,
+        902,
+        958,
+        1233,
+        1305
+      ],
+      "lost_ids": [
+        218,
+        370,
+        411,
+        959,
+        1090,
+        1232
+      ]
+    },
+    "A_minus_Uniform": {
+      "exact_mcnemar_p": 0.26317596435546875,
+      "gained": 13,
+      "holm_p": 0.5263519287109375,
+      "lost": 7,
+      "net": 6,
+      "total": 100,
+      "gained_ids": [
+        227,
+        340,
+        350,
+        398,
+        442,
+        609,
+        614,
+        679,
+        718,
+        902,
+        971,
+        976,
+        1305
+      ],
+      "lost_ids": [
+        218,
+        399,
+        411,
+        804,
+        959,
+        1090,
+        1232
+      ]
+    }
+  },
+  "invalid_counts": {
+    "Multi": 6,
+    "A": 8,
+    "Uniform": 5
+  },
+  "wall_minutes": 37.361524470647176,
+  "forward_calls": 76800,
+  "complete_accounting": true,
+  "scope": "Previously frozen separate100; historical project exposure not ruled out; separate from development100"
+}

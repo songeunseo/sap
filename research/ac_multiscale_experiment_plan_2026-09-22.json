@@ -1,0 +1,466 @@
+{
+  "status": "planned_not_started",
+  "created_date": "2026-09-22",
+  "experiment": "multiscale_ac50_small_eval",
+  "execution_ready": false,
+  "runner_implemented": false,
+  "auto_launch": false,
+  "model": {
+    "dtype": "bfloat16",
+    "id": "GSAI-ML/LLaDA-8B-Base",
+    "revision": "0f2787f2d87eac5eed8a087d5ecd24277e6255b2"
+  },
+  "sources": {
+    "theory": {
+      "path": "/home/tmluser1/sap/research/ac_multiscale_monotone_design_2026-09-22.md",
+      "sha256": "e666954dc1d21805e5f2a70c91d3df8e89aaa0a2b4cce5ddcbc8c89d72401d81"
+    },
+    "legacy_config": {
+      "path": "/home/tmluser1/sap/experiments/dlm_context_response50/config.json",
+      "sha256": "5295194cc620a854c20283de0edeca4dabb9b29da920953ddd87ff950c71f38b"
+    },
+    "legacy_results": {
+      "path": "/home/tmluser1/sap/experiments/dlm_context_response50/results.json",
+      "sha256": "244c2cf84316855dc64aabde6685e8580ac7ac88126c2105a308ceea750905d9"
+    },
+    "calibration_source": {
+      "path": "/home/tmluser1/sap/experiments/dlm_loss_aggregation/exp004/calibration_state_manifest.json",
+      "sha256": "c494feafc0bb559eee28eb3e996040236d8a44047b3f5b9d0e54f42e78b6a694",
+      "sequence_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "diagnostic_source": {
+      "path": "/home/tmluser1/sap/experiments/wanda_failure_characterization/heldout_state_manifest.json",
+      "sha256": "e0a15a0146577c77c23bc1c93aa182477c1a323565e4c78517d06345d4c047b0",
+      "sequence_indices": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    "span_overlap_audit": {
+      "path": "/home/tmluser1/sap/experiments/projection_capacity_followup_65/new_state_verification.json",
+      "sha256": "1187e2fa71182cc50f72235b1ba6638bfebfa8a6ec3d40ea8151af50de92f26c"
+    },
+    "ranking_receipt": {
+      "path": "/home/tmluser1/sap/experiments/dlm_context_response50/collection_receipt.json",
+      "sha256": "130017947b1e09faa8a8116775e959fc7cb2e781f6ed4a91630d51b26dec766e"
+    }
+  },
+  "pruning": {
+    "sparsity": 0.5,
+    "total_prunable": 6979321856,
+    "pruned": 3489660928,
+    "blocks": 32,
+    "projections": 224,
+    "allocation_unit": "block_tied_7_projections",
+    "probe_rates": [
+      0.48,
+      0.52
+    ],
+    "allocation_range": [
+      0.45,
+      0.55
+    ],
+    "ranking": "reproduce all224 Uniform50 sparse-prefix Wanda masks, freeze those activation vectors/rankings for probes AND both final allocations; no candidate-dependent recalibration",
+    "mapping": "cost average-rank -> .5-.10*(rank01-meanrank01); grouped row-count DP exact50; no clamping signed cost"
+  },
+  "bank": {
+    "sequence_length": 256,
+    "sequences_per_split": 8,
+    "chains_per_sequence": 2,
+    "nodes_per_chain": 8,
+    "query_positions_per_sequence": 8,
+    "query_rule": "uniform upfront without replacement; same Q for both chains and all phases of a sequence",
+    "visibility_probabilities": [
+      0.05000000000000001,
+      0.10878902775125589,
+      0.2206465751196608,
+      0.39636501599373425,
+      0.6036349840062658,
+      0.7793534248803391,
+      0.891210972248744,
+      0.9499999999999998
+    ],
+    "context_rule": "independent U per non-query position; shared U across nodes; reveal gold iff U<=p; no forced reveal or rejection of unchanged nodes",
+    "calibration_seed": 20260922,
+    "diagnostic_seed": 20260923,
+    "states_per_split": 128,
+    "weighting": "equal query then chain then sequence means; phase mean for A; edge mean within each C; equal three-scale mean for Multi",
+    "actual_mask_fraction": "record separately from eligible-context p"
+  },
+  "objectives": {
+    "A": "mean_phase(e^2)",
+    "Short": "A + C1",
+    "Path": "A + mean((e[j+1]-e[j])^2 for j=0..6)",
+    "All": "A + mean((e[j]-e[i])^2 for all i<j)",
+    "Multi": "A + (C1+C2+C4)/3"
+  },
+  "edges": {
+    "C1": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        6,
+        7
+      ]
+    ],
+    "C2": [
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        5,
+        7
+      ]
+    ],
+    "C4": [
+      [
+        0,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        7
+      ]
+    ]
+  },
+  "readout": "gold-vs-rest log odds; e=f_sparse-f_dense; fp32 readout and fp64 accumulation",
+  "evaluation": {
+    "block_length": 256,
+    "bootstrap_iters": 0,
+    "denoising_steps": 256,
+    "fewshot_seed": 1234,
+    "generation_length": 256,
+    "max_cuda_gib": 30,
+    "num_fewshot": 5,
+    "numpy_seed": 1234,
+    "pathological_slowdown_factor": 3.0,
+    "primary_filter": "strict-match",
+    "primary_metric": "exact_match,strict-match",
+    "random_seed": 0,
+    "task": "gsm8k",
+    "temperature": 0,
+    "timing_examples": 32,
+    "torch_seed": 1234
+  },
+  "legacy_evaluation_protocol_hash": "1c27fe9936457b586af855f3f8bc05677ea6008ec76b09fc2491d43f68950add",
+  "gsm8k": {
+    "dataset": "gsm8k",
+    "split": "test",
+    "expected_total": 1319,
+    "development_doc_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99
+    ],
+    "development_arms": [
+      "A",
+      "Short",
+      "Path",
+      "All",
+      "Multi"
+    ],
+    "cached_references": [
+      "legacy_uniform",
+      "legacy_A",
+      "legacy_AC"
+    ],
+    "confirmation_doc_ids": [
+      209,
+      211,
+      213,
+      218,
+      227,
+      233,
+      274,
+      290,
+      294,
+      298,
+      304,
+      309,
+      324,
+      328,
+      330,
+      340,
+      341,
+      350,
+      369,
+      370,
+      373,
+      374,
+      396,
+      398,
+      399,
+      401,
+      411,
+      424,
+      442,
+      443,
+      465,
+      470,
+      491,
+      497,
+      503,
+      526,
+      577,
+      579,
+      593,
+      606,
+      609,
+      612,
+      614,
+      619,
+      631,
+      663,
+      679,
+      686,
+      718,
+      724,
+      725,
+      734,
+      744,
+      746,
+      749,
+      763,
+      769,
+      777,
+      781,
+      798,
+      803,
+      804,
+      832,
+      844,
+      860,
+      889,
+      902,
+      916,
+      921,
+      944,
+      958,
+      959,
+      971,
+      976,
+      982,
+      990,
+      1010,
+      1030,
+      1049,
+      1061,
+      1085,
+      1090,
+      1096,
+      1111,
+      1113,
+      1121,
+      1129,
+      1139,
+      1140,
+      1177,
+      1205,
+      1228,
+      1232,
+      1233,
+      1240,
+      1256,
+      1283,
+      1288,
+      1295,
+      1305
+    ],
+    "confirmation_id_rule": "smallest 100 SHA256(multiscale-ac-confirm:20260922:<doc_id>) among 200..1318, evaluated in ascending original doc_id order",
+    "confirmation_arms": [
+      "Multi",
+      "best_simple_development_arm",
+      "legacy_AC"
+    ],
+    "best_simple_tie_break": [
+      "Short",
+      "Path",
+      "All",
+      "A"
+    ],
+    "confirmation_selection_excludes": [
+      "Multi"
+    ],
+    "confirmation_gate": "recommend confirmation when Multi beats every new simpler arm and is no worse than legacy AC on development; positive gaps of 1-2 questions remain weak; diagnostics do not substitute for task gain",
+    "max_unique_questions": 200,
+    "max_new_generations": 800,
+    "full_gsm8k": false,
+    "full_ppl": false,
+    "decode_shortening": false,
+    "note": "confirmation held out from current method selection only; historical project use is not ruled out; freeze question/prompt hashes before evaluating"
+  },
+  "budgets": {
+    "probe_candidates": 64,
+    "probe_state_forwards": 8192,
+    "dense_reference_state_forwards": 256,
+    "uniform_diagnostic_state_forwards": 256,
+    "five_final_candidates_state_forwards": 1280,
+    "legacy_AC_diagnostic_state_forwards": 256,
+    "diagnostic_state_forwards_total": 10240,
+    "additional_smoke_state_forwards_max": 32,
+    "development_new_generations": 500,
+    "conditional_confirmation_new_generations": 300,
+    "gsm_forward_calls_per_answer": 256,
+    "development_gsm_forward_calls": 128000,
+    "max_gsm_forward_calls": 204800,
+    "historical_mini100_eval_seconds": 2063.916439278997,
+    "walltime_policy": "remeasure on assigned hardware; historical generation time excludes loading, pruning, probes, diagnostics and CPU I/O"
+  },
+  "requires_before_launch": [
+    "implement node-bank and objective adapter",
+    "implement selected-document GSM8K evaluation with frozen prompt identities",
+    "verify cached ranking, masks and predictions hashes",
+    "freeze actual bank manifest and question/prompt hashes",
+    "verify exact global pruning and deduplicate physical masks",
+    "create planned/running Obsidian experiment record per project rules when tools are available",
+    "check existing tmux/processes and assigned GPU; use tmux; save per-example resume checkpoints"
+  ],
+  "memory_sync": {
+    "status": "local_pending",
+    "prior_design_obsidian_sync": "succeeded in prior turn",
+    "current_tool_catalog": "obsidian tools absent",
+    "get_sync_status_error": "TypeError: tools.mcp__obsidian__get_sync_status is not a function",
+    "read_note": "not callable; absent from catalog",
+    "retry": "catalog rechecked; no callable function to retry",
+    "server_disconnected_claim": false
+  }
+}

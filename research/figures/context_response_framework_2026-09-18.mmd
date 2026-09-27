@@ -1,0 +1,20 @@
+flowchart TD
+    REF["문맥 쌍 + Dense 기준값 준비<br/>같은 masked query의 문맥 전후 예측 저장"]
+    INIT["Uniform 50%로 시작<br/>weight 값·Wanda 순서 고정"]
+    PROP["같은 개수 복원·제거하는 후보 생성<br/>현재 mask에서 배분만 변경"]
+    GRAD["선택 사항: gradient로<br/>유망한 후보 추천"]
+    SCORE["후보 hard mask의 A + λC 평가<br/>A: 예측 오차 · C: 문맥 반응 오차"]
+    BETTER{"현재 mask보다<br/>A + λC가 작은가?"}
+    UPDATE["개선 후보로 현재 mask 교체"]
+    STOP{"평가 예산 소진 또는<br/>정해 둔 종료 조건 충족?"}
+    OUT["최종 static mask 고정<br/>독립 데이터 NELBO · GSM8K 평가"]
+    INIT --> PROP
+    GRAD -.-> PROP
+    PROP --> SCORE
+    REF --> SCORE
+    SCORE --> BETTER
+    BETTER -->|예| UPDATE
+    BETTER -->|아니오 · 현재 mask 유지| STOP
+    UPDATE --> STOP
+    STOP -->|아니오 · 다음 후보| PROP
+    STOP -->|예| OUT

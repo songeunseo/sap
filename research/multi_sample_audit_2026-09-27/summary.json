@@ -1,0 +1,177 @@
+{
+  "title": "A versus Multi sample sensitivity audit",
+  "status": "complete",
+  "source_sha256": {
+    "experiments/dlm_crosschain_control50/output/gsm8k/A/predictions.json": "2c91e5c9c75335cb749c92e9bd39d2f78f2f6b781aa32bbbdd25dcdfcd035669",
+    "experiments/dlm_crosschain_control50/output/gsm8k/Multi/predictions.json": "ceae1f15244e449f588e4eeede73f985cc32b1c5644adcd6083de0a8cc6b8639",
+    "experiments/dlm_multi_nfe64/output/gsm8k/A_64/predictions.json": "8c01377f0c26a356bc594a1c5f94e2d8f613e8bf0613e32b8f830d37182977b7",
+    "experiments/dlm_multi_nfe64/output/gsm8k/Multi_64/predictions.json": "e55e61d6601f23997ac58795dcaf89c2fef6409ffa49f2c7770ad3a7e0c61a12"
+  },
+  "split": {
+    "development100": "IDs 0..99",
+    "separate100": "remaining frozen NFE50 exposed IDs",
+    "exposed200": 200,
+    "remaining1119": 1119,
+    "full1319": 1319
+  },
+  "reproduction": {
+    "A": {
+      "development100": {
+        "historical_correct": 60,
+        "fullrun_exact_text_matches": 100,
+        "n": 100,
+        "sha256": "4224eb86c474e2d215d2cddec2cb134ee3bc5d856e588f6ac7cc4214cdcfe6e0"
+      },
+      "separate100": {
+        "historical_correct": 58,
+        "fullrun_exact_text_matches": 100,
+        "n": 100,
+        "sha256": "5cd2c332a567e6fffde8c3271d395e4e22f6042ede1583d72cf048013c9304f0"
+      }
+    },
+    "Multi": {
+      "development100": {
+        "historical_correct": 63,
+        "fullrun_exact_text_matches": 100,
+        "n": 100,
+        "sha256": "c318f6b93fc52e7d366bf0b2e802023f01047b8d1cbb0b69d51d6440989197a3"
+      },
+      "separate100": {
+        "historical_correct": 59,
+        "fullrun_exact_text_matches": 100,
+        "n": 100,
+        "sha256": "e1b641e508619548a31cf64d0acb94ceb939adda4431c39d072c20564f27b9f3"
+      }
+    }
+  },
+  "statistics": {
+    "256": {
+      "development100": {
+        "n": 100,
+        "A": 60,
+        "Multi": 63,
+        "gain": 6,
+        "loss": 3,
+        "difference": 3,
+        "difference_pp": 3.0,
+        "exact_mcnemar_p": 0.5078125,
+        "paired_bootstrap_95_pp": [
+          -3.0,
+          9.0
+        ]
+      },
+      "separate100": {
+        "n": 100,
+        "A": 58,
+        "Multi": 59,
+        "gain": 6,
+        "loss": 5,
+        "difference": 1,
+        "difference_pp": 1.0,
+        "exact_mcnemar_p": 1.0,
+        "paired_bootstrap_95_pp": [
+          -5.0,
+          7.000000000000001
+        ]
+      },
+      "exposed200": {
+        "n": 200,
+        "A": 118,
+        "Multi": 122,
+        "gain": 12,
+        "loss": 8,
+        "difference": 4,
+        "difference_pp": 2.0,
+        "exact_mcnemar_p": 0.5034446716308594,
+        "paired_bootstrap_95_pp": [
+          -2.5,
+          6.5
+        ]
+      },
+      "remaining1119": {
+        "n": 1119,
+        "A": 646,
+        "Multi": 636,
+        "gain": 64,
+        "loss": 74,
+        "difference": -10,
+        "difference_pp": -0.8936550491510277,
+        "exact_mcnemar_p": 0.4437150035266715,
+        "paired_bootstrap_95_pp": [
+          -2.8596961572832886,
+          1.161751563896336
+        ]
+      },
+      "full1319": {
+        "n": 1319,
+        "A": 764,
+        "Multi": 758,
+        "gain": 76,
+        "loss": 82,
+        "difference": -6,
+        "difference_pp": -0.45489006823351025,
+        "exact_mcnemar_p": 0.6909249767024591,
+        "paired_bootstrap_95_pp": [
+          -2.350265352539803,
+          1.4404852160727823
+        ]
+      }
+    },
+    "64": {
+      "development100": {
+        "n": 100,
+        "A": 37,
+        "Multi": 42,
+        "gain": 11,
+        "loss": 6,
+        "difference": 5,
+        "difference_pp": 5.0,
+        "exact_mcnemar_p": 0.332305908203125,
+        "paired_bootstrap_95_pp": [
+          -3.0,
+          13.0
+        ]
+      },
+      "separate100": {
+        "n": 100,
+        "A": 38,
+        "Multi": 32,
+        "gain": 11,
+        "loss": 17,
+        "difference": -6,
+        "difference_pp": -6.0,
+        "exact_mcnemar_p": 0.34492845088243484,
+        "paired_bootstrap_95_pp": [
+          -16.0,
+          4.0
+        ]
+      },
+      "exposed200": {
+        "n": 200,
+        "A": 75,
+        "Multi": 74,
+        "gain": 22,
+        "loss": 23,
+        "difference": -1,
+        "difference_pp": -0.5,
+        "exact_mcnemar_p": 1.0,
+        "paired_bootstrap_95_pp": [
+          -7.000000000000001,
+          6.0
+        ]
+      }
+    }
+  },
+  "bootstrap": {
+    "seed": 20260927,
+    "draws": 10000,
+    "unit": "GSM8K question",
+    "method": "percentile paired resampling"
+  },
+  "interpretation_limits": [
+    "All NFE256 subsets are post hoc descriptive partitions of the same full run.",
+    "The exposed200 includes two development samples and is not independent confirmation.",
+    "Exact McNemar p-values and unadjusted bootstrap intervals do not correct for prior model selection.",
+    "A confidence interval crossing zero neither establishes equality nor identifies why the model ranking changed."
+  ]
+}
